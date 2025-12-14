@@ -9,9 +9,17 @@ import Link from 'next/link';
 import { Minus, Plus, Trash2, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { useState } from 'react';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, cartCount, cartTotal } = useCart();
+  const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, applyCoupon, discount, cartTotal, appliedCoupon } = useCart();
+  const [couponCode, setCouponCode] = useState('');
+
+  const handleApplyCoupon = () => {
+    if (couponCode.trim()) {
+      applyCoupon(couponCode.trim());
+    }
+  };
 
   if (cartCount === 0) {
     return (
@@ -79,10 +87,29 @@ export default function CartPage() {
               <CardTitle className="font-headline text-2xl">Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
+               <div className="flex gap-2">
+                <Input
+                  placeholder="Coupon Code"
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                  className="flex-grow"
+                  disabled={!!appliedCoupon}
+                />
+                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon}>
+                  Apply
+                </Button>
+              </div>
+              <Separator />
               <div className="flex justify-between">
                 <span>Subtotal ({cartCount} items)</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>${cartSubtotal.toFixed(2)}</span>
               </div>
+               {discount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount</span>
+                  <span>-${discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span>Shipping</span>
                 <span className="text-green-600">FREE</span>

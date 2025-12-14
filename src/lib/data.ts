@@ -1,4 +1,4 @@
-import type { Category, Product } from './types';
+import type { Category, Product, Coupon } from './types';
 
 export const categories: Category[] = [
   { id: 'birthday-gifts', name: 'Birthday Gifts', image: 'cat-birthday', offer: 'Up to 20% Off' },
@@ -101,4 +101,18 @@ export const products: Product[] = [
     rating: 4.7,
     reviews: 112,
   },
+];
+
+export const coupons: Coupon[] = [
+  {
+    code: 'GIFT10',
+    type: 'percentage',
+    value: 10,
+  },
+  {
+    code: 'SAVE20',
+    type: 'flat',
+    value: 20,
+    minimumCartValue: 50,
+  }
 ];

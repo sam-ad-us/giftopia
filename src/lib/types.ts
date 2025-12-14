@@ -20,3 +20,10 @@ export interface Product {
 export interface CartItem extends Product {
   quantity: number;
 }
+
+export interface Coupon {
+  code: string;
+  type: 'percentage' | 'flat';
+  value: number;
+  minimumCartValue?: number;
+}
