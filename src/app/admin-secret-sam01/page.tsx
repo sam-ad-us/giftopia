@@ -19,9 +19,9 @@ export default function AdminPage() {
       return;
     }
 
-    // If loading is finished and there's no user, redirect to login.
+    // If loading is finished and there's no user, redirect to admin login.
     if (!user) {
-      router.replace('/login');
+      router.replace('/admin-secret-sam01/login');
       return;
     }
 
