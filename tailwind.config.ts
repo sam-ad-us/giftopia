@@ -10,8 +10,8 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ['Inter', 'sans-serif'],
-        headline: ['Inter', 'sans-serif'],
+        body: ['PT Sans', 'sans-serif'],
+        headline: ['Playfair Display', 'serif'],
         code: ['monospace'],
       },
       colors: {
@@ -93,7 +93,22 @@ export default {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
+      textShadow: {
+        DEFAULT: '0 2px 4px rgba(0, 0, 0, 0.10)',
+        lg: '0 2px 10px rgba(0, 0, 0, 0.30)',
+      },
     },
   },
-  plugins: [require('tailwindcss-animate')],
+  plugins: [
+    require('tailwindcss-animate'),
+    function ({ theme, addUtilities }: { theme: (path: string) => any, addUtilities: (utilities: any) => void }) {
+      const textShadow = theme('textShadow');
+      const utilities = Object.entries(textShadow).map(([key, value]) => ({
+        [`.text-shadow${key === 'DEFAULT' ? '' : `-${key}`}`]: {
+          textShadow: value,
+        },
+      }));
+      addUtilities(utilities);
+    },
+  ],
 } satisfies Config;

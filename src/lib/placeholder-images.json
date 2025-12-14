@@ -1,3 +1,94 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero",
+      "description": "A beautifully wrapped gift box with a ribbon.",
+      "imageUrl": "https://images.unsplash.com/photo-1549465220-1a8b9238cd48?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnaWZ0JTIwYm94fGVufDB8fHx8MTc2NTY0MDE5Nnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "gift box"
+    },
+    {
+      "id": "cat-for-her",
+      "description": "Elegant jewelry on a soft background.",
+      "imageUrl": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxqZXdlbHJ5fGVufDB8fHx8MTc2NTcyNDc2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "jewelry"
+    },
+    {
+      "id": "cat-for-him",
+      "description": "A stylish leather wallet and watch.",
+      "imageUrl": "https://images.unsplash.com/photo-1641058569208-836b2063319d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxsZWF0aGVyJTIwd2F0Y2h8ZW58MHx8fHwxNzY1NzIyMzI0fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "leather watch"
+    },
+    {
+      "id": "cat-occasions",
+      "description": "Birthday cake with candles.",
+      "imageUrl": "https://images.unsplash.com/photo-1578922864601-79dcc7cbcea9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzY1NjIyMzIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "birthday cake"
+    },
+    {
+      "id": "cat-under-50",
+      "description": "A collection of affordable, small gift items.",
+      "imageUrl": "https://images.unsplash.com/photo-1603104662763-328f08c9a423?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxzbWFsbCUyMGdpZnRzfGVufDB8fHx8MTc2NTcyNDc2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "small gifts"
+    },
+    {
+      "id": "prod-1-1",
+      "description": "A premium box of assorted artisan chocolates.",
+      "imageUrl": "https://images.unsplash.com/photo-1760307207865-c49d6670e572?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnRpc2FuJTIwY2hvY29sYXRlfGVufDB8fHx8MTc2NTY1NzMxMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "artisan chocolate"
+    },
+    {
+      "id": "prod-1-2",
+      "description": "Close-up of a single, intricately designed chocolate.",
+      "imageUrl": "https://images.unsplash.com/photo-1589204262315-71a7943f86ef?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxkZXNpZ25lZCUyMGNob2NvbGF0ZXxlbnwwfHx8fDE3NjU3MjQ3Njl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "designed chocolate"
+    },
+    {
+      "id": "prod-2-1",
+      "description": "A hand-poured soy candle in a glass jar, with a soft, glowing flame.",
+      "imageUrl": "https://images.unsplash.com/photo-1719385129909-2e0b347905df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8c295JTIwY2FuZGxlfGVufDB8fHx8MTc2NTcyNDc2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "soy candle"
+    },
+    {
+      "id": "prod-2-2",
+      "description": "The soy candle unlit, showing its texture and packaging.",
+      "imageUrl": "https://images.unsplash.com/photo-1607713109008-d00372938c2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHx1bmxpdCUyMGNhbmRsZXxlbnwwfHx8fDE3NjU3MjQ3Njl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "unlit candle"
+    },
+    {
+      "id": "prod-3-1",
+      "description": "A high-quality leather journal with a pen.",
+      "imageUrl": "https://images.unsplash.com/photo-1672256019300-9589d730bedd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxsZWF0aGVyJTIwam91cm5hbHxlbnwwfHx8fDE3NjU3MjQ3Njl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "leather journal"
+    },
+    {
+      "id": "prod-3-2",
+      "description": "An open page of the leather journal.",
+      "imageUrl": "https://images.unsplash.com/photo-1690737495291-0aaa31fcedb8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxvcGVuJTIwam91cm5hbHxlbnwwfHx8fDE3NjU3MjQ3Njl8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "open journal"
+    },
+    {
+      "id": "prod-4-1",
+      "description": "A stylish and minimalist silver necklace.",
+      "imageUrl": "https://images.unsplash.com/photo-1662434921518-e78ecdc3eeaf?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxzaWx2ZXIlMjBuZWNrbGFjZXxlbnwwfHx8fDE3NjU3MTQ3ODV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "silver necklace"
+    },
+    {
+      "id": "prod-4-2",
+      "description": "A close-up of the necklace's pendant.",
+      "imageUrl": "https://images.unsplash.com/photo-1762337381339-85e3713544f0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8bmVja2xhY2UlMjBwZW5kYW50fGVufDB8fHx8MTc2NTcyNDc2OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "necklace pendant"
+    },
+    {
+      "id": "prod-5-1",
+      "description": "A fun and quirky coffee mug.",
+      "imageUrl": "https://images.unsplash.com/photo-1522012188892-24beb302783d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxjb2ZmZWUlMjBtdWd8ZW58MHx8fHwxNzY1NjcyMjI3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "coffee mug"
+    },
+    {
+      "id": "prod-6-1",
+      "description": "A grooming kit for men with various products.",
+      "imageUrl": "https://images.unsplash.com/photo-1750085036912-b4bff0ddcd77?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxncm9vbWluZyUyMGtpdHxlbnwwfHx8fDE3NjU2ODIyOTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "grooming kit"
+    }
+  ]
 }
