@@ -16,7 +16,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useToast } from '@/hooks/use-toast';
 import { Shield } from 'lucide-react';
 
-const ADMIN_EMAIL = 'admin-sam@giftopia.com';
+const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -39,7 +39,7 @@ export default function AdminLoginPage() {
   });
 
   const handleSuccessfulLogin = (result: UserCredential) => {
-    if (result.user.email === ADMIN_EMAIL) {
+    if (result.user.uid === ADMIN_UID) {
       router.push('/admin-secret-sam01');
     } else {
       router.push('/');
@@ -74,12 +74,12 @@ export default function AdminLoginPage() {
   }
 
   useEffect(() => {
-    if (!isUserLoading && user && user.email === ADMIN_EMAIL) {
+    if (!isUserLoading && user && user.uid === ADMIN_UID) {
         router.push('/admin-secret-sam01');
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading || (user && user.email === ADMIN_EMAIL)) {
+  if (isUserLoading || (user && user.uid === ADMIN_UID)) {
       return null;
   }
 

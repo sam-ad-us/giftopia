@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 
-const ADMIN_EMAIL = 'admin-sam@giftopia.com';
+const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
 
 export default function AdminPage() {
   const { user, isUserLoading } = useUser();
@@ -47,14 +47,14 @@ export default function AdminPage() {
     }
 
     // If a user is logged in, check if they are the admin.
-    if (user.email !== ADMIN_EMAIL) {
+    if (user.uid !== ADMIN_UID) {
       // If not the admin, redirect to the homepage.
       router.replace('/');
     }
   }, [user, isUserLoading, router]);
 
   // While loading or if redirection is in progress, show a loading state.
-  if (isUserLoading || !user || user.email !== ADMIN_EMAIL) {
+  if (isUserLoading || !user || user.uid !== ADMIN_UID) {
     return (
       <div className="container mx-auto px-4 py-24 flex items-center justify-center">
         <Card className="w-full max-w-md">
