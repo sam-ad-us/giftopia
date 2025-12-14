@@ -1,166 +1,57 @@
 'use client';
 
-import { useUser } from '@/firebase';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Shield, PlusCircle, MoreHorizontal } from 'lucide-react';
-import { products } from '@/lib/data';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Package, Ticket, Percent, ShoppingBag } from 'lucide-react';
 
+const stats = [
+    { title: 'Total Products', value: '1,254', icon: Package, change: '+12.5%' },
+    { title: 'Active Offers', value: '23', icon: Percent, change: '+5' },
+    { title: 'Coupons Used', value: '345', icon: Ticket, change: '-2.1%' },
+    { title: 'Total Orders', value: '8,432', icon: ShoppingBag, change: '+20.1%' },
+]
 
-const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
-
-export default function AdminPage() {
-  const { user, isUserLoading } = useUser();
-  const router = useRouter();
-
-  useEffect(() => {
-    // If auth state is still loading, do nothing yet.
-    if (isUserLoading) {
-      return;
-    }
-
-    // If loading is finished and there's no user, redirect to admin login.
-    if (!user) {
-      router.replace('/admin-secret-sam01/login');
-      return;
-    }
-
-    // If a user is logged in, check if they are the admin.
-    if (user.uid !== ADMIN_UID) {
-      // If not the admin, redirect to the homepage.
-      router.replace('/');
-    }
-  }, [user, isUserLoading, router]);
-
-  // While loading or if redirection is in progress, show a loading state.
-  if (isUserLoading || !user || user.uid !== ADMIN_UID) {
+export default function AdminDashboardPage() {
     return (
-      <div className="container mx-auto px-4 py-24 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-            <CardHeader>
-                <Skeleton className="h-8 w-48" />
-                <Skeleton className="h-4 w-full mt-2" />
-            </CardHeader>
-            <CardContent className="space-y-4">
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-                <Skeleton className="h-10 w-full" />
-            </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
-  // If the user is the admin, show the admin content.
-  return (
-    <div className="container mx-auto px-4 py-12">
-      <div className="flex items-center justify-between gap-4 mb-8">
-        <div className="flex items-center gap-4">
-            <Shield className="h-10 w-10 text-primary" />
-            <div>
-                <h1 className="font-headline text-4xl md:text-5xl font-bold">Admin Panel</h1>
-                <p className="text-muted-foreground">Welcome, {user.displayName || user.email}.</p>
+        <div>
+            <div className="mb-8">
+                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+                <p className="text-muted-foreground">An overview of your gift shop's performance.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                {stats.map((stat) => (
+                    <Card key={stat.title}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
+                            <stat.icon className="h-5 w-5 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stat.value}</div>
+                            <p className="text-xs text-muted-foreground">{stat.change} from last month</p>
+                        </CardContent>
+                    </Card>
+                ))}
+            </div>
+             {/* Placeholder for future charts/widgets */}
+            <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-3">
+                <Card className="lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle>Sales Over Time</CardTitle>
+                         <CardDescription>A placeholder for a sales chart.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex h-[300px] items-center justify-center">
+                        <p className="text-muted-foreground">Chart will be displayed here.</p>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Recent Orders</CardTitle>
+                        <CardDescription>A placeholder for recent orders.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex h-[300px] items-center justify-center">
+                        <p className="text-muted-foreground">Recent orders will be listed here.</p>
+                    </CardContent>
+                </Card>
             </div>
         </div>
-        <Button>
-            <PlusCircle className="mr-2 h-5 w-5" />
-            Add Product
-        </Button>
-      </div>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Manage Products</CardTitle>
-          <CardDescription>View, edit, and manage all products in the store.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="hidden w-[100px] sm:table-cell">
-                  <span className="sr-only">Image</span>
-                </TableHead>
-                <TableHead>Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead className="hidden md:table-cell">
-                  Price
-                </TableHead>
-                <TableHead>
-                  <span className="sr-only">Actions</span>
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => {
-                const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
-                return (
-                <TableRow key={product.id}>
-                  <TableCell className="hidden sm:table-cell">
-                    {productImage && (
-                        <div className="relative h-16 w-16 rounded-md overflow-hidden">
-                        <Image
-                            src={productImage.imageUrl}
-                            alt={product.name}
-                            fill
-                            className="object-cover"
-                            data-ai-hint={productImage.imageHint}
-                        />
-                        </div>
-                    )}
-                  </TableCell>
-                  <TableCell className="font-medium">{product.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{product.category}</Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell">
-                    ${product.price.toFixed(2)}
-                  </TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          aria-haspopup="true"
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Toggle menu</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive focus:text-destructive focus:bg-destructive/10">Delete</DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              )})}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
-  );
+    );
 }

@@ -3,8 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import Link from 'next/link';
 import { useAuth, useUser } from '@/firebase';
 import { signInWithEmailAndPassword, type UserCredential, type FirebaseAuthError } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
@@ -14,13 +12,13 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Shield } from 'lucide-react';
+import { Shield, Gift } from 'lucide-react';
 
 const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address." }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters long." }),
+  password: z.string().min(1, { message: "Password is required." }),
 });
 
 export default function AdminLoginPage() {
@@ -42,7 +40,8 @@ export default function AdminLoginPage() {
     if (result.user.uid === ADMIN_UID) {
       router.push('/admin-secret-sam01');
     } else {
-      router.push('/');
+      // Immediately sign out non-admin users
+      signOut(auth);
       toast({
         title: "Access Denied",
         description: "You are not authorized to access the admin panel.",
@@ -72,65 +71,76 @@ export default function AdminLoginPage() {
       setIsSubmitting(false);
     }
   }
-
+  
   useEffect(() => {
-    if (!isUserLoading && user && user.uid === ADMIN_UID) {
-        router.push('/admin-secret-sam01');
+    if (!isUserLoading && user) {
+        if (user.uid === ADMIN_UID) {
+            router.replace('/admin-secret-sam01');
+        }
     }
   }, [user, isUserLoading, router]);
 
-  if (isUserLoading || (user && user.uid === ADMIN_UID)) {
-      return null;
+
+  if (isUserLoading || user?.uid === ADMIN_UID) {
+      return (
+        <div className="flex h-screen items-center justify-center bg-background">
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        </div>
+      );
   }
 
+
   return (
-    <div className="flex items-center justify-center min-h-[calc(100vh-14rem)] bg-primary-deeper/10 px-4 py-12">
-      <Card className="w-full max-w-sm border-primary/50 shadow-lg">
-        <CardHeader className="text-center">
-            <div className="mx-auto bg-primary/10 rounded-full p-3 w-fit">
-                <Shield className="h-8 w-8 text-primary"/>
+    <div className="flex min-h-screen items-center justify-center bg-sidebar-background px-4">
+        <div className="w-full max-w-sm">
+            <div className="mx-auto flex justify-center items-center gap-2 mb-6">
+                <Gift className="h-8 w-8 text-primary" />
+                <span className="text-2xl font-bold text-foreground">Giftopia Admin</span>
             </div>
-          <CardTitle className="font-headline text-2xl mt-2">Admin Login</CardTitle>
-          <CardDescription>Restricted Access</CardDescription>
-        </CardHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <CardContent className="grid gap-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input type="email" placeholder="admin@example.com" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem className="grid gap-2">
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </CardContent>
-            <CardFooter className="flex flex-col gap-4">
-              <Button className="w-full" type="submit" disabled={isSubmitting}>
-                {isSubmitting ? 'Signing In...' : 'Sign in as Admin'}
-              </Button>
-            </CardFooter>
-          </form>
-        </Form>
-      </Card>
+            <Card>
+                <CardHeader className="text-center">
+                    <CardTitle className="text-2xl">Admin Login</CardTitle>
+                    <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
+                </CardHeader>
+                <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <CardContent className="grid gap-4">
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                        <FormItem className="grid gap-2 text-left">
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                            <Input type="email" placeholder="admin@example.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                        <FormItem className="grid gap-2 text-left">
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                            <Input type="password" placeholder="••••••••" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                        )}
+                    />
+                    </CardContent>
+                    <CardFooter className="flex flex-col gap-4">
+                    <Button className="w-full" type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? 'Signing In...' : 'Sign in'}
+                    </Button>
+                    </CardFooter>
+                </form>
+                </Form>
+            </Card>
+         </div>
     </div>
   );
 }
