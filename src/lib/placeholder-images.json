@@ -19,10 +19,40 @@
       "imageHint": "leather watch"
     },
     {
-      "id": "cat-occasions",
+      "id": "cat-birthday",
       "description": "Birthday cake with candles.",
       "imageUrl": "https://images.unsplash.com/photo-1578922864601-79dcc7cbcea9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxiaXJ0aGRheSUyMGNha2V8ZW58MHx8fHwxNzY1NjIyMzIyfDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "birthday cake"
+    },
+    {
+      "id": "cat-anniversary",
+      "description": "Champagne glasses toasting for an anniversary.",
+      "imageUrl": "https://images.unsplash.com/photo-1533876080314-4ab7c6445ae9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhbm5pdmVyc2FyeSUyMGNlbGVicmF0aW9ufGVufDB8fHx8MTc2NTcyNTQ4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "anniversary celebration"
+    },
+    {
+      "id": "cat-wedding",
+      "description": "Wedding rings and flowers.",
+      "imageUrl": "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3ZWRkaW5nJTIwcmluZ3N8ZW58MHx8fHwxNzY1NjYxMTc2fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding rings"
+    },
+    {
+      "id": "cat-personalized",
+      "description": "A personalized engraved item.",
+      "imageUrl": "https://images.unsplash.com/photo-1761211115639-54394f139142?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxwZXJzb25hbGl6ZWQlMjBnaWZ0fGVufDB8fHx8MTc2NTcyNTQ4N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "personalized gift"
+    },
+    {
+      "id": "cat-kids",
+      "description": "Colorful toys for kids.",
+      "imageUrl": "https://images.unsplash.com/photo-1573297663823-b4d453566b32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxraWRzJTIwdG95c3xlbnwwfHx8fDE3NjU3MjU0ODd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "kids toys"
+    },
+    {
+      "id": "cat-corporate",
+      "description": "Professional corporate gifts on a desk.",
+      "imageUrl": "https://images.unsplash.com/photo-1625552186152-668cd2f0b707?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxjb3Jwb3JhdGUlMjBnaWZ0c3xlbnwwfHx8fDE3NjU2Nzg4MzN8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "corporate gifts"
     },
     {
       "id": "cat-under-50",

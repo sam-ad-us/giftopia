@@ -5,6 +5,7 @@ import { CartProvider } from '@/contexts/CartContext';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { FirebaseClientProvider } from '@/firebase';
+import SubHeader from '@/components/SubHeader';
 
 export const metadata: Metadata = {
   title: 'Giftopia',
@@ -28,6 +29,7 @@ export default function RootLayout({
           <CartProvider>
             <div className="flex flex-col min-h-screen">
               <Header />
+              <SubHeader />
               <main className="flex-grow">{children}</main>
               <Footer />
             </div>

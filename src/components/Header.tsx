@@ -5,7 +5,6 @@ import { Gift, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import CartIcon from './CartIcon';
-import { categories } from '@/lib/data';
 import { useUser } from '@/firebase';
 import UserNav from './UserNav';
 import { Skeleton } from './ui/skeleton';
@@ -21,17 +20,6 @@ export default function Header() {
             <Gift className="h-7 w-7 text-primary" />
             <span className="font-headline text-2xl font-bold">Giftopia</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-4 text-sm font-medium">
-            {categories.map((category) => (
-              <Link
-                key={category.id}
-                href={`/catalog/${category.id}`}
-                className="text-muted-foreground transition-colors hover:text-foreground"
-              >
-                {category.name}
-              </Link>
-            ))}
-          </nav>
         </div>
 
         <div className="flex items-center gap-4">

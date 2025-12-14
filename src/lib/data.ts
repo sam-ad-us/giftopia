@@ -1,10 +1,14 @@
 import type { Category, Product } from './types';
 
 export const categories: Category[] = [
+  { id: 'birthday-gifts', name: 'Birthday Gifts', image: 'cat-birthday' },
+  { id: 'anniversary-gifts', name: 'Anniversary Gifts', image: 'cat-anniversary' },
+  { id: 'wedding-gifts', name: 'Wedding Gifts', image: 'cat-wedding' },
   { id: 'for-her', name: 'For Her', image: 'cat-for-her' },
   { id: 'for-him', name: 'For Him', image: 'cat-for-him' },
-  { id: 'occasions', name: 'Occasions', image: 'cat-occasions' },
-  { id: 'under-50', name: 'Under $50', image: 'cat-under-50' },
+  { id: 'personalized-gifts', name: 'Personalized Gifts', image: 'cat-personalized' },
+  { id: 'kids-gifts', name: 'Kids Gifts', image: 'cat-kids' },
+  { id: 'corporate-gifts', name: 'Corporate Gifts', image: 'cat-corporate' },
 ];
 
 export const products: Product[] = [
@@ -58,7 +62,7 @@ export const products: Product[] = [
     description: 'Start the day with a smile and a fun mug.',
     longDescription: 'Brighten up their morning routine with this quirky and fun coffee mug. Made from durable ceramic, it holds 12oz of their favorite beverage. The witty phrase printed on the side is sure to bring a smile to their face. It\'s both dishwasher and microwave safe.',
     price: 18.50,
-    category: 'under-50',
+    category: 'personalized-gifts',
     images: ['prod-5-1'],
     rating: 4.6,
     reviews: 150,
@@ -80,7 +84,7 @@ export const products: Product[] = [
     description: 'A festive box for any special occasion.',
     longDescription: 'Mark a special milestone with this curated Celebration Gift Box. It includes a mini bottle of sparkling wine, two champagne flutes, gourmet popcorn, and a festive confetti popper. It\'s the perfect way to say "Congratulations!" or "Happy Birthday!".',
     price: 55.00,
-    category: 'occasions',
+    category: 'birthday-gifts',
     images: ['prod-1-1', 'prod-1-2'],
     rating: 4.9,
     reviews: 63,
@@ -91,7 +95,7 @@ export const products: Product[] = [
     description: 'A relaxing at-home spa experience.',
     longDescription: 'Give the gift of relaxation with this at-home spa kit. It includes a lavender bath bomb, a calming facial mask, luxurious body butter, and a soft exfoliating cloth. It\'s the perfect way to unwind and de-stress.',
     price: 42.00,
-    category: 'under-50',
+    category: 'for-her',
     images: ['prod-2-1'],
     rating: 4.7,
     reviews: 112,

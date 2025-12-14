@@ -8,6 +8,7 @@ import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+  const featuredCategories = categories.slice(0, 4);
 
   return (
     <div className="flex flex-col">
@@ -31,7 +32,7 @@ export default function Home() {
             Discover a curated collection of unique gifts that will make your loved ones feel special.
           </p>
           <Button asChild size="lg" className="font-bold text-lg">
-            <Link href="#categories">
+            <Link href="/catalog/birthday-gifts">
               Shop Now <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
@@ -44,7 +45,7 @@ export default function Home() {
             Browse by Category
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {categories.map((category) => {
+            {featuredCategories.map((category) => {
               const categoryImage = PlaceHolderImages.find(p => p.id === category.image);
               return (
               <Link key={category.id} href={`/catalog/${category.id}`} className="group">
