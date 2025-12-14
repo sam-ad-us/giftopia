@@ -1,11 +1,18 @@
+'use client';
+
 import Link from 'next/link';
 import { Gift, Search } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import CartIcon from './CartIcon';
 import { categories } from '@/lib/data';
+import { useUser } from '@/firebase';
+import UserNav from './UserNav';
+import { Skeleton } from './ui/skeleton';
 
 export default function Header() {
+  const { user, isUserLoading } = useUser();
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -33,9 +40,15 @@ export default function Header() {
             <Input placeholder="Search gifts..." className="pl-10 w-48 lg:w-64" />
           </div>
           <CartIcon />
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
+          {isUserLoading ? (
+            <Skeleton className="h-8 w-16" />
+          ) : user ? (
+            <UserNav />
+          ) : (
+            <Button asChild>
+              <Link href="/login">Login</Link>
+            </Button>
+          )}
         </div>
       </div>
     </header>
