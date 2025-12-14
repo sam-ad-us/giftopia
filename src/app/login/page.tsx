@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { useAuth } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { GoogleAuthProvider, signInWithPopup, type FirebaseAuthError } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useUser } from '@/firebase';
@@ -50,7 +50,10 @@ export default function LoginPage() {
     try {
       await signInWithPopup(auth, provider);
     } catch (error) {
-      console.error('Error signing in with Google', error);
+      const fbError = error as FirebaseAuthError;
+      if (fbError.code !== 'auth/cancelled-popup-request' && fbError.code !== 'auth/popup-closed-by-user') {
+        console.error('Error signing in with Google', error);
+      }
     }
   };
 
