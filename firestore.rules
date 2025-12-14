@@ -1,0 +1,148 @@
+/**
+ * This ruleset enforces a security model for the Giftopia e-commerce application.
+ *
+ * Core Philosophy:
+ * The security model is built on two primary principles: strict user ownership for
+ * private data and public read-only access for catalog data. This provides a
+ * strong security posture while allowing for a seamless browsing experience.
+ *
+ * Data Structure:
+ * - User-specific data, such as user profiles and shopping carts, is nested within a
+ *   user-specific document tree: `/users/{userId}/...`. This structure leverages
+ *   path-based security to ensure users can only access their own information.
+ * - Publicly accessible data, such as products and categories, is stored in top-level
+ *   collections (`/products`, `/categories`) to enable efficient, secure querying
+ *   for all users.
+ *
+ * Key Security Decisions:
+ * - User Isolation: Users can only create, read, update, or delete their own
+ *   profile and cart data. They cannot see or interact with other users' data.
+ * - Public Catalog: The product and category collections are publicly readable to
+ *   allow browsing by both signed-in and anonymous users.
+ * - Write Protection on Public Data: Writes to the public `/products` and
+ *   `/categories` collections are disabled by default. This is a secure posture
+ *   because the data model lacks a concept of an "admin" role or document "owner"
+ *   to authorize such changes. This must be implemented by the developer later.
+ * - No User Listing: To protect user privacy, it is not possible to list all
+ *   documents in the `/users` collection.
+ *
+ * Denormalization for Authorization:
+ * Relational integrity is enforced by denormalizing the `userId` into cart items.
+ * The rules for creating a cart item (`/users/{userId}/cart_items/{cartItemId}`)
+ * validate that the `userId` field within the document data matches the `{userId}`
+ * from the path, ensuring a permanent and immutable link to the owner.
+ *
+ * Structural Segregation:
+ * The application correctly segregates private user data (cart items) into a user-
+ * owned subcollection, while public catalog data resides in separate top-level
+ * collections. This is a best practice for security and query performance.
+ */
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions for reusable logic
+    
+    /**
+     * Checks if a user is authenticated.
+     */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    /**
+     * Checks if the currently authenticated user's UID matches the provided userId.
+     * This is the foundation of the ownership model.
+     */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    /**
+     * Checks for ownership on an existing document. Used for safe updates and deletes.
+     * This prevents modifying or deleting documents that do not exist.
+     */
+    function isExistingOwner(userId) {
+      return isOwner(userId) && resource != null;
+    }
+    
+    /**
+     * Validates that the user ID in a newly created document's data
+     * matches the user ID in the document path.
+     */
+    function newDocHasCorrectOwner(userId) {
+      return request.resource.data.userId == userId;
+    }
+    
+    /**
+     * Enforces immutability of the user ID field on update.
+     * Prevents re-assigning a document to a different user.
+     */
+    function ownerIsImmutable() {
+      return request.resource.data.userId == resource.data.userId;
+    }
+
+
+    /**
+     * @description Manages user profile documents.
+     * @path /users/{userId}
+     * @allow (create) A new user can create their own profile document.
+     * @deny (get) An authenticated user cannot read another user's profile.
+     * @principle Restricts access to a user's own data tree.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false;
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isExistingOwner(userId) && request.resource.data.id == resource.data.id;
+      allow delete: if isExistingOwner(userId);
+
+      /**
+       * @description Manages items within a user's personal shopping cart.
+       * @path /users/{userId}/cart_items/{cartItemId}
+       * @allow (create, list) An authenticated user can add items to and list items in their own cart.
+       * @deny (update, delete) An authenticated user cannot modify another user's cart.
+       * @principle Enforces strict ownership via path-based security for all operations.
+       */
+      match /cart_items/{cartItemId} {
+        allow get: if isOwner(userId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && newDocHasCorrectOwner(userId);
+        allow update: if isExistingOwner(userId) && ownerIsImmutable();
+        allow delete: if isExistingOwner(userId);
+      }
+    }
+
+    /**
+     * @description Defines rules for the public product catalog.
+     * @path /products/{productId}
+     * @allow (get, list) Any user, signed-in or not, can view products.
+     * @deny (create, update, delete) All write operations are denied for all users.
+     * @principle Provides public read access but disables all writes as no admin or owner role is defined.
+     */
+    match /products/{productId} {
+      allow get: if true;
+      allow list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+    }
+
+    /**
+     * @description Defines rules for the public product categories.
+     * @path /categories/{categoryId}
+     * @allow (get, list) Any user, signed-in or not, can view categories.
+     * @deny (create, update, delete) All write operations are denied for all users.
+     * @principle Provides public read access but disables all writes as no admin or owner role is defined.
+     */
+    match /categories/{categoryId} {
+      allow get: if true;
+      allow list: if true;
+      // CRITICAL: Cannot implement owner-only writes. The 'Category' entity is missing an 'ownerId' or 'authorId' field.
+      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+    }
+  }
+}
