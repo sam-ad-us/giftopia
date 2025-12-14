@@ -12,6 +12,8 @@ import { Button } from './ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { useUser, useAuth } from '@/firebase';
 import { signOut } from 'firebase/auth';
+import Link from 'next/link';
+import { User as UserIcon, LogOut } from 'lucide-react';
 
 export default function UserNav() {
   const { user } = useUser();
@@ -58,7 +60,15 @@ export default function UserNav() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/profile">
+            <UserIcon className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleSignOut}>
+          <LogOut className="mr-2 h-4 w-4" />
           Log out
         </DropdownMenuItem>
       </DropdownMenuContent>
