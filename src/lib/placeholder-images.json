@@ -61,6 +61,12 @@
       "imageHint": "small gifts"
     },
     {
+      "id": "cat-festival",
+      "description": "Colorful festival decorations.",
+      "imageUrl": "https://images.unsplash.com/photo-1760801400141-13f236972091?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHxmZXN0aXZhbCUyMGRlY29yYXRpb25zfGVufDB8fHx8MTc2NTcyNTY5NXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "festival decorations"
+    },
+    {
       "id": "prod-1-1",
       "description": "A premium box of assorted artisan chocolates.",
       "imageUrl": "https://images.unsplash.com/photo-1760307207865-c49d6670e572?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnRpc2FuJTIwY2hvY29sYXRlfGVufDB8fHx8MTc2NTY1NzMxMXww&ixlib=rb-4.1.0&q=80&w=1080",

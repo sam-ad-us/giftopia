@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Badge } from '@/components/ui/badge';
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
@@ -31,8 +32,8 @@ export default function Home() {
             Discover a curated collection of unique gifts that will make your loved ones feel special.
           </p>
           <Button asChild size="lg" className="font-bold text-lg">
-            <Link href="/catalog/birthday-gifts">
-              Shop Now <ArrowRight className="ml-2 h-5 w-5" />
+            <Link href="#categories">
+              Browse Categories <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
         </div>
@@ -43,14 +44,14 @@ export default function Home() {
           <h2 className="font-headline text-3xl md:text-4xl font-bold text-center mb-12">
             Browse by Category
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {categories.map((category) => {
               const categoryImage = PlaceHolderImages.find(p => p.id === category.image);
               return (
               <Link key={category.id} href={`/catalog/${category.id}`} className="group">
                 <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2">
-                  <CardContent className="p-0">
-                    <div className="relative aspect-square">
+                  <CardContent className="p-0 relative">
+                    <div className="relative aspect-[4/3]">
                       {categoryImage && (
                         <Image
                           src={categoryImage.imageUrl}
@@ -60,9 +61,13 @@ export default function Home() {
                           data-ai-hint={categoryImage.imageHint}
                         />
                       )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     </div>
-                    <div className="p-6">
-                      <h3 className="font-headline text-xl font-bold text-center">{category.name}</h3>
+                    {category.offer && (
+                      <Badge className="absolute top-4 right-4">{category.offer}</Badge>
+                    )}
+                    <div className="absolute bottom-0 p-6">
+                      <h3 className="font-headline text-2xl font-bold text-white">{category.name}</h3>
                     </div>
                   </CardContent>
                 </Card>
