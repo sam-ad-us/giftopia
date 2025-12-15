@@ -96,7 +96,7 @@ export default function CartPage() {
                   className="flex-grow"
                   disabled={!!appliedCoupon}
                 />
-                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon}>
+                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon || !couponCode.trim()}>
                   {appliedCoupon ? 'Applied!' : 'Apply'}
                 </Button>
               </div>
@@ -105,9 +105,9 @@ export default function CartPage() {
                 <span>Subtotal ({cartCount} items)</span>
                 <span>${cartSubtotal.toFixed(2)}</span>
               </div>
-               {discount > 0 && (
+               {discount > 0 && appliedCoupon && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount ({appliedCoupon?.code})</span>
+                  <span>Discount ({appliedCoupon.code})</span>
                   <span>-${discount.toFixed(2)}</span>
                 </div>
               )}

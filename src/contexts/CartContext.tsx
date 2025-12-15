@@ -34,7 +34,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const couponQuery = useMemoFirebase(
     () =>
       firestore && couponCodeToApply
-        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), where('status', '==', 'active'), limit(1))
+        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), limit(1))
         : null,
     [firestore, couponCodeToApply]
   );
@@ -94,6 +94,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cart]);
 
   const applyCoupon = useCallback((code: string) => {
+    if (!code) return;
     setCouponCodeToApply(code.toUpperCase());
   }, []);
 
@@ -103,9 +104,16 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const coupon = coupons?.[0];
 
     if (coupon) {
-      if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
+       if (coupon.status !== 'active') {
         toast({
-            title: "Invalid Coupon",
+          title: "Coupon Not Active",
+          description: "This coupon has expired or is not active yet.",
+          variant: "destructive",
+        });
+        setAppliedCoupon(null);
+      } else if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
+        toast({
+            title: "Minimum Spend Not Met",
             description: `You must spend at least $${coupon.minimumCartValue.toFixed(2)} to use this coupon.`,
             variant: "destructive",
         });
@@ -114,17 +122,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setAppliedCoupon(coupon);
         toast({
           title: "Coupon Applied!",
-          description: `You've received a discount.`,
+          description: `You've received a discount with code ${coupon.code}.`,
         });
       }
     } else {
       toast({
         title: "Invalid Coupon",
-        description: "The coupon code you entered is not valid or has expired.",
+        description: "The coupon code you entered is not valid.",
         variant: "destructive",
       });
       setAppliedCoupon(null);
     }
+    // Reset the trigger
     setCouponCodeToApply(null);
   }, [coupons, couponsLoading, cartSubtotal, toast, couponCodeToApply]);
 
