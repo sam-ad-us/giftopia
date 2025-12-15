@@ -7,7 +7,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Loader2 } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Loader2, X } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useState } from 'react';
@@ -86,6 +86,15 @@ export default function CartPage() {
       setIsApplyingCoupon(false);
     }
   };
+  
+  const handleRemoveCoupon = () => {
+    clearCoupon();
+    setCouponCode('');
+    toast({
+        title: "Coupon Removed",
+        description: "Your cart total has been updated.",
+    });
+  };
 
 
   if (cartCount === 0) {
@@ -154,18 +163,29 @@ export default function CartPage() {
               <CardTitle className="font-headline text-2xl">Order Summary</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col gap-4">
-               <div className="flex gap-2">
-                <Input
-                  placeholder="Coupon Code"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-grow"
-                  disabled={!!appliedCoupon || isApplyingCoupon}
-                />
-                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon || !couponCode.trim() || isApplyingCoupon}>
-                  {isApplyingCoupon ? <Loader2 className="h-4 w-4 animate-spin" /> : appliedCoupon ? 'Applied!' : 'Apply'}
-                </Button>
-              </div>
+               {!appliedCoupon ? (
+                 <div className="flex gap-2">
+                    <Input
+                    placeholder="Coupon Code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className="flex-grow"
+                    disabled={isApplyingCoupon}
+                    />
+                    <Button onClick={handleApplyCoupon} disabled={!couponCode.trim() || isApplyingCoupon}>
+                    {isApplyingCoupon ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
+                    </Button>
+                </div>
+               ) : (
+                <div className="flex items-center justify-between gap-2 p-2 rounded-md bg-secondary text-secondary-foreground">
+                    <div className='text-sm'>
+                        <span className='font-semibold'>{appliedCoupon.code}</span> applied!
+                    </div>
+                    <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleRemoveCoupon}>
+                        <X className="h-4 w-4" />
+                    </Button>
+                </div>
+               )}
               <Separator />
               <div className="flex justify-between">
                 <span>Subtotal ({cartCount} items)</span>
