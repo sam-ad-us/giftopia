@@ -19,8 +19,8 @@ export default function AddToCart({ product }: { product: Product }) {
   const decrement = () => setQuantity((prev) => Math.max(1, prev - 1));
 
   return (
-    <div className="flex items-center gap-4 mt-4">
-      <div className="flex items-center border rounded-md">
+    <>
+      <div className="flex items-center border rounded-md bg-background">
         <Button variant="ghost" size="icon" onClick={decrement}>
           <Minus className="h-4 w-4" />
         </Button>
@@ -28,16 +28,16 @@ export default function AddToCart({ product }: { product: Product }) {
           type="number"
           value={quantity}
           onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
-          className="w-16 text-center border-0 focus-visible:ring-0"
+          className="w-12 h-10 text-center border-0 focus-visible:ring-0"
         />
         <Button variant="ghost" size="icon" onClick={increment}>
           <Plus className="h-4 w-4" />
         </Button>
       </div>
-      <Button size="lg" onClick={handleAddToCart} className="flex-grow sm:flex-grow-0">
+      <Button size="lg" onClick={handleAddToCart} className="w-full">
         <ShoppingCart className="mr-2 h-5 w-5" />
         Add to Cart
       </Button>
-    </div>
+    </>
   );
 }
