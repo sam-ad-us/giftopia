@@ -1,4 +1,5 @@
 
+
 export interface Category {
   id: string;
   name: string;
@@ -39,4 +40,25 @@ export interface Offer {
   type: 'percentage' | 'flat';
   value: number;
   status: 'active' | 'inactive';
+}
+
+export interface Order {
+    id: string;
+    userId: string;
+    customerName: string;
+    items: CartItem[];
+    subtotal: number;
+    discount: number;
+    total: number;
+    shippingAddress: {
+        name: string;
+        address: string;
+        city: string;
+        state: string;
+        zip: string;
+        country: string;
+    };
+    paymentMethod: string;
+    status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
+    createdAt: any; // Firestore ServerTimestamp
 }

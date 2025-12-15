@@ -14,6 +14,7 @@ interface CartContextType {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   applyCoupon: (code: string) => void;
+  clearCart: () => void;
   cartCount: number;
   cartSubtotal: number;
   discount: number;
@@ -79,6 +80,11 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     );
   }, [removeFromCart]);
   
+  const clearCart = useCallback(() => {
+    setCart([]);
+    setAppliedCoupon(null);
+  }, []);
+
   const cartCount = useMemo(() => {
     return cart.reduce((count, item) => count + item.quantity, 0);
   }, [cart]);
@@ -146,6 +152,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     removeFromCart,
     updateQuantity,
     applyCoupon,
+    clearCart,
     cartCount,
     cartSubtotal,
     discount,
