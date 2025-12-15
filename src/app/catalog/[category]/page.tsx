@@ -8,28 +8,28 @@ import { collection, query, where } from 'firebase/firestore';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+export default function CategoryPage({ params: { category: categoryId } }: { params: { category: string } }) {
   const firestore = useFirestore();
-  const category = categories.find((c) => c.id === params.category);
+  const category = categories.find((c) => c.id === categoryId);
 
   const productsQuery = useMemoFirebase(
     () =>
       firestore
-        ? query(collection(firestore, 'products'), where('category', '==', params.category))
+        ? query(collection(firestore, 'products'), where('category', '==', categoryId))
         : null,
-    [firestore, params.category]
+    [firestore, categoryId]
   );
 
   const { data: products, isLoading } = useCollection<Product>(productsQuery);
 
-  if (!category) {
+  if (!category && !isLoading) {
     notFound();
   }
 
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="font-headline text-4xl md:text-5xl font-bold mb-8">
-        {category.name}
+        {category?.name}
       </h1>
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
