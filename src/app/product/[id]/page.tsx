@@ -24,7 +24,7 @@ export default function ProductPage() {
 
   const firestore = useFirestore();
   const productRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'products', productId) : null),
+    () => (firestore && productId ? doc(firestore, 'products', productId) : null),
     [firestore, productId]
   );
   const { data: product, isLoading } = useDoc<Product>(productRef);
@@ -67,7 +67,24 @@ export default function ProductPage() {
   }
 
   if (!product) {
-    notFound();
+    // Return a loading state or a not found message, but don't call notFound() immediately
+    // unless you are certain the product doesn't exist after a completed query.
+    // A simple loading indicator can prevent the 404 flash.
+    if (!isLoading) {
+       notFound();
+    }
+    return (
+       <div className="container mx-auto px-4 py-12">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+          <div className="flex flex-col gap-4">
+            <Skeleton className="aspect-square w-full rounded-lg" />
+          </div>
+           <div className="flex flex-col gap-4">
+            <Skeleton className="h-12 w-3/4" />
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
