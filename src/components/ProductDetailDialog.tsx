@@ -11,6 +11,7 @@ import { Star, StarHalf, ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { Separator } from './ui/separator';
+import { useToast } from '@/hooks/use-toast';
 
 interface ProductDetailDialogProps {
   product: Product | null;
@@ -42,6 +43,7 @@ function StarRating({ rating, reviewCount }: { rating: number, reviewCount: numb
 
 export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDetailDialogProps) {
     const { addToCart } = useCart();
+    const { toast } = useToast();
     const [activeImage, setActiveImage] = useState<string | null>(null);
 
     useEffect(() => {
@@ -59,9 +61,19 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const mainImage = activeImage || (productImages[0]?.imageUrl || '');
 
     const handleAddToCart = () => {
+        if (product.stockStatus === 'out-of-stock' || product.status !== 'active') {
+            toast({
+                title: 'Product Unavailable',
+                description: 'This product is currently out of stock.',
+                variant: 'destructive',
+            });
+            return;
+        }
         addToCart(product, 1);
         onOpenChange(false);
     };
+
+    const isOutOfStock = product.stockStatus === 'out-of-stock';
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -118,10 +130,10 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         size="lg"
                         onClick={handleAddToCart}
                         className="w-full h-12 text-base"
-                        disabled={product.stockStatus === 'out-of-stock' || product.status !== 'active'}
+                        variant={isOutOfStock ? 'secondary' : 'default'}
                     >
                         <ShoppingCart className="mr-2 h-5 w-5" />
-                        {product.stockStatus === 'out-of-stock' ? 'Out of Stock' : 'Add to Cart'}
+                        {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
                     </Button>
                     
                     <div className="prose prose-sm text-foreground max-w-none">
