@@ -51,7 +51,9 @@ export interface Order {
     customerName: string;
     items: CartItem[];
     subtotal: number;
-    discount: number;
+    productSavings: number;
+    couponDiscount: number;
+    couponCode: string | null;
     total: number;
     shippingAddress: {
         name: string;

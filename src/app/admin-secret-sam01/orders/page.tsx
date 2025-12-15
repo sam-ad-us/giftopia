@@ -35,12 +35,16 @@ import {
   DropdownMenuSubContent
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { MoreHorizontal, Truck, CheckCircle, XCircle, Eye } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { OrderDetailsDialog } from './_components/OrderDetailsDialog';
 
 export default function AdminOrdersPage() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const ordersQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'orders'), orderBy('createdAt', 'desc')) : null),
@@ -82,6 +86,11 @@ export default function AdminOrdersPage() {
       });
     }
   };
+
+  const handleViewDetails = (order: Order) => {
+    setSelectedOrder(order);
+    setIsDetailsOpen(true);
+  }
 
   return (
     <div>
@@ -141,6 +150,10 @@ export default function AdminOrdersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
+                           <DropdownMenuItem onClick={() => handleViewDetails(order)}>
+                                <Eye className="mr-2 h-4 w-4" />
+                                View Details
+                            </DropdownMenuItem>
                           <DropdownMenuLabel>Update Status</DropdownMenuLabel>
                           <DropdownMenuSeparator />
                           <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'shipped')}>
@@ -170,6 +183,20 @@ export default function AdminOrdersPage() {
           )}
         </CardContent>
       </Card>
+
+      {selectedOrder && (
+        <OrderDetailsDialog
+            order={selectedOrder}
+            isOpen={isDetailsOpen}
+            onOpenChange={(open) => {
+                setIsDetailsOpen(open);
+                if (!open) {
+                    setSelectedOrder(null);
+                }
+            }}
+        />
+      )}
+
     </div>
   );
 }
