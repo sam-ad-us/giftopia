@@ -24,6 +24,7 @@ import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { CreditCard, Landmark, Loader2, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { Label } from '@/components/ui/label';
 
 const shippingSchema = z.object({
   name: z.string().min(2, 'Full name is required.'),
