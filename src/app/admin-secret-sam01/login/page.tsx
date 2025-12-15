@@ -1,10 +1,11 @@
+
 'use client';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useAuth, useUser } from '@/firebase';
-import { signInWithEmailAndPassword, type UserCredential, type FirebaseAuthError } from 'firebase/auth';
+import { signInWithEmailAndPassword, type UserCredential, type FirebaseAuthError, signOut } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -12,7 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
-import { Shield, Gift } from 'lucide-react';
+import { Shield, Gift, Loader2 } from 'lucide-react';
 
 const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
 
@@ -41,7 +42,9 @@ export default function AdminLoginPage() {
       router.push('/admin-secret-sam01');
     } else {
       // Immediately sign out non-admin users
-      signOut(auth);
+      if (auth) {
+        signOut(auth);
+      }
       toast({
         title: "Access Denied",
         description: "You are not authorized to access the admin panel.",
@@ -51,6 +54,7 @@ export default function AdminLoginPage() {
   };
 
   async function onSubmit(values: z.infer<typeof loginSchema>) {
+    if (!auth) return;
     setIsSubmitting(true);
     try {
       const result = await signInWithEmailAndPassword(auth, values.email, values.password);
@@ -83,8 +87,8 @@ export default function AdminLoginPage() {
 
   if (isUserLoading || user?.uid === ADMIN_UID) {
       return (
-        <div className="flex h-screen items-center justify-center bg-background">
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <div className="flex h-screen items-center justify-center bg-sidebar-background">
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
         </div>
       );
   }
