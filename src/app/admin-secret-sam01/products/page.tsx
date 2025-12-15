@@ -157,12 +157,12 @@ export default function AdminProductsPage() {
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                         <DropdownMenuItem asChild><Link href={`/product/${product.id}`} target="_blank">View</Link></DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem onClick={() => handleToggleStatus(product)}>
+                                        <DropdownMenuItem onSelect={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                                        <DropdownMenuItem onSelect={() => handleToggleStatus(product)}>
                                             {product.status === 'active' ? 'Disable' : 'Enable'}
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(product)}>Delete</DropdownMenuItem>
+                                        <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(product)}>Delete</DropdownMenuItem>
                                     </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>
@@ -171,6 +171,11 @@ export default function AdminProductsPage() {
                     })}
                 </TableBody>
                 </Table>
+                 {!isLoading && (!products || products.length === 0) && (
+                    <div className="flex h-[150px] items-center justify-center text-center">
+                        <p className="text-muted-foreground">No products found. Create one to get started!</p>
+                    </div>
+                )}
             </CardContent>
         </Card>
         
@@ -179,12 +184,18 @@ export default function AdminProductsPage() {
             <EditProductDialog
               product={selectedProduct}
               isOpen={isEditDialogOpen}
-              onOpenChange={setIsEditDialogOpen}
+              onOpenChange={(open) => {
+                setIsEditDialogOpen(open);
+                if (!open) setSelectedProduct(null);
+              }}
             />
             <DeleteProductAlert
               product={selectedProduct}
               isOpen={isDeleteDialogOpen}
-              onOpenChange={setIsDeleteDialogOpen}
+              onOpenChange={(open) => {
+                setIsDeleteDialogOpen(open);
+                if (!open) setSelectedProduct(null);
+              }}
             />
           </>
         )}

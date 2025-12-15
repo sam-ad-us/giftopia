@@ -167,12 +167,18 @@ export default function AdminCouponsPage() {
                     <EditCouponDialog
                         coupon={selectedCoupon}
                         isOpen={isEditDialogOpen}
-                        onOpenChange={setIsEditDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsEditDialogOpen(open);
+                            if (!open) setSelectedCoupon(null);
+                        }}
                     />
                     <DeleteCouponAlert
                         coupon={selectedCoupon}
                         isOpen={isDeleteDialogOpen}
-                        onOpenChange={setIsDeleteDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsDeleteDialogOpen(open);
+                            if (!open) setSelectedCoupon(null);
+                        }}
                     />
                 </>
             )}

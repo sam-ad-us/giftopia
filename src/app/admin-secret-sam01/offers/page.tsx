@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -163,12 +164,18 @@ export default function AdminOffersPage() {
                     <EditOfferDialog
                         offer={selectedOffer}
                         isOpen={isEditDialogOpen}
-                        onOpenChange={setIsEditDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsEditDialogOpen(open);
+                            if (!open) setSelectedOffer(null);
+                        }}
                     />
                     <DeleteOfferAlert
                         offer={selectedOffer}
                         isOpen={isDeleteDialogOpen}
-                        onOpenChange={setIsDeleteDialogOpen}
+                        onOpenChange={(open) => {
+                            setIsDeleteDialogOpen(open);
+                            if (!open) setSelectedOffer(null);
+                        }}
                     />
                 </>
             )}
