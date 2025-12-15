@@ -8,7 +8,8 @@ import { collection, query, where } from 'firebase/firestore';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CategoryPage({ params: { category: categoryId } }: { params: { category: string } }) {
+export default function CategoryPage({ params }: { params: { category: string } }) {
+  const categoryId = params.category;
   const firestore = useFirestore();
   const category = categories.find((c) => c.id === categoryId);
 
