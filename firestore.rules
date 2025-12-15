@@ -124,7 +124,7 @@ service cloud.firestore {
      * @allow (create) Authenticated users can create their own orders.
      * @allow (read) Users can read their own orders. Admins can read all orders.
      * @allow (update) Admins can update order status.
-     * @allow (list) Users can list their own orders. Admins can list all orders.
+     * @allow (list) Admins can list all orders. Authenticated users can only list their own orders.
      */
     match /orders/{orderId} {
       allow create: if isSignedIn() && newDocHasCorrectOwner(request.auth.uid);
