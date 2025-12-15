@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { CreditCard, Landmark, Loader2, ArrowLeft, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
+import type { CartItem } from '@/lib/types';
 
 const shippingSchema = z.object({
   name: z.string().min(2, 'Full name is required.'),
@@ -84,7 +85,16 @@ export default function CheckoutPage() {
     const orderData = {
       userId: user.uid,
       customerName: user.displayName || values.name,
-      items: cart.map(item => ({...item, offerId: item.offerId || null})), // Ensure offerId is not undefined
+      items: cart.map(item => {
+        // Ensure only serializable fields are sent to Firestore
+        const {
+          id, name, price, finalPrice, quantity, images, category,
+        } = item;
+        return {
+          id, name, price, finalPrice, quantity, images, category,
+          offerId: item.offerId || null
+        } as CartItem;
+      }),
       subtotal: originalSubtotal, // Original price subtotal
       productSavings: cartSavings, // Savings from offers
       couponDiscount: discount, // Savings from coupon
@@ -110,7 +120,7 @@ export default function CheckoutPage() {
         description: 'Thank you for your purchase. Your order is being processed.',
       });
       clearCart();
-      router.push('/profile'); // Redirect to a profile/orders page
+      router.push('/profile/your-order');
     } catch (error) {
       console.error('Error placing order:', error);
       toast({
