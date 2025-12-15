@@ -1,19 +1,17 @@
 
 'use client';
 
-import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import type { CartItem, Product, Coupon } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where, limit } from 'firebase/firestore';
-
 
 interface CartContextType {
   cart: CartItem[];
   addToCart: (product: Product, quantity: number) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
-  applyCoupon: (code: string) => void;
+  applyCoupon: (coupon: Coupon) => void;
+  clearCoupon: () => void;
   clearCart: () => void;
   cartCount: number;
   cartSubtotal: number;
@@ -27,20 +25,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
-  const [couponCodeToApply, setCouponCodeToApply] = useState<string | null>(null);
   const { toast } = useToast();
-  const firestore = useFirestore();
-
-  const couponQuery = useMemoFirebase(
-    () =>
-      firestore && couponCodeToApply
-        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), limit(1))
-        : null,
-    [firestore, couponCodeToApply]
-  );
-  
-  const { data: coupons, isLoading: couponsLoading } = useCollection<Coupon>(couponQuery);
-
 
   const addToCart = useCallback((product: Product, quantity: number) => {
     setCart((prevCart) => {
@@ -85,6 +70,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setAppliedCoupon(null);
   }, []);
 
+  const clearCoupon = useCallback(() => {
+    setAppliedCoupon(null);
+  }, []);
+
   const cartCount = useMemo(() => {
     return cart.reduce((count, item) => count + item.quantity, 0);
   }, [cart]);
@@ -93,58 +82,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   }, [cart]);
 
-  const applyCoupon = useCallback((code: string) => {
-    if (!code) return;
-    setCouponCodeToApply(code.toUpperCase());
+  const applyCoupon = useCallback((coupon: Coupon) => {
+    setAppliedCoupon(coupon);
   }, []);
-
-  useEffect(() => {
-    if (couponsLoading || !couponCodeToApply) return;
-
-    const coupon = coupons?.[0];
-    
-    if (coupon) {
-       if (coupon.status !== 'active') {
-        toast({
-          title: "Coupon Not Active",
-          description: "This coupon has expired or is not active yet.",
-          variant: "destructive",
-        });
-        setAppliedCoupon(null);
-      } else if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
-        toast({
-            title: "Minimum Spend Not Met",
-            description: `You must spend at least $${coupon.minimumCartValue.toFixed(2)} to use this coupon.`,
-            variant: "destructive",
-        });
-        setAppliedCoupon(null);
-      } else {
-        setAppliedCoupon(coupon);
-        toast({
-          title: "Coupon Applied!",
-          description: `You've received a discount with code ${coupon.code}.`,
-        });
-      }
-    } else {
-      toast({
-        title: "Invalid Coupon",
-        description: "The coupon code you entered is not valid.",
-        variant: "destructive",
-      });
-      setAppliedCoupon(null);
-    }
-    // Reset the trigger AFTER the logic has run
-    setCouponCodeToApply(null); 
-  }, [coupons, couponsLoading, cartSubtotal, toast, couponCodeToApply]);
-
-
+  
   const discount = useMemo(() => {
     if (!appliedCoupon) return 0;
     
     // Recalculate applicability in case cart changes after coupon is applied
     if (appliedCoupon.minimumCartValue && cartSubtotal < appliedCoupon.minimumCartValue) {
         // Silently remove coupon if cart value drops below minimum
-        setTimeout(() => setAppliedCoupon(null), 0);
+        setTimeout(() => {
+            setAppliedCoupon(null);
+            toast({
+                title: "Coupon Removed",
+                description: `Your cart total fell below the $${appliedCoupon.minimumCartValue.toFixed(2)} minimum for the coupon.`,
+                variant: 'destructive',
+            })
+        }, 0);
         return 0;
     }
 
@@ -155,7 +110,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return Math.min(appliedCoupon.value, cartSubtotal);
     }
     return 0;
-  }, [appliedCoupon, cartSubtotal]);
+  }, [appliedCoupon, cartSubtotal, toast]);
 
   const cartTotal = useMemo(() => {
       return Math.max(0, cartSubtotal - discount);
@@ -168,6 +123,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     removeFromCart,
     updateQuantity,
     applyCoupon,
+    clearCoupon,
     clearCart,
     cartCount,
     cartSubtotal,

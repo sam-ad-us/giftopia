@@ -7,20 +7,86 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Minus, Plus, Trash2, ShoppingCart, ArrowRight } from 'lucide-react';
+import { Minus, Plus, Trash2, ShoppingCart, ArrowRight, Loader2 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useState } from 'react';
+import { useFirestore } from '@/firebase';
+import { collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { Coupon } from '@/lib/types';
+import { useToast } from '@/hooks/use-toast';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, applyCoupon, discount, cartTotal, appliedCoupon } = useCart();
+  const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, applyCoupon, discount, cartTotal, appliedCoupon, clearCoupon } = useCart();
   const [couponCode, setCouponCode] = useState('');
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const firestore = useFirestore();
+  const { toast } = useToast();
 
-  const handleApplyCoupon = () => {
-    if (couponCode.trim() && !appliedCoupon) {
-      applyCoupon(couponCode.toUpperCase());
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim() || !firestore) return;
+
+    setIsApplyingCoupon(true);
+    const normalizedCode = couponCode.trim().toUpperCase();
+
+    try {
+      const couponsRef = collection(firestore, 'coupons');
+      const q = query(couponsRef, where('code', '==', normalizedCode), limit(1));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        toast({
+          title: "Invalid Coupon",
+          description: "The coupon code you entered is not valid.",
+          variant: "destructive",
+        });
+        clearCoupon();
+        setCouponCode('');
+        return;
+      }
+
+      const couponDoc = querySnapshot.docs[0];
+      const coupon = { ...couponDoc.data(), id: couponDoc.id } as Coupon;
+
+      if (coupon.status !== 'active') {
+        toast({
+          title: "Coupon Not Active",
+          description: "This coupon has expired or is not active yet.",
+          variant: "destructive",
+        });
+        clearCoupon();
+        return;
+      }
+
+      if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
+        toast({
+          title: "Minimum Spend Not Met",
+          description: `You must spend at least $${coupon.minimumCartValue.toFixed(2)} to use this coupon.`,
+          variant: "destructive",
+        });
+        clearCoupon();
+        return;
+      }
+      
+      // If valid, apply it via the context
+      applyCoupon(coupon);
+      toast({
+        title: "Coupon Applied!",
+        description: `You've received a discount with code ${coupon.code}.`,
+      });
+
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      toast({
+        title: "Error",
+        description: "Could not apply coupon. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsApplyingCoupon(false);
     }
   };
+
 
   if (cartCount === 0) {
     return (
@@ -94,10 +160,10 @@ export default function CartPage() {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                   className="flex-grow"
-                  disabled={!!appliedCoupon}
+                  disabled={!!appliedCoupon || isApplyingCoupon}
                 />
-                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon || !couponCode.trim()}>
-                  {appliedCoupon ? 'Applied!' : 'Apply'}
+                <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon || !couponCode.trim() || isApplyingCoupon}>
+                  {isApplyingCoupon ? <Loader2 className="h-4 w-4 animate-spin" /> : appliedCoupon ? 'Applied!' : 'Apply'}
                 </Button>
               </div>
               <Separator />
