@@ -28,3 +28,11 @@ export interface Coupon {
   value: number;
   minimumCartValue?: number;
 }
+
+export interface Offer {
+  id: string;
+  name: string;
+  type: 'percentage' | 'flat';
+  value: number;
+  status: 'active' | 'inactive';
+}

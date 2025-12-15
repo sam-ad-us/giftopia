@@ -143,5 +143,17 @@ service cloud.firestore {
       allow list: if true;
       allow write: if isAdmin();
     }
+    
+    /**
+     * @description Defines rules for special offers.
+     * @path /offers/{offerId}
+     * @allow (get, list) Any user can view offers.
+     * @allow (write) Write operations are restricted to the admin user.
+     */
+    match /offers/{offerId} {
+      allow get: if true;
+      allow list: if true;
+      allow write: if isAdmin();
+    }
   }
 }
