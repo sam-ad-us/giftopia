@@ -102,6 +102,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (couponsLoading || !couponCodeToApply) return;
 
     const coupon = coupons?.[0];
+    setCouponCodeToApply(null); // Reset the trigger
 
     if (coupon) {
        if (coupon.status !== 'active') {
@@ -133,13 +134,18 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
       setAppliedCoupon(null);
     }
-    // Reset the trigger
-    setCouponCodeToApply(null);
   }, [coupons, couponsLoading, cartSubtotal, toast, couponCodeToApply]);
 
 
   const discount = useMemo(() => {
     if (!appliedCoupon) return 0;
+    
+    // Recalculate applicability in case cart changes after coupon is applied
+    if (appliedCoupon.minimumCartValue && cartSubtotal < appliedCoupon.minimumCartValue) {
+        // Silently remove coupon if cart value drops below minimum
+        setTimeout(() => setAppliedCoupon(null), 0);
+        return 0;
+    }
 
     if (appliedCoupon.type === 'percentage') {
       return cartSubtotal * (appliedCoupon.value / 100);
