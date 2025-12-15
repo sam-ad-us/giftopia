@@ -17,12 +17,12 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useCollection, useFirestore, useMemoFirebase, useUser } from '@/firebase';
-import { collection, query, where, orderBy } from 'firebase/firestore';
+import { collection, query, where } from 'firebase/firestore';
 import { Order } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -39,11 +39,21 @@ export default function UserOrdersPage() {
   }, [user, isUserLoading, router]);
 
   const ordersQuery = useMemoFirebase(
-    () => (firestore && user ? query(collection(firestore, 'orders'), where('userId', '==', user.uid), orderBy('createdAt', 'desc')) : null),
+    () => (firestore && user ? query(collection(firestore, 'orders'), where('userId', '==', user.uid)) : null),
     [firestore, user]
   );
 
   const { data: orders, isLoading } = useCollection<Order>(ordersQuery);
+
+  const sortedOrders = useMemo(() => {
+    if (!orders) return [];
+    return [...orders].sort((a, b) => {
+      const dateA = a.createdAt?.toDate()?.getTime() || 0;
+      const dateB = b.createdAt?.toDate()?.getTime() || 0;
+      return dateB - dateA;
+    });
+  }, [orders]);
+
 
   const getStatusVariant = (status: Order['status']) => {
     switch (status) {
@@ -124,8 +134,8 @@ export default function UserOrdersPage() {
                     </TableCell>
                   </TableRow>
                 ))}
-              {orders &&
-                orders.map((order) => (
+              {sortedOrders &&
+                sortedOrders.map((order) => (
                   <TableRow key={order.id}>
                     <TableCell>{order.createdAt ? format(order.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
                     <TableCell>${order.total.toFixed(2)}</TableCell>
@@ -139,7 +149,7 @@ export default function UserOrdersPage() {
                 ))}
             </TableBody>
           </Table>
-          {!isLoading && (!orders || orders.length === 0) && (
+          {!isLoading && (!sortedOrders || sortedOrders.length === 0) && (
             <div className="flex flex-col items-center justify-center text-center py-16">
               <p className="text-lg font-medium text-muted-foreground">You haven't placed any orders yet.</p>
               <Button asChild className="mt-4">
