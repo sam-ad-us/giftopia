@@ -17,11 +17,13 @@ import { Coupon } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, applyCoupon, discount, cartTotal, appliedCoupon, clearCoupon } = useCart();
+  const { cart, removeFromCart, updateQuantity, cartCount, cartSubtotal, cartSavings, applyCoupon, discount, cartTotal, appliedCoupon, clearCoupon } = useCart();
   const [couponCode, setCouponCode] = useState('');
   const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
   const firestore = useFirestore();
   const { toast } = useToast();
+  
+  const originalSubtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim() || !firestore) return;
@@ -58,6 +60,7 @@ export default function CartPage() {
         return;
       }
 
+      // Important: Coupon minimum value should be checked against the subtotal AFTER product offers are applied.
       if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
         toast({
           title: "Minimum Spend Not Met",
@@ -117,6 +120,7 @@ export default function CartPage() {
         <div className="lg:col-span-2 flex flex-col gap-4">
           {cart.map((item) => {
              const productImage = PlaceHolderImages.find(p => p.id === item.images[0]);
+             const hasOffer = item.finalPrice < item.price;
              return (
             <Card key={item.id} className="flex items-center p-4">
               <div className="relative h-24 w-24 rounded-md overflow-hidden">
@@ -132,7 +136,10 @@ export default function CartPage() {
               </div>
               <div className="ml-4 flex-grow">
                 <h2 className="font-semibold">{item.name}</h2>
-                <p className="text-sm text-muted-foreground">₹{item.price.toFixed(2)}</p>
+                <div className="flex items-baseline gap-2">
+                    <p className="text-sm text-muted-foreground">₹{item.finalPrice.toFixed(2)}</p>
+                    {hasOffer && <p className="text-xs text-muted-foreground line-through">₹{item.price.toFixed(2)}</p>}
+                </div>
               </div>
               <div className="flex items-center gap-2">
                  <div className="flex items-center border rounded-md">
@@ -188,12 +195,18 @@ export default function CartPage() {
                )}
               <Separator />
               <div className="flex justify-between">
-                <span>Subtotal ({cartCount} items)</span>
-                <span>₹{cartSubtotal.toFixed(2)}</span>
+                <span>Subtotal</span>
+                <span>₹{originalSubtotal.toFixed(2)}</span>
               </div>
+              {cartSavings > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Product Savings</span>
+                  <span>-₹{cartSavings.toFixed(2)}</span>
+                </div>
+              )}
                {discount > 0 && appliedCoupon && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount ({appliedCoupon.code})</span>
+                  <span>Coupon ({appliedCoupon.code})</span>
                   <span>-₹{discount.toFixed(2)}</span>
                 </div>
               )}

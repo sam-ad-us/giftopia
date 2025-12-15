@@ -2,16 +2,19 @@
 'use client';
 
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import { Product } from '@/lib/types';
+import { Product, Offer } from '@/lib/types';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
 import { Star, StarHalf, ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/contexts/CartContext';
 import { Separator } from './ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import { Badge } from './ui/badge';
 
 interface ProductDetailDialogProps {
   product: Product | null;
@@ -45,6 +48,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const { addToCart } = useCart();
     const { toast } = useToast();
     const [activeImage, setActiveImage] = useState<string | null>(null);
+    const firestore = useFirestore();
 
     useEffect(() => {
         if (product && product.images.length > 0) {
@@ -54,8 +58,18 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
             }
         }
     }, [product]);
+    
+    const offersQuery = useMemoFirebase(
+      () => (firestore ? query(collection(firestore, 'offers')) : null),
+      [firestore]
+    );
+    const { data: offers } = useCollection<Offer>(offersQuery);
 
     if (!product) return null;
+
+    const productOffer = product.offerId ? offers?.find(o => o.id === product.offerId) : null;
+    const discountedPrice = calculateDiscountedPrice(product.price, productOffer);
+    const hasDiscount = discountedPrice < product.price;
 
     const productImages = product.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter(Boolean);
     const mainImage = activeImage || (productImages[0]?.imageUrl || '');
@@ -69,7 +83,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
             });
             return;
         }
-        addToCart(product, 1);
+        addToCart(product, 1, productOffer);
         onOpenChange(false);
     };
 
@@ -89,6 +103,9 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
+                        )}
+                        {productOffer && (
+                            <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
                         )}
                     </div>
                     <div className="grid grid-cols-5 gap-4">
@@ -118,7 +135,14 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                     <DialogTitle className="font-headline text-3xl md:text-4xl font-bold">{product.name}</DialogTitle>
                     
                     <div className="flex items-center justify-between">
-                        <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
+                        <div className="flex items-baseline gap-3">
+                            <p className="text-3xl font-bold text-primary">₹{discountedPrice.toFixed(2)}</p>
+                            {hasDiscount && (
+                                <p className="text-xl text-muted-foreground line-through">
+                                    ₹{product.price.toFixed(2)}
+                                </p>
+                            )}
+                        </div>
                         <StarRating rating={product.rating} reviewCount={product.reviews} />
                     </div>
                     

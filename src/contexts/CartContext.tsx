@@ -2,20 +2,22 @@
 'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
-import type { CartItem, Product, Coupon } from '@/lib/types';
+import type { CartItem, Product, Coupon, Offer } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
+import { calculateDiscountedPrice } from '@/lib/utils';
 
 interface CartContextType {
   cart: CartItem[];
-  addToCart: (product: Product, quantity: number) => void;
+  addToCart: (product: Product, quantity: number, offer?: Offer | null) => void;
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   applyCoupon: (coupon: Coupon) => void;
   clearCoupon: () => void;
   clearCart: () => void;
   cartCount: number;
-  cartSubtotal: number;
-  discount: number;
+  cartSubtotal: number; // Represents the total of original prices
+  cartSavings: number; // Represents savings from product offers
+  discount: number; // Represents savings from coupon
   cartTotal: number;
   appliedCoupon: Coupon | null;
 }
@@ -27,7 +29,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const { toast } = useToast();
 
-  const addToCart = useCallback((product: Product, quantity: number) => {
+  const addToCart = useCallback((product: Product, quantity: number, offer?: Offer | null) => {
+    const finalPrice = calculateDiscountedPrice(product.price, offer);
+
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
@@ -37,7 +41,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             : item
         );
       }
-      return [...prevCart, { ...product, quantity }];
+      return [...prevCart, { ...product, quantity, finalPrice }];
     });
     toast({
       title: "Added to cart",
@@ -79,7 +83,17 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cart]);
 
   const cartSubtotal = useMemo(() => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    // Subtotal is now the sum of the final prices (after offers)
+    return cart.reduce((total, item) => total + item.finalPrice * item.quantity, 0);
+  }, [cart]);
+
+  const cartSavings = useMemo(() => {
+      // Savings from product-specific offers
+      return cart.reduce((total, item) => {
+          const originalItemTotal = item.price * item.quantity;
+          const finalItemTotal = item.finalPrice * item.quantity;
+          return total + (originalItemTotal - finalItemTotal);
+      }, 0);
   }, [cart]);
 
   const applyCoupon = useCallback((coupon: Coupon) => {
@@ -87,11 +101,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
   
   const discount = useMemo(() => {
+    // Discount from a cart-wide coupon
     if (!appliedCoupon) return 0;
     
-    // Recalculate applicability in case cart changes after coupon is applied
     if (appliedCoupon.minimumCartValue && cartSubtotal < appliedCoupon.minimumCartValue) {
-        // Silently remove coupon if cart value drops below minimum
         setTimeout(() => {
             setAppliedCoupon(null);
             toast({
@@ -113,6 +126,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [appliedCoupon, cartSubtotal, toast]);
 
   const cartTotal = useMemo(() => {
+      // Total is subtotal (with offers) minus coupon discount
       return Math.max(0, cartSubtotal - discount);
   }, [cartSubtotal, discount]);
 
@@ -127,6 +141,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     clearCart,
     cartCount,
     cartSubtotal,
+    cartSavings,
     discount,
     cartTotal,
     appliedCoupon,

@@ -11,7 +11,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import { Badge } from './ui/badge';
@@ -35,6 +35,8 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     const { data: offers } = useCollection<Offer>(offersQuery);
 
     const productOffer = product.offerId ? offers?.find(o => o.id === product.offerId) : null;
+    const discountedPrice = calculateDiscountedPrice(product.price, productOffer);
+    const hasDiscount = discountedPrice < product.price;
 
     const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -47,18 +49,11 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         });
         return;
       }
-      addToCart(product, 1);
+      addToCart(product, 1, productOffer);
     }
     
     const handleCardClick = () => {
       onProductClick(product);
-    }
-
-    const getOfferText = (offer: Offer) => {
-        if (offer.type === 'percentage') {
-            return `${offer.name} (${offer.value}% off)`;
-        }
-        return `${offer.name} (₹${offer.value} off)`;
     }
 
   return (
@@ -88,9 +83,16 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             </CardTitle>
             </CardHeader>
             <CardContent>
-            <p className="text-xl font-bold text-primary">
-                ₹{product.price.toFixed(2)}
-            </p>
+                <div className="flex items-baseline gap-2">
+                    <p className="text-xl font-bold text-primary">
+                        ₹{discountedPrice.toFixed(2)}
+                    </p>
+                    {hasDiscount && (
+                        <p className="text-sm text-muted-foreground line-through">
+                            ₹{product.price.toFixed(2)}
+                        </p>
+                    )}
+                </div>
             </CardContent>
         </div>
         <CardFooter className="p-4 pt-0">

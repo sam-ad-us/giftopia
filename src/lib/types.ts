@@ -24,6 +24,7 @@ export interface Product {
 
 export interface CartItem extends Product {
   quantity: number;
+  finalPrice: number; // The price at which the item was added to the cart (including offer)
 }
 
 export interface Coupon {

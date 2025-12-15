@@ -40,11 +40,13 @@ const shippingSchema = z.object({
 });
 
 export default function CheckoutPage() {
-  const { cart, cartCount, cartSubtotal, discount, cartTotal, clearCart } = useCart();
+  const { cart, cartCount, cartSubtotal, cartSavings, discount, cartTotal, clearCart, appliedCoupon } = useCart();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
   const firestore = useFirestore();
   const { toast } = useToast();
+  
+  const originalSubtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
 
   const form = useForm<z.infer<typeof shippingSchema>>({
     resolver: zodResolver(shippingSchema),
@@ -82,9 +84,11 @@ export default function CheckoutPage() {
     const orderData = {
       userId: user.uid,
       customerName: user.displayName || values.name,
-      items: cart,
-      subtotal: cartSubtotal,
-      discount,
+      items: cart.map(item => ({...item, offerId: item.offerId || null})), // Ensure offerId is not undefined
+      subtotal: originalSubtotal, // Original price subtotal
+      productSavings: cartSavings, // Savings from offers
+      couponDiscount: discount, // Savings from coupon
+      couponCode: appliedCoupon?.code || null,
       total: cartTotal,
       shippingAddress: {
         name: values.name,
@@ -207,12 +211,13 @@ export default function CheckoutPage() {
                         <p className="font-medium">{item.name}</p>
                         <p className="text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
-                    <p>₹{(item.price * item.quantity).toFixed(2)}</p>
+                    <p>₹{(item.finalPrice * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
               <Separator />
-              <div className="flex justify-between"><span>Subtotal</span><span>₹{cartSubtotal.toFixed(2)}</span></div>
-              {discount > 0 && (<div className="flex justify-between text-green-600"><span>Discount</span><span>-₹{discount.toFixed(2)}</span></div>)}
+              <div className="flex justify-between"><span>Subtotal</span><span>₹{originalSubtotal.toFixed(2)}</span></div>
+              {cartSavings > 0 && (<div className="flex justify-between text-green-600"><span>Product Savings</span><span>-₹{cartSavings.toFixed(2)}</span></div>)}
+              {discount > 0 && (<div className="flex justify-between text-green-600"><span>Coupon Discount</span><span>-₹{discount.toFixed(2)}</span></div>)}
               <div className="flex justify-between"><span>Shipping</span><span className="text-green-600">FREE</span></div>
               <Separator />
               <div className="flex justify-between font-bold text-lg"><span>Total</span><span>₹{cartTotal.toFixed(2)}</span></div>
