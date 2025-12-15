@@ -96,7 +96,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             setAppliedCoupon(null);
             toast({
                 title: "Coupon Removed",
-                description: `Your cart total fell below the $${appliedCoupon.minimumCartValue.toFixed(2)} minimum for the coupon.`,
+                description: `Your cart total fell below the ₹${appliedCoupon.minimumCartValue.toFixed(2)} minimum for the coupon.`,
                 variant: 'destructive',
             })
         }, 0);
