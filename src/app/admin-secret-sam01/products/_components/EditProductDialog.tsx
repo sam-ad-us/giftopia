@@ -102,6 +102,13 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
     }
   };
 
+    const getOfferText = (offer: Offer) => {
+        if (offer.type === 'percentage') {
+            return `${offer.name} (${offer.value}% off)`;
+        }
+        return `${offer.name} (₹${offer.value} off)`;
+    }
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
@@ -202,7 +209,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                         <SelectContent>
                             <SelectItem value="none">No Offer</SelectItem>
                             {offers?.map(offer => (
-                                <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
+                                <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

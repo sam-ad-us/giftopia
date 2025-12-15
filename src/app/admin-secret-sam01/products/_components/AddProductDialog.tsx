@@ -63,7 +63,7 @@ export function AddProductDialog() {
       longDescription: '',
       price: 0,
       category: '',
-      offerId: '',
+      offerId: 'none',
       images: '',
       stockStatus: 'in-stock',
       status: 'active',
@@ -96,6 +96,13 @@ export function AddProductDialog() {
       });
     }
   };
+  
+    const getOfferText = (offer: Offer) => {
+        if (offer.type === 'percentage') {
+            return `${offer.name} (${offer.value}% off)`;
+        }
+        return `${offer.name} (₹${offer.value} off)`;
+    }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -203,7 +210,7 @@ export function AddProductDialog() {
                         <SelectContent>
                             <SelectItem value="none">No Offer</SelectItem>
                             {offers?.map(offer => (
-                                <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
+                                <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
                             ))}
                         </SelectContent>
                     </Select>

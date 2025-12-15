@@ -54,6 +54,13 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
       onProductClick(product);
     }
 
+    const getOfferText = (offer: Offer) => {
+        if (offer.type === 'percentage') {
+            return `${offer.name} (${offer.value}% off)`;
+        }
+        return `${offer.name} (₹${offer.value} off)`;
+    }
+
   return (
     <Card 
         className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer"
@@ -72,7 +79,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                 />
             )}
             {productOffer && (
-                <Badge className="absolute top-2 right-2" variant="destructive">{productOffer.name}</Badge>
+                <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
             )}
             </div>
             <CardHeader className="flex-grow">
