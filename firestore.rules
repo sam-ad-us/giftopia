@@ -19,10 +19,8 @@
  *   profile and cart data. They cannot see or interact with other users' data.
  * - Public Catalog: The product and category collections are publicly readable to
  *   allow browsing by both signed-in and anonymous users.
- * - Write Protection on Public Data: Writes to the public `/products` and
- *   `/categories` collections are disabled by default. This is a secure posture
- *   because the data model lacks a concept of an "admin" role or document "owner"
- *   to authorize such changes. This must be implemented by the developer later.
+ * - Admin-Only Writes: Write access to public collections like `/products` and 
+ *   `/categories` is restricted to a specific administrator UID.
  * - No User Listing: To protect user privacy, it is not possible to list all
  *   documents in the `/users` collection.
  *
@@ -50,6 +48,13 @@ service cloud.firestore {
       return request.auth != null;
     }
     
+    /**
+     * Checks if the currently authenticated user is the designated administrator.
+     */
+    function isAdmin() {
+      return request.auth.uid == 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
+    }
+
     /**
      * Checks if the currently authenticated user's UID matches the provided userId.
      * This is the foundation of the ownership model.
@@ -117,32 +122,26 @@ service cloud.firestore {
      * @description Defines rules for the public product catalog.
      * @path /products/{productId}
      * @allow (get, list) Any user, signed-in or not, can view products.
-     * @deny (create, update, delete) All write operations are denied for all users.
-     * @principle Provides public read access but disables all writes as no admin or owner role is defined.
+     * @allow (create, update, delete) Write operations are restricted to the admin user.
+     * @principle Provides public read access but disables all writes for non-admin users.
      */
     match /products/{productId} {
       allow get: if true;
       allow list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Product' entity is missing an 'ownerId' or 'authorId' field.
-      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow write: if isAdmin();
     }
 
     /**
      * @description Defines rules for the public product categories.
      * @path /categories/{categoryId}
      * @allow (get, list) Any user, signed-in or not, can view categories.
-     * @deny (create, update, delete) All write operations are denied for all users.
-     * @principle Provides public read access but disables all writes as no admin or owner role is defined.
+     * @allow (create, update, delete) Write operations are restricted to the admin user.
+     * @principle Provides public read access but disables all writes for non-admin users.
      */
     match /categories/{categoryId} {
       allow get: if true;
       allow list: if true;
-      // CRITICAL: Cannot implement owner-only writes. The 'Category' entity is missing an 'ownerId' or 'authorId' field.
-      allow create: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow update: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
-      allow delete: if false; // TODO: Add admin/owner validation once the schema is updated with an ownership field.
+      allow write: if isAdmin();
     }
   }
 }
