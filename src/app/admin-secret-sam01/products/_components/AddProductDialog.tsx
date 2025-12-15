@@ -27,7 +27,7 @@ import { PlusCircle } from 'lucide-react';
 import { categories } from '@/lib/data';
 import { useState } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { addDoc, collection, query } from 'firebase/firestore';
+import { addDoc, collection, query, where } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Offer } from '@/lib/types';
