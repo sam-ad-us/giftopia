@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useParams, notFound } from 'next/navigation';
@@ -7,7 +8,7 @@ import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import { Star, StarHalf } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
@@ -48,19 +49,32 @@ export default function ProductPage() {
   const { data: product, isLoading } = useDoc<Product>(productRef);
   const [activeImage, setActiveImage] = useState<string | null>(null);
 
+  // Effect to set the initial active image once the product data is loaded.
+  useEffect(() => {
+    if (product && product.images.length > 0) {
+        const mainProductImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+        if (mainProductImage) {
+            setActiveImage(mainProductImage.imageUrl);
+        }
+    }
+  }, [product]);
+
+  // Handle loading and not-found states correctly.
+  // The hook `useDoc` will have `isLoading = false` and `data = null` if the doc doesn't exist.
+  // We also check if a productId is present. If not, it could be an invalid URL.
+  if (!productId || (!isLoading && !product)) {
+    notFound();
+    return null; // Return null to prevent rendering anything further.
+  }
+  
+  // Show skeleton while loading only if we have a productId.
   if (isLoading) {
     return <ProductPageSkeleton />;
   }
 
-  if (!product) {
-      // This will only be reached if isLoading is false and product is null
-      // which means the document doesn't exist.
-      notFound();
-      return null;
-  }
-
+  // At this point, `product` is guaranteed to be non-null.
   const productImages = product.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter(Boolean);
-  const mainImage = activeImage || productImages[0]?.imageUrl || '';
+  const mainImage = activeImage || '';
 
   return (
     <div className="container mx-auto px-4 py-12">
@@ -68,13 +82,15 @@ export default function ProductPage() {
             {/* Image Gallery */}
             <div className="grid gap-4">
                 <div className="aspect-square relative rounded-lg overflow-hidden border">
-                    <Image
-                        src={mainImage}
-                        alt={product.name}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    />
+                    {mainImage && (
+                        <Image
+                            src={mainImage}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        />
+                    )}
                 </div>
                 <div className="grid grid-cols-5 gap-4">
                     {productImages.map((img, index) => img && (
