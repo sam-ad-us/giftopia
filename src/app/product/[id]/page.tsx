@@ -27,7 +27,7 @@ export default function ProductPage() {
     () => (firestore && productId ? doc(firestore, 'products', productId) : null),
     [firestore, productId]
   );
-  const { data: product, isLoading } = useDoc<Product>(productRef);
+  const { data: product, isLoading, error } = useDoc<Product>(productRef);
 
   const [productImages, setProductImages] = useState<ImagePlaceholder[]>([]);
   const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(null);
@@ -44,7 +44,7 @@ export default function ProductPage() {
     }
   }, [product]);
 
-  if (isLoading) {
+  if (isLoading || !productId) {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
@@ -71,12 +71,15 @@ export default function ProductPage() {
     );
   }
 
-  if (!product) {
-    if (!isLoading) {
-      notFound();
-    }
-    return null; // Render nothing while waiting for the notFound to trigger
+  if (!product && !isLoading) {
+    notFound();
+    return null;
   }
+  
+  if (!product) {
+      return null;
+  }
+
 
   return (
     <div className="bg-secondary">
