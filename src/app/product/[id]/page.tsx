@@ -21,8 +21,8 @@ import { Separator } from '@/components/ui/separator';
 export default function ProductPage() {
   const params = useParams();
   const productId = params.id as string;
-
   const firestore = useFirestore();
+
   const productRef = useMemoFirebase(
     () => (firestore && productId ? doc(firestore, 'products', productId) : null),
     [firestore, productId]
@@ -33,8 +33,10 @@ export default function ProductPage() {
   const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(null);
 
   useEffect(() => {
-    if (product) {
-      const images = product.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter((p): p is ImagePlaceholder => Boolean(p));
+    if (product?.images) {
+      const images = product.images
+        .map(id => PlaceHolderImages.find(p => p.id === id))
+        .filter((p): p is ImagePlaceholder => Boolean(p));
       setProductImages(images);
       if (images.length > 0) {
         setSelectedImage(images[0]);
@@ -49,7 +51,7 @@ export default function ProductPage() {
           <div className="flex flex-col gap-4">
             <Skeleton className="aspect-square w-full rounded-lg" />
             <div className="grid grid-cols-5 gap-2">
-              {Array.from({ length: 5 }).map((_, i) => (
+              {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="aspect-square w-full rounded-md" />
               ))}
             </div>
@@ -59,7 +61,10 @@ export default function ProductPage() {
             <Skeleton className="h-6 w-1/2" />
             <Skeleton className="h-8 w-1/4" />
             <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-12 w-48" />
+            <div className="flex gap-4">
+              <Skeleton className="h-12 w-32" />
+              <Skeleton className="h-12 flex-grow" />
+            </div>
           </div>
         </div>
       </div>
@@ -67,24 +72,10 @@ export default function ProductPage() {
   }
 
   if (!product) {
-    // Return a loading state or a not found message, but don't call notFound() immediately
-    // unless you are certain the product doesn't exist after a completed query.
-    // A simple loading indicator can prevent the 404 flash.
     if (!isLoading) {
-       notFound();
+      notFound();
     }
-    return (
-       <div className="container mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
-          <div className="flex flex-col gap-4">
-            <Skeleton className="aspect-square w-full rounded-lg" />
-          </div>
-           <div className="flex flex-col gap-4">
-            <Skeleton className="h-12 w-3/4" />
-          </div>
-        </div>
-      </div>
-    );
+    return null; // Render nothing while waiting for the notFound to trigger
   }
 
   return (
@@ -102,7 +93,7 @@ export default function ProductPage() {
                             alt={product.name}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 50vw"
+                            sizes="(max-width: 1024px) 100vw, 40vw"
                             data-ai-hint={selectedImage.imageHint}
                             priority
                         />
@@ -114,33 +105,26 @@ export default function ProductPage() {
                     </div>
                 </CardContent>
             </Card>
-            <div className="grid grid-cols-5 gap-2">
-              {productImages.map((image) => (
-                <button
-                  key={image.id}
-                  onClick={() => setSelectedImage(image)}
-                  className={`aspect-square relative rounded-md overflow-hidden border-2 ${selectedImage?.id === image.id ? 'border-primary' : 'border-transparent'}`}
-                >
-                  <Image
-                    src={image.imageUrl}
-                    alt={image.description}
-                    fill
-                    className="object-cover"
-                    sizes="20vw"
-                    data-ai-hint={image.imageHint}
-                  />
-                </button>
-              ))}
-            </div>
-            <div className="flex items-center gap-2 mt-4">
-                <AddToCart product={product} />
-                <Button size="lg" className="w-full bg-accent hover:bg-accent/90" onClick={() => {
-                    // This would typically add to cart and then redirect to checkout
-                    console.log('Buy Now clicked');
-                }}>
-                    Buy Now
-                </Button>
-            </div>
+            {productImages.length > 1 && (
+                <div className="grid grid-cols-5 gap-2">
+                {productImages.map((image) => (
+                    <button
+                    key={image.id}
+                    onClick={() => setSelectedImage(image)}
+                    className={`aspect-square relative rounded-md overflow-hidden border-2 transition-all ${selectedImage?.id === image.id ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-muted-foreground/50'}`}
+                    >
+                    <Image
+                        src={image.imageUrl}
+                        alt={image.description}
+                        fill
+                        className="object-cover"
+                        sizes="20vw"
+                        data-ai-hint={image.imageHint}
+                    />
+                    </button>
+                ))}
+                </div>
+            )}
           </div>
 
           {/* Product Details */}
@@ -171,6 +155,11 @@ export default function ProductPage() {
                     </div>
                 </div>
 
+                 <div className="flex flex-col sm:flex-row items-center gap-4 my-6">
+                    <AddToCart product={product} />
+                </div>
+
+
                 <div className="space-y-4 my-6">
                     <h3 className="font-bold text-lg">Available Offers</h3>
                      <div className="flex items-start gap-3 text-sm">
@@ -191,7 +180,7 @@ export default function ProductPage() {
                 
                 <Separator className="my-6" />
 
-                <div className="grid grid-cols-2 gap-6 text-sm">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
                      <div className="flex items-center gap-3">
                         <Truck className="h-5 w-5 text-muted-foreground"/>
                         <div>
