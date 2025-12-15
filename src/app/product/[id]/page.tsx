@@ -7,7 +7,7 @@ import {
   Card,
   CardContent
 } from '@/components/ui/card';
-import { Star, Truck, ShieldCheck, Tag } from 'lucide-react';
+import { Star, Truck, ShieldCheck, Tag, ShoppingCart, Zap } from 'lucide-react';
 import AddToCart from './_components/AddToCart';
 import { PlaceHolderImages, ImagePlaceholder } from '@/lib/placeholder-images';
 import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
@@ -82,64 +82,74 @@ export default function ProductPage() {
 
 
   return (
-    <div className="bg-secondary">
+    <div className="bg-background">
       <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-12 gap-8">
           {/* Image Gallery */}
-          <div className="lg:col-span-5 flex flex-col gap-4 sticky top-24 self-start">
-             <Card className="overflow-hidden">
-                <CardContent className="p-0">
-                    <div className="aspect-square relative">
-                        {selectedImage ? (
+          <div className="lg:col-span-5 flex flex-col gap-4">
+             <div className="flex gap-4 sticky top-24 self-start">
+                {productImages.length > 1 && (
+                    <div className="flex flex-col gap-2">
+                    {productImages.map((image) => (
+                        <button
+                        key={image.id}
+                        onClick={() => setSelectedImage(image)}
+                        className={`w-16 h-16 relative rounded-md overflow-hidden border-2 transition-all ${selectedImage?.id === image.id ? 'border-primary ring-2 ring-primary/50' : 'border-border hover:border-muted-foreground/50'}`}
+                        >
                         <Image
-                            src={selectedImage.imageUrl}
-                            alt={product.name}
+                            src={image.imageUrl}
+                            alt={image.description}
                             fill
                             className="object-cover"
-                            sizes="(max-width: 1024px) 100vw, 40vw"
-                            data-ai-hint={selectedImage.imageHint}
-                            priority
+                            sizes="10vw"
+                            data-ai-hint={image.imageHint}
                         />
-                        ) : (
-                            <div className="w-full h-full bg-muted flex items-center justify-center">
-                                <p className="text-muted-foreground">No Image</p>
-                            </div>
-                        )}
+                        </button>
+                    ))}
                     </div>
-                </CardContent>
-            </Card>
-            {productImages.length > 1 && (
-                <div className="grid grid-cols-5 gap-2">
-                {productImages.map((image) => (
-                    <button
-                    key={image.id}
-                    onClick={() => setSelectedImage(image)}
-                    className={`aspect-square relative rounded-md overflow-hidden border-2 transition-all ${selectedImage?.id === image.id ? 'border-primary ring-2 ring-primary/50' : 'border-transparent hover:border-muted-foreground/50'}`}
-                    >
-                    <Image
-                        src={image.imageUrl}
-                        alt={image.description}
-                        fill
-                        className="object-cover"
-                        sizes="20vw"
-                        data-ai-hint={image.imageHint}
-                    />
-                    </button>
-                ))}
+                )}
+                <div className="flex-1">
+                     <Card className="overflow-hidden">
+                        <CardContent className="p-0">
+                            <div className="aspect-square relative">
+                                {selectedImage ? (
+                                <Image
+                                    src={selectedImage.imageUrl}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 1024px) 100vw, 40vw"
+                                    data-ai-hint={selectedImage.imageHint}
+                                    priority
+                                />
+                                ) : (
+                                    <div className="w-full h-full bg-muted flex items-center justify-center">
+                                        <p className="text-muted-foreground">No Image</p>
+                                    </div>
+                                )}
+                            </div>
+                        </CardContent>
+                    </Card>
+                    <div className="flex items-center gap-2 mt-4">
+                        <AddToCart product={product} />
+                        <Button size="lg" className="w-full h-12 text-base bg-accent hover:bg-accent/90">
+                           <Zap className="mr-2 h-5 w-5" />
+                           Buy Now
+                        </Button>
+                    </div>
                 </div>
-            )}
+             </div>
           </div>
 
           {/* Product Details */}
           <div className="lg:col-span-7">
-            <Card className="p-6">
-                 <p className="text-sm text-muted-foreground mb-2">Home &gt; Gifts &gt; {product.category}</p>
+            <div className="space-y-6">
+                <p className="text-sm text-muted-foreground mb-2">Home &gt; Gifts &gt; {product.category}</p>
                 <h1 className="font-headline text-3xl lg:text-4xl font-bold">{product.name}</h1>
-                <p className="text-muted-foreground mt-1">{product.description}</p>
                 
-                <div className="flex items-center gap-4 mt-4">
+                <div className="flex items-center gap-4">
                     <div className="flex items-center gap-1">
-                        <span className="bg-green-600 text-white text-xs font-semibold px-2 py-0.5 rounded-sm flex items-center gap-1">
+                        <span className="bg-primary text-primary-foreground text-xs font-semibold px-2 py-0.5 rounded-sm flex items-center gap-1">
                             {product.rating.toFixed(1)} <Star className="h-3 w-3" />
                         </span>
                         <span className="text-muted-foreground text-sm">({product.reviews} ratings)</span>
@@ -150,7 +160,7 @@ export default function ProductPage() {
                     </div>
                 </div>
 
-                <div className="my-6">
+                <div className="my-2">
                     <p className="text-4xl font-bold text-primary">${product.price.toFixed(2)}</p>
                     <div className="flex items-center gap-2 mt-1">
                         <p className="text-muted-foreground line-through">${(product.price * 1.3).toFixed(2)}</p>
@@ -158,12 +168,7 @@ export default function ProductPage() {
                     </div>
                 </div>
 
-                 <div className="flex flex-col sm:flex-row items-center gap-4 my-6">
-                    <AddToCart product={product} />
-                </div>
-
-
-                <div className="space-y-4 my-6">
+                <div className="space-y-4 my-4">
                     <h3 className="font-bold text-lg">Available Offers</h3>
                      <div className="flex items-start gap-3 text-sm">
                         <Tag className="h-5 w-5 mt-0.5 text-primary"/>
@@ -206,7 +211,7 @@ export default function ProductPage() {
                     <h3 className="font-bold text-lg mb-2">Product Description</h3>
                     <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">{product.longDescription}</p>
                  </div>
-            </Card>
+             </div>
           </div>
         </div>
       </div>
