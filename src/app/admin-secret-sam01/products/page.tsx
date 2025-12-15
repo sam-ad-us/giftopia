@@ -9,15 +9,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu';
+import { Edit } from 'lucide-react';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
@@ -31,7 +23,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { EditProductDialog } from './_components/EditProductDialog';
 import { DeleteProductAlert } from './_components/DeleteProductAlert';
 import { useState } from 'react';
-import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminProductsPage() {
@@ -51,31 +42,6 @@ export default function AdminProductsPage() {
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
     setIsEditDialogOpen(true);
-  };
-
-  const handleDelete = (product: Product) => {
-    setSelectedProduct(product);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const handleToggleStatus = async (product: Product) => {
-    if (!firestore) return;
-    const newStatus = product.status === 'active' ? 'inactive' : 'active';
-    const productRef = doc(firestore, 'products', product.id);
-    try {
-      await updateDoc(productRef, { status: newStatus });
-      toast({
-        title: 'Product Updated',
-        description: `${product.name} has been set to ${newStatus}.`,
-      });
-    } catch (error) {
-      console.error('Error updating product status:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update product status.',
-        variant: 'destructive',
-      });
-    }
   };
 
   return (
@@ -147,24 +113,10 @@ export default function AdminProductsPage() {
                                 <TableCell>${product.price.toFixed(2)}</TableCell>
                                 <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                                 <TableCell>
-                                    <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button aria-haspopup="true" size="icon" variant="ghost">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                        </Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem asChild><Link href={`/product/${product.id}`} target="_blank">View</Link></DropdownMenuItem>
-                                        <DropdownMenuItem onSelect={() => handleEdit(product)}>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem onSelect={() => handleToggleStatus(product)}>
-                                            {product.status === 'active' ? 'Disable' : 'Enable'}
-                                        </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(product)}>Delete</DropdownMenuItem>
-                                    </DropdownMenuContent>
-                                    </DropdownMenu>
+                                    <Button variant="outline" size="sm" onClick={() => handleEdit(product)}>
+                                        <Edit className="h-4 w-4 mr-2" />
+                                        Edit
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         )
@@ -189,14 +141,7 @@ export default function AdminProductsPage() {
                 if (!open) setSelectedProduct(null);
               }}
             />
-            <DeleteProductAlert
-              product={selectedProduct}
-              isOpen={isDeleteDialogOpen}
-              onOpenChange={(open) => {
-                setIsDeleteDialogOpen(open);
-                if (!open) setSelectedProduct(null);
-              }}
-            />
+            {/* The DeleteProductAlert can be triggered from within the Edit dialog if needed */}
           </>
         )}
     </div>

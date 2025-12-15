@@ -22,16 +22,8 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, doc, updateDoc } from 'firebase/firestore';
 import { Coupon } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal } from 'lucide-react';
+import { Edit } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useState } from 'react';
 import { DeleteCouponAlert } from './_components/DeleteCouponAlert';
@@ -55,32 +47,6 @@ export default function AdminCouponsPage() {
         setSelectedCoupon(coupon);
         setIsEditDialogOpen(true);
     };
-
-    const handleDelete = (coupon: Coupon) => {
-        setSelectedCoupon(coupon);
-        setIsDeleteDialogOpen(true);
-    };
-
-    const handleToggleStatus = async (coupon: Coupon) => {
-        if (!firestore) return;
-        const newStatus = coupon.status === 'active' ? 'inactive' : 'active';
-        const couponRef = doc(firestore, 'coupons', coupon.id);
-        try {
-        await updateDoc(couponRef, { status: newStatus });
-        toast({
-            title: 'Coupon Updated',
-            description: `Coupon "${coupon.code}" has been set to ${newStatus}.`,
-        });
-        } catch (error) {
-        console.error('Error updating coupon status:', error);
-        toast({
-            title: 'Error',
-            description: 'Failed to update coupon status.',
-            variant: 'destructive',
-        });
-        }
-    };
-
 
     return (
         <div>
@@ -118,7 +84,7 @@ export default function AdminCouponsPage() {
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                                    <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                                 </TableRow>
                             ))}
                             {coupons && coupons.map((coupon) => (
@@ -133,23 +99,10 @@ export default function AdminCouponsPage() {
                                         </Badge>
                                     </TableCell>
                                     <TableCell>
-                                        <DropdownMenu>
-                                        <DropdownMenuTrigger asChild>
-                                            <Button aria-haspopup="true" size="icon" variant="ghost">
-                                            <MoreHorizontal className="h-4 w-4" />
-                                            <span className="sr-only">Toggle menu</span>
-                                            </Button>
-                                        </DropdownMenuTrigger>
-                                        <DropdownMenuContent align="end">
-                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                            <DropdownMenuItem onSelect={() => handleEdit(coupon)}>Edit</DropdownMenuItem>
-                                            <DropdownMenuItem onSelect={() => handleToggleStatus(coupon)}>
-                                                {coupon.status === 'active' ? 'Disable' : 'Enable'}
-                                            </DropdownMenuItem>
-                                            <DropdownMenuSeparator />
-                                            <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(coupon)}>Delete</DropdownMenuItem>
-                                        </DropdownMenuContent>
-                                        </DropdownMenu>
+                                        <Button variant="outline" size="sm" onClick={() => handleEdit(coupon)}>
+                                            <Edit className="h-4 w-4 mr-2" />
+                                            Edit
+                                        </Button>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -172,14 +125,7 @@ export default function AdminCouponsPage() {
                             if (!open) setSelectedCoupon(null);
                         }}
                     />
-                    <DeleteCouponAlert
-                        coupon={selectedCoupon}
-                        isOpen={isDeleteDialogOpen}
-                        onOpenChange={(open) => {
-                            setIsDeleteDialogOpen(open);
-                            if (!open) setSelectedCoupon(null);
-                        }}
-                    />
+                    {/* The Delete alert can be triggered from within the Edit dialog if necessary */}
                 </>
             )}
         </div>

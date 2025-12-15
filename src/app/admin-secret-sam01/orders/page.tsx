@@ -140,28 +140,21 @@ export default function AdminOrdersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                          <DropdownMenuItem>View Order</DropdownMenuItem>
-                          <DropdownMenuSub>
-                            <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
-                            <DropdownMenuPortal>
-                              <DropdownMenuSubContent>
-                                <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'shipped')}>
-                                  <Truck className="mr-2 h-4 w-4" />
-                                  Shipped
-                                </DropdownMenuItem>
-                                <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'delivered')}>
-                                  <CheckCircle className="mr-2 h-4 w-4" />
-                                  Delivered
-                                </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem className="text-destructive" onClick={() => handleUpdateStatus(order, 'cancelled')}>
-                                   <XCircle className="mr-2 h-4 w-4" />
-                                  Cancelled
-                                </DropdownMenuItem>
-                              </DropdownMenuSubContent>
-                            </DropdownMenuPortal>
-                          </DropdownMenuSub>
+                          <DropdownMenuLabel>Update Status</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'shipped')}>
+                            <Truck className="mr-2 h-4 w-4" />
+                            Mark as Shipped
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'delivered')}>
+                            <CheckCircle className="mr-2 h-4 w-4" />
+                            Mark as Delivered
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem className="text-destructive" onClick={() => handleUpdateStatus(order, 'cancelled')}>
+                              <XCircle className="mr-2 h-4 w-4" />
+                            Mark as Cancelled
+                          </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
