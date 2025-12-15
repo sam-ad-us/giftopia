@@ -91,6 +91,7 @@ export default function ProductPage() {
     }
   }, [product]);
 
+  // Handle loading and not found states correctly
   if (isLoading || !productId) {
     return <ProductPageSkeleton />;
   }
@@ -99,9 +100,10 @@ export default function ProductPage() {
     notFound();
     return null;
   }
-
+  
   if (!product) {
-    return <ProductPageSkeleton />;
+      // This should ideally not be reached if the above logic is correct, but as a fallback
+      return <ProductPageSkeleton />;
   }
 
   return (
