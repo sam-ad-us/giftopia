@@ -1,6 +1,7 @@
+
 'use client';
 
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Product } from '@/lib/types';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -102,14 +103,14 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                 
                 {/* Product Details */}
                 <div className="flex flex-col gap-4 p-6 pr-8">
-                    <h1 className="font-headline text-3xl md:text-4xl font-bold">{product.name}</h1>
+                    <DialogTitle className="font-headline text-3xl md:text-4xl font-bold">{product.name}</DialogTitle>
                     
                     <div className="flex items-center justify-between">
                         <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
                         <StarRating rating={product.rating} reviewCount={product.reviews} />
                     </div>
                     
-                    <p className="text-muted-foreground">{product.description}</p>
+                    <DialogDescription className="text-muted-foreground">{product.description}</DialogDescription>
                     
                     <Separator />
 
