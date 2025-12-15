@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { type Product } from '@/lib/types';
+import { type Offer, type Product } from '@/lib/types';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from './ui/button';
 import { ShoppingCart } from 'lucide-react';
@@ -12,6 +12,9 @@ import { useCart } from '@/contexts/CartContext';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query } from 'firebase/firestore';
+import { Badge } from './ui/badge';
 
 interface ProductCardProps {
   product: Product;
@@ -19,10 +22,19 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
+    const firestore = useFirestore();
     const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
     const { addToCart } = useCart();
     const { toast } = useToast();
     const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
+    
+    const offersQuery = useMemoFirebase(
+      () => (firestore ? query(collection(firestore, 'offers')) : null),
+      [firestore]
+    );
+    const { data: offers } = useCollection<Offer>(offersQuery);
+
+    const productOffer = product.offerId ? offers?.find(o => o.id === product.offerId) : null;
 
     const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
@@ -58,6 +70,9 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     data-ai-hint={productImage.imageHint}
                 />
+            )}
+            {productOffer && (
+                <Badge className="absolute top-2 right-2" variant="destructive">{productOffer.name}</Badge>
             )}
             </div>
             <CardHeader className="flex-grow">

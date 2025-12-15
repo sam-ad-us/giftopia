@@ -26,10 +26,11 @@ import { z } from 'zod';
 import { PlusCircle } from 'lucide-react';
 import { categories } from '@/lib/data';
 import { useState } from 'react';
-import { useFirestore } from '@/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { addDoc, collection, query } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Offer } from '@/lib/types';
 
 const productSchema = z.object({
   name: z.string().min(3, 'Product name must be at least 3 characters.'),
@@ -37,6 +38,7 @@ const productSchema = z.object({
   longDescription: z.string().min(20, 'Long description must be at least 20 characters.'),
   price: z.coerce.number().positive('Price must be a positive number.'),
   category: z.string({ required_error: 'Please select a category.' }),
+  offerId: z.string().optional(),
   images: z.string().min(1, "Please provide at least one image ID."),
   stockStatus: z.enum(['in-stock', 'out-of-stock']).default('in-stock'),
   status: z.enum(['active', 'inactive']).default('active'),
@@ -47,6 +49,12 @@ export function AddProductDialog() {
   const firestore = useFirestore();
   const { toast } = useToast();
 
+  const offersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'offers'), where('status', '==', 'active')) : null),
+    [firestore]
+  );
+  const { data: offers } = useCollection<Offer>(offersQuery);
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
@@ -55,6 +63,7 @@ export function AddProductDialog() {
       longDescription: '',
       price: 0,
       category: '',
+      offerId: '',
       images: '',
       stockStatus: 'in-stock',
       status: 'active',
@@ -69,6 +78,7 @@ export function AddProductDialog() {
             images: values.images.split(',').map(s => s.trim()), // Simple comma-separated string to array
             rating: 0, // Default value
             reviews: 0, // Default value
+            offerId: values.offerId || null,
         };
       await addDoc(collection(firestore, 'products'), productData);
       toast({
@@ -178,6 +188,29 @@ export function AddProductDialog() {
                     )}
                  />
             </div>
+             <FormField
+                control={form.control}
+                name="offerId"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Offer (Optional)</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select an offer" />
+                        </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectItem value="">No Offer</SelectItem>
+                            {offers?.map(offer => (
+                                <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
             <FormField
               control={form.control}
               name="images"

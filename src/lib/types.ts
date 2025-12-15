@@ -19,6 +19,7 @@ export interface Product {
   reviews: number;
   stockStatus?: 'in-stock' | 'out-of-stock';
   status: 'active' | 'inactive';
+  offerId?: string | null;
 }
 
 export interface CartItem extends Product {

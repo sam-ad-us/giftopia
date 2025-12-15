@@ -24,10 +24,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { categories } from '@/lib/data';
 import { useEffect } from 'react';
-import { useFirestore } from '@/firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, doc, query, updateDoc, where } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Product } from '@/lib/types';
+import { Offer, Product } from '@/lib/types';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const productSchema = z.object({
@@ -36,6 +36,7 @@ const productSchema = z.object({
   longDescription: z.string().min(20, 'Long description must be at least 20 characters.'),
   price: z.coerce.number().positive('Price must be a positive number.'),
   category: z.string({ required_error: 'Please select a category.' }),
+  offerId: z.string().optional(),
   images: z.string().min(1, "Please provide at least one image ID."),
   stockStatus: z.enum(['in-stock', 'out-of-stock']),
   status: z.enum(['active', 'inactive']),
@@ -51,11 +52,18 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
   const firestore = useFirestore();
   const { toast } = useToast();
 
+  const offersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'offers'), where('status', '==', 'active')) : null),
+    [firestore]
+  );
+  const { data: offers } = useCollection<Offer>(offersQuery);
+
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
     defaultValues: {
         ...product,
         images: product.images.join(', '),
+        offerId: product.offerId || '',
     }
   });
 
@@ -64,6 +72,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
       form.reset({
         ...product,
         images: product.images.join(', '),
+        offerId: product.offerId || '',
       });
     }
   }, [product, form]);
@@ -75,6 +84,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
       const productData = {
         ...values,
         images: values.images.split(',').map(s => s.trim()),
+        offerId: values.offerId || null,
       };
       await updateDoc(productRef, productData);
       toast({
@@ -177,6 +187,29 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                     )}
                  />
             </div>
+             <FormField
+                control={form.control}
+                name="offerId"
+                render={({ field }) => (
+                    <FormItem>
+                    <FormLabel>Offer (Optional)</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                        <SelectTrigger>
+                            <SelectValue placeholder="Select an offer" />
+                        </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                            <SelectItem value="">No Offer</SelectItem>
+                            {offers?.map(offer => (
+                                <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <FormMessage />
+                    </FormItem>
+                )}
+                />
             <FormField
               control={form.control}
               name="images"
