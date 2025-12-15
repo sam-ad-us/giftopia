@@ -24,7 +24,7 @@ function ProductPageSkeleton() {
       <div className="grid lg:grid-cols-12 gap-8">
         <div className="lg:col-span-5 flex flex-col gap-4">
           <div className="flex gap-4 sticky top-24 self-start">
-            <div className="flex flex-col gap-2">
+            <div className="hidden sm:flex flex-col gap-2">
               {Array.from({ length: 4 }).map((_, i) => (
                 <Skeleton key={i} className="h-16 w-16 rounded-md" />
               ))}
@@ -72,12 +72,11 @@ export default function ProductPage() {
     () => (firestore && productId ? doc(firestore, 'products', productId) : null),
     [firestore, productId]
   );
+
   const { data: product, isLoading, error } = useDoc<Product>(productRef);
 
   const [productImages, setProductImages] = useState<ImagePlaceholder[]>([]);
-  const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(
-    null
-  );
+  const [selectedImage, setSelectedImage] = useState<ImagePlaceholder | null>(null);
 
   useEffect(() => {
     if (product?.images) {
@@ -88,6 +87,10 @@ export default function ProductPage() {
       if (images.length > 0) {
         setSelectedImage(images[0]);
       }
+    } else {
+        // Reset images if product becomes null
+        setProductImages([]);
+        setSelectedImage(null);
     }
   }, [product]);
 
@@ -96,13 +99,21 @@ export default function ProductPage() {
     return <ProductPageSkeleton />;
   }
 
-  if (!product && !isLoading) {
+  // After loading is complete, if there's no product and no error, then it's a 404
+  if (!product && !isLoading && !error) {
     notFound();
     return null;
   }
   
+  if (error) {
+      console.error("Firestore error:", error);
+      // You could render an error state here if you want
+      return <div className="container mx-auto px-4 py-12 text-center">Something went wrong. Please try again later.</div>
+  }
+  
+  // This check handles the case where loading is finished but product is still null
+  // which might happen briefly. A skeleton is a safe fallback.
   if (!product) {
-      // This should ideally not be reached if the above logic is correct, but as a fallback
       return <ProductPageSkeleton />;
   }
 
