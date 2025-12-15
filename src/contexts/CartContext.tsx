@@ -102,8 +102,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     if (couponsLoading || !couponCodeToApply) return;
 
     const coupon = coupons?.[0];
-    setCouponCodeToApply(null); // Reset the trigger
-
+    
     if (coupon) {
        if (coupon.status !== 'active') {
         toast({
@@ -134,6 +133,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       });
       setAppliedCoupon(null);
     }
+    // Reset the trigger AFTER the logic has run
+    setCouponCodeToApply(null); 
   }, [coupons, couponsLoading, cartSubtotal, toast, couponCodeToApply]);
 
 
