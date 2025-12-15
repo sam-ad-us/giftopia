@@ -1,5 +1,5 @@
 
-"use client";
+'use client';
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { CartItem, Product, Coupon } from '@/lib/types';

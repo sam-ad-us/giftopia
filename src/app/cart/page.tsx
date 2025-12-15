@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCart } from '@/contexts/CartContext';
@@ -96,7 +97,7 @@ export default function CartPage() {
                   disabled={!!appliedCoupon}
                 />
                 <Button onClick={handleApplyCoupon} disabled={!!appliedCoupon}>
-                  Apply
+                  {appliedCoupon ? 'Applied!' : 'Apply'}
                 </Button>
               </div>
               <Separator />
@@ -106,7 +107,7 @@ export default function CartPage() {
               </div>
                {discount > 0 && (
                 <div className="flex justify-between text-green-600">
-                  <span>Discount</span>
+                  <span>Discount ({appliedCoupon?.code})</span>
                   <span>-${discount.toFixed(2)}</span>
                 </div>
               )}
