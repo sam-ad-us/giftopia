@@ -61,7 +61,7 @@ export default function CartPage() {
       if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
         toast({
           title: "Minimum Spend Not Met",
-          description: `You must spend at least $${coupon.minimumCartValue.toFixed(2)} to use this coupon.`,
+          description: `This coupon is valid only on purchases of $${coupon.minimumCartValue.toFixed(2)} or more.`,
           variant: "destructive",
         });
         clearCoupon();
