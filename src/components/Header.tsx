@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -20,11 +21,11 @@ export default function Header() {
             <Gift className="h-7 w-7 text-accent" />
             <span className="font-headline text-2xl font-bold">Giftopia</span>
           </Link>
-          <div className="hidden md:flex items-center gap-4">
+          <nav className="hidden md:flex items-center gap-4">
              <Button asChild variant="link" className="text-base text-primary-foreground/80 hover:text-primary-foreground">
               <Link href="/catalog/personalized-gifts">Personalized Gifts</Link>
             </Button>
-          </div>
+          </nav>
         </div>
 
         <div className="flex items-center gap-4">
