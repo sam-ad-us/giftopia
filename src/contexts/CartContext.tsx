@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback, useEffect } from 'react';
 import type { CartItem, Product, Coupon } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
@@ -97,7 +97,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCouponCodeToApply(code.toUpperCase());
   }, []);
 
-  useMemo(() => {
+  useEffect(() => {
     if (couponsLoading || !couponCodeToApply) return;
 
     const coupon = coupons?.[0];
