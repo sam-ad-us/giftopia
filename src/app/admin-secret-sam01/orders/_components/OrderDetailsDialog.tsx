@@ -97,14 +97,16 @@ export function OrderDetailsDialog({ order, isOpen, onOpenChange }: OrderDetails
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {order.items.map(item => (
+                        {order.items.map(item => {
+                            const itemPrice = item.finalPrice ?? item.price;
+                            return (
                             <TableRow key={item.id}>
                                 <TableCell>{item.name}</TableCell>
                                 <TableCell className="text-center">{item.quantity}</TableCell>
-                                <TableCell className="text-right">₹{item.finalPrice.toFixed(2)}</TableCell>
-                                <TableCell className="text-right">₹{(item.finalPrice * item.quantity).toFixed(2)}</TableCell>
+                                <TableCell className="text-right">₹{itemPrice.toFixed(2)}</TableCell>
+                                <TableCell className="text-right">₹{(itemPrice * item.quantity).toFixed(2)}</TableCell>
                             </TableRow>
-                        ))}
+                        )})}
                     </TableBody>
                 </Table>
             </div>
