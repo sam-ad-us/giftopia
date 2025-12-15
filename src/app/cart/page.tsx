@@ -18,7 +18,7 @@ export default function CartPage() {
 
   const handleApplyCoupon = () => {
     if (couponCode.trim() && !appliedCoupon) {
-      applyCoupon(couponCode.trim());
+      applyCoupon(couponCode);
     }
   };
 
