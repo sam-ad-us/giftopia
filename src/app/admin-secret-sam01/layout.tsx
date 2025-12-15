@@ -27,6 +27,7 @@ import {
   LogOut,
   Gift,
   ChevronDown,
+  Receipt,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
@@ -52,6 +53,7 @@ const menuItems = [
   { href: '/admin-secret-sam01/offers', icon: Percent, label: 'Offers' },
   { href: '/admin-secret-sam01/coupons', icon: Ticket, label: 'Coupons' },
   { href: '/admin-secret-sam01/orders', icon: ShoppingBag, label: 'Orders' },
+  { href: '/admin-secret-sam01/tax', icon: Receipt, label: 'Tax' },
   { href: '/admin-secret-sam01/users', icon: Users, label: 'Users' },
 ];
 
