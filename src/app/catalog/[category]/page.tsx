@@ -2,14 +2,15 @@
 
 import { categories } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
-  const categoryId = params.category;
+export default function CategoryPage() {
+  const params = useParams();
+  const categoryId = params.category as string;
   const firestore = useFirestore();
   const category = categories.find((c) => c.id === categoryId);
 
