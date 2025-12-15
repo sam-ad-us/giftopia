@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -110,7 +111,7 @@ export default function AdminProductsPage() {
                                 <TableCell>
                                     <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>{product.status}</Badge>
                                 </TableCell>
-                                <TableCell>${product.price.toFixed(2)}</TableCell>
+                                <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                 <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                                 <TableCell>
                                     <Button variant="outline" size="sm" onClick={() => handleEdit(product)}>

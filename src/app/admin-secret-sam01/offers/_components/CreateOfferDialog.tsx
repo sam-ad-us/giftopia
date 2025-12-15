@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -116,7 +117,7 @@ export function CreateOfferDialog() {
                     </FormControl>
                     <SelectContent>
                       <SelectItem value="percentage">Percentage (%)</SelectItem>
-                      <SelectItem value="flat">Flat Amount ($)</SelectItem>
+                      <SelectItem value="flat">Flat Amount (₹)</SelectItem>
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -130,7 +131,7 @@ export function CreateOfferDialog() {
                 <FormItem>
                   <FormLabel>Discount Value</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder={form.watch('type') === 'percentage' ? '15' : '10.00'} {...field} />
+                    <Input type="number" placeholder={form.watch('type') === 'percentage' ? '15' : '100'} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

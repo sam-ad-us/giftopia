@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useCart } from '@/contexts/CartContext';
@@ -188,7 +189,7 @@ export default function CheckoutPage() {
               <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? (
                     <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Placing Order...</>
-                ) : `Place Order - $${cartTotal.toFixed(2)}`}
+                ) : `Place Order - ₹${cartTotal.toFixed(2)}`}
               </Button>
             </form>
           </Form>
@@ -206,15 +207,15 @@ export default function CheckoutPage() {
                         <p className="font-medium">{item.name}</p>
                         <p className="text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
-                    <p>${(item.price * item.quantity).toFixed(2)}</p>
+                    <p>₹{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               ))}
               <Separator />
-              <div className="flex justify-between"><span>Subtotal</span><span>${cartSubtotal.toFixed(2)}</span></div>
-              {discount > 0 && (<div className="flex justify-between text-green-600"><span>Discount</span><span>-${discount.toFixed(2)}</span></div>)}
+              <div className="flex justify-between"><span>Subtotal</span><span>₹{cartSubtotal.toFixed(2)}</span></div>
+              {discount > 0 && (<div className="flex justify-between text-green-600"><span>Discount</span><span>-₹{discount.toFixed(2)}</span></div>)}
               <div className="flex justify-between"><span>Shipping</span><span className="text-green-600">FREE</span></div>
               <Separator />
-              <div className="flex justify-between font-bold text-lg"><span>Total</span><span>${cartTotal.toFixed(2)}</span></div>
+              <div className="flex justify-between font-bold text-lg"><span>Total</span><span>₹{cartTotal.toFixed(2)}</span></div>
             </CardContent>
           </Card>
         </div>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -124,7 +125,7 @@ export default function AdminOrdersPage() {
                   <TableRow key={order.id}>
                     <TableCell>{order.createdAt ? format(order.createdAt.toDate(), 'PPpp') : 'N/A'}</TableCell>
                     <TableCell>{order.customerName}</TableCell>
-                    <TableCell>${order.total.toFixed(2)}</TableCell>
+                    <TableCell>₹{order.total.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge variant={getStatusVariant(order.status)}>
                         {order.status}

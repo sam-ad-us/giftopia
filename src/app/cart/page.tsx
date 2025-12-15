@@ -61,7 +61,7 @@ export default function CartPage() {
       if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
         toast({
           title: "Minimum Spend Not Met",
-          description: `This coupon is valid only on purchases of $${coupon.minimumCartValue.toFixed(2)} or more.`,
+          description: `This coupon is valid only on purchases of ₹${coupon.minimumCartValue.toFixed(2)} or more.`,
           variant: "destructive",
         });
         clearCoupon();
@@ -132,7 +132,7 @@ export default function CartPage() {
               </div>
               <div className="ml-4 flex-grow">
                 <h2 className="font-semibold">{item.name}</h2>
-                <p className="text-sm text-muted-foreground">${item.price.toFixed(2)}</p>
+                <p className="text-sm text-muted-foreground">₹{item.price.toFixed(2)}</p>
               </div>
               <div className="flex items-center gap-2">
                  <div className="flex items-center border rounded-md">
@@ -189,12 +189,12 @@ export default function CartPage() {
               <Separator />
               <div className="flex justify-between">
                 <span>Subtotal ({cartCount} items)</span>
-                <span>${cartSubtotal.toFixed(2)}</span>
+                <span>₹{cartSubtotal.toFixed(2)}</span>
               </div>
                {discount > 0 && appliedCoupon && (
                 <div className="flex justify-between text-green-600">
                   <span>Discount ({appliedCoupon.code})</span>
-                  <span>-${discount.toFixed(2)}</span>
+                  <span>-₹{discount.toFixed(2)}</span>
                 </div>
               )}
               <div className="flex justify-between">
@@ -204,7 +204,7 @@ export default function CartPage() {
               <Separator />
               <div className="flex justify-between font-bold text-lg">
                 <span>Total</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>₹{cartTotal.toFixed(2)}</span>
               </div>
             </CardContent>
             <CardFooter>

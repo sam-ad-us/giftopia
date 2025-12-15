@@ -91,8 +91,8 @@ export default function AdminCouponsPage() {
                                 <TableRow key={coupon.id} data-state={coupon.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                     <TableCell className="font-mono font-medium">{coupon.code}</TableCell>
                                     <TableCell className="capitalize">{coupon.type}</TableCell>
-                                    <TableCell>{coupon.type === 'percentage' ? `${coupon.value}%` : `$${coupon.value.toFixed(2)}`}</TableCell>
-                                    <TableCell>{coupon.minimumCartValue ? `$${coupon.minimumCartValue.toFixed(2)}` : 'N/A'}</TableCell>
+                                    <TableCell>{coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value.toFixed(2)}`}</TableCell>
+                                    <TableCell>{coupon.minimumCartValue ? `₹${coupon.minimumCartValue.toFixed(2)}` : 'N/A'}</TableCell>
                                     <TableCell>
                                         <Badge variant={coupon.status === 'active' ? 'default' : 'secondary'}>
                                             {coupon.status}

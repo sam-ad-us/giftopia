@@ -89,7 +89,7 @@ export default function AdminOffersPage() {
                                 <TableRow key={offer.id} data-state={offer.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                     <TableCell className="font-medium">{offer.name}</TableCell>
                                     <TableCell className="capitalize">{offer.type}</TableCell>
-                                    <TableCell>{offer.type === 'percentage' ? `${offer.value}%` : `$${offer.value.toFixed(2)}`}</TableCell>
+                                    <TableCell>{offer.type === 'percentage' ? `${offer.value}%` : `₹${offer.value.toFixed(2)}`}</TableCell>
                                     <TableCell>
                                         <Badge variant={offer.status === 'active' ? 'default' : 'secondary'}>
                                             {offer.status}

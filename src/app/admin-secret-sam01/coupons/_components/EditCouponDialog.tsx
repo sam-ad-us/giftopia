@@ -115,7 +115,7 @@ export function EditCouponDialog({ coupon, isOpen, onOpenChange }: EditCouponDia
                         </FormControl>
                         <SelectContent>
                         <SelectItem value="percentage">Percentage (%)</SelectItem>
-                        <SelectItem value="flat">Flat Amount ($)</SelectItem>
+                        <SelectItem value="flat">Flat Amount (₹)</SelectItem>
                         </SelectContent>
                     </Select>
                     <FormMessage />
@@ -129,7 +129,7 @@ export function EditCouponDialog({ coupon, isOpen, onOpenChange }: EditCouponDia
                     <FormItem>
                     <FormLabel>Value</FormLabel>
                     <FormControl>
-                        <Input type="number" placeholder={form.watch('type') === 'percentage' ? '15' : '10.00'} {...field} />
+                        <Input type="number" placeholder={form.watch('type') === 'percentage' ? '15' : '100'} {...field} />
                     </FormControl>
                     <FormMessage />
                     </FormItem>
@@ -143,7 +143,7 @@ export function EditCouponDialog({ coupon, isOpen, onOpenChange }: EditCouponDia
                 <FormItem>
                   <FormLabel>Minimum Spend (Optional)</FormLabel>
                   <FormControl>
-                    <Input type="number" placeholder="50.00" {...field} />
+                    <Input type="number" placeholder="500" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -118,7 +118,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                     <DialogTitle className="font-headline text-3xl md:text-4xl font-bold">{product.name}</DialogTitle>
                     
                     <div className="flex items-center justify-between">
-                        <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+                        <p className="text-3xl font-bold text-primary">₹{product.price.toFixed(2)}</p>
                         <StarRating rating={product.rating} reviewCount={product.reviews} />
                     </div>
                     
@@ -130,7 +130,6 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         size="lg"
                         onClick={handleAddToCart}
                         className="w-full h-12 text-base"
-                        variant={isOutOfStock ? 'secondary' : 'default'}
                     >
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
