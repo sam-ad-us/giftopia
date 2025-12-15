@@ -20,7 +20,7 @@ import { Separator } from '@/components/ui/separator';
 
 export default function ProductPage() {
   const params = useParams();
-  const productId = params.id as string;
+  const productId = params ? (params.id as string) : undefined;
   const firestore = useFirestore();
 
   const productRef = useMemoFirebase(
