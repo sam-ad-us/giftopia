@@ -1,6 +1,7 @@
+
 'use client';
 
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import Image from 'next/image';
 import {
   Card,
@@ -17,11 +18,14 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
+export default function ProductPage() {
+  const params = useParams();
+  const productId = params.id as string;
+
   const firestore = useFirestore();
   const productRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'products', params.id) : null),
-    [firestore, params.id]
+    () => (firestore ? doc(firestore, 'products', productId) : null),
+    [firestore, productId]
   );
   const { data: product, isLoading } = useDoc<Product>(productRef);
 
