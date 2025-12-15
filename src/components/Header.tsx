@@ -3,11 +3,11 @@
 import Link from 'next/link';
 import { Gift, Search } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import CartIcon from './CartIcon';
 import { useUser } from '@/firebase';
 import UserNav from './UserNav';
 import { Skeleton } from './ui/skeleton';
+import { SearchInput } from './SearchInput';
 
 export default function Header() {
   const { user, isUserLoading } = useUser();
@@ -23,10 +23,15 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="relative hidden sm:block">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input placeholder="Search gifts..." className="pl-10 w-48 lg:w-64 bg-background text-foreground" />
+          <div className="hidden sm:block">
+            <SearchInput />
           </div>
+           <Button asChild variant="ghost" size="icon" className="sm:hidden">
+             <Link href="/search">
+                <Search className="h-5 w-5" />
+                <span className="sr-only">Search</span>
+              </Link>
+           </Button>
           <CartIcon />
           {isUserLoading ? (
             <Skeleton className="h-8 w-16 bg-white/20" />
