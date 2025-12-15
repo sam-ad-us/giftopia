@@ -1,4 +1,5 @@
-import { products } from '@/lib/data';
+'use client';
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,16 +12,38 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"
-
-export async function generateStaticParams() {
-  return products.map((product) => ({
-    id: product.id,
-  }));
-}
+} from "@/components/ui/carousel";
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { Product } from '@/lib/types';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === params.id);
+  const firestore = useFirestore();
+  const productRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'products', params.id) : null),
+    [firestore, params.id]
+  );
+  const { data: product, isLoading } = useDoc<Product>(productRef);
+
+  if (isLoading) {
+    return (
+        <div className="container mx-auto px-4 py-12">
+            <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
+                <div>
+                    <Skeleton className="aspect-square w-full rounded-lg" />
+                </div>
+                <div className="flex flex-col gap-4">
+                    <Skeleton className="h-12 w-3/4" />
+                    <Skeleton className="h-6 w-1/2" />
+                    <Skeleton className="h-8 w-1/4" />
+                    <Skeleton className="h-24 w-full" />
+                    <Skeleton className="h-12 w-48" />
+                </div>
+            </div>
+        </div>
+    )
+  }
 
   if (!product) {
     notFound();
@@ -55,8 +78,12 @@ export default function ProductPage({ params }: { params: { id: string } }) {
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-4" />
-            <CarouselNext className="right-4" />
+            {productImages.length > 1 && (
+                <>
+                    <CarouselPrevious className="left-4" />
+                    <CarouselNext className="right-4" />
+                </>
+            )}
           </Carousel>
         </div>
 

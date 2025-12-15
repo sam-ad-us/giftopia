@@ -12,6 +12,10 @@ export const categories: Category[] = [
   { id: 'festival-gifts', name: 'Festival Gifts', image: 'cat-festival' },
 ];
 
+// Note: This is now just placeholder data for components that haven't been migrated to Firestore yet.
+export const products: Product[] = [];
+
+
 export const coupons: Coupon[] = [
   {
     code: 'GIFT10',
