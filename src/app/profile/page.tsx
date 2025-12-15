@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar } from 'lucide-react';
 import { signOut } from 'firebase/auth';
+import Link from 'next/link';
 
 export default function ProfilePage() {
   const { user, isUserLoading } = useUser();
@@ -139,13 +140,17 @@ export default function ProfilePage() {
                 <CardTitle className="font-headline">My Activity</CardTitle>
                 </CardHeader>
                 <CardContent className="grid sm:grid-cols-2 gap-4">
-                    <Button variant="outline" className="justify-start gap-2 h-12 text-base">
-                        <ShoppingBag className="h-5 w-5"/>
-                        Order History
+                    <Button variant="outline" className="justify-start gap-2 h-12 text-base" asChild>
+                        <Link href="/profile/orders">
+                            <ShoppingBag className="h-5 w-5"/>
+                            Order History
+                        </Link>
                     </Button>
-                     <Button variant="outline" className="justify-start gap-2 h-12 text-base">
-                        <Settings className="h-5 w-5"/>
-                        Account Settings
+                     <Button variant="outline" className="justify-start gap-2 h-12 text-base" asChild>
+                        <Link href="/profile/settings">
+                            <Settings className="h-5 w-5"/>
+                            Account Settings
+                        </Link>
                     </Button>
                 </CardContent>
             </Card>
