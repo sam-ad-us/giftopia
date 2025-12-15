@@ -24,16 +24,19 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AddProductDialog } from './_components/AddProductDialog';
 import { useCollection } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
+import { collection, doc, query, updateDoc } from 'firebase/firestore';
 import { useFirestore, useMemoFirebase } from '@/firebase';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EditProductDialog } from './_components/EditProductDialog';
 import { DeleteProductAlert } from './_components/DeleteProductAlert';
 import { useState } from 'react';
+import Link from 'next/link';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminProductsPage() {
   const firestore = useFirestore();
+  const { toast } = useToast();
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -53,6 +56,26 @@ export default function AdminProductsPage() {
   const handleDelete = (product: Product) => {
     setSelectedProduct(product);
     setIsDeleteDialogOpen(true);
+  };
+
+  const handleToggleStatus = async (product: Product) => {
+    if (!firestore) return;
+    const newStatus = product.status === 'active' ? 'inactive' : 'active';
+    const productRef = doc(firestore, 'products', product.id);
+    try {
+      await updateDoc(productRef, { status: newStatus });
+      toast({
+        title: 'Product Updated',
+        description: `${product.name} has been set to ${newStatus}.`,
+      });
+    } catch (error) {
+      console.error('Error updating product status:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update product status.',
+        variant: 'destructive',
+      });
+    }
   };
 
   return (
@@ -104,7 +127,7 @@ export default function AdminProductsPage() {
                     {products && products.map((product) => {
                         const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
                         return (
-                            <TableRow key={product.id}>
+                            <TableRow key={product.id} data-state={product.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                 <TableCell className="hidden sm:table-cell">
                                     {productImage && (
                                     <Image
@@ -119,7 +142,7 @@ export default function AdminProductsPage() {
                                 </TableCell>
                                 <TableCell className="font-medium">{product.name}</TableCell>
                                 <TableCell>
-                                    <Badge variant={product.stockStatus === 'in-stock' ? 'default' : 'destructive'}>{product.stockStatus === 'in-stock' ? 'In Stock' : 'Out of Stock'}</Badge>
+                                    <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>{product.status}</Badge>
                                 </TableCell>
                                 <TableCell>${product.price.toFixed(2)}</TableCell>
                                 <TableCell className="hidden md:table-cell">{product.category}</TableCell>
@@ -133,7 +156,11 @@ export default function AdminProductsPage() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                        <DropdownMenuItem asChild><Link href={`/product/${product.id}`} target="_blank">View</Link></DropdownMenuItem>
                                         <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleToggleStatus(product)}>
+                                            {product.status === 'active' ? 'Disable' : 'Enable'}
+                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
                                         <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(product)}>Delete</DropdownMenuItem>
                                     </DropdownMenuContent>

@@ -18,6 +18,7 @@ export interface Product {
   rating: number;
   reviews: number;
   stockStatus?: 'in-stock' | 'out-of-stock';
+  status: 'active' | 'inactive';
 }
 
 export interface CartItem extends Product {

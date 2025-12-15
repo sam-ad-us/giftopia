@@ -19,12 +19,30 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CreateCouponDialog } from './_components/CreateCouponDialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, doc, updateDoc } from 'firebase/firestore';
 import { Coupon } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { DeleteCouponAlert } from './_components/DeleteCouponAlert';
+import { EditCouponDialog } from './_components/EditCouponDialog';
 
 export default function AdminCouponsPage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
+    const [selectedCoupon, setSelectedCoupon] = useState<Coupon | null>(null);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const couponsQuery = useMemoFirebase(
         () => (firestore ? query(collection(firestore, 'coupons')) : null),
@@ -32,6 +50,37 @@ export default function AdminCouponsPage() {
     );
 
     const { data: coupons, isLoading } = useCollection<Coupon>(couponsQuery);
+
+    const handleEdit = (coupon: Coupon) => {
+        setSelectedCoupon(coupon);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleDelete = (coupon: Coupon) => {
+        setSelectedCoupon(coupon);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const handleToggleStatus = async (coupon: Coupon) => {
+        if (!firestore) return;
+        const newStatus = coupon.status === 'active' ? 'inactive' : 'active';
+        const couponRef = doc(firestore, 'coupons', coupon.id);
+        try {
+        await updateDoc(couponRef, { status: newStatus });
+        toast({
+            title: 'Coupon Updated',
+            description: `Coupon "${coupon.code}" has been set to ${newStatus}.`,
+        });
+        } catch (error) {
+        console.error('Error updating coupon status:', error);
+        toast({
+            title: 'Error',
+            description: 'Failed to update coupon status.',
+            variant: 'destructive',
+        });
+        }
+    };
+
 
     return (
         <div>
@@ -56,6 +105,9 @@ export default function AdminCouponsPage() {
                                 <TableHead>Value</TableHead>
                                 <TableHead>Min. Spend</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead>
+                                    <span className="sr-only">Actions</span>
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -66,10 +118,11 @@ export default function AdminCouponsPage() {
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
                                 </TableRow>
                             ))}
                             {coupons && coupons.map((coupon) => (
-                                <TableRow key={coupon.id}>
+                                <TableRow key={coupon.id} data-state={coupon.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                     <TableCell className="font-mono font-medium">{coupon.code}</TableCell>
                                     <TableCell className="capitalize">{coupon.type}</TableCell>
                                     <TableCell>{coupon.type === 'percentage' ? `${coupon.value}%` : `$${coupon.value.toFixed(2)}`}</TableCell>
@@ -78,6 +131,25 @@ export default function AdminCouponsPage() {
                                         <Badge variant={coupon.status === 'active' ? 'default' : 'secondary'}>
                                             {coupon.status}
                                         </Badge>
+                                    </TableCell>
+                                    <TableCell>
+                                        <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                                            <MoreHorizontal className="h-4 w-4" />
+                                            <span className="sr-only">Toggle menu</span>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuItem onSelect={() => handleEdit(coupon)}>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onSelect={() => handleToggleStatus(coupon)}>
+                                                {coupon.status === 'active' ? 'Disable' : 'Enable'}
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(coupon)}>Delete</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -90,6 +162,20 @@ export default function AdminCouponsPage() {
                     )}
                 </CardContent>
             </Card>
+            {selectedCoupon && (
+                <>
+                    <EditCouponDialog
+                        coupon={selectedCoupon}
+                        isOpen={isEditDialogOpen}
+                        onOpenChange={setIsEditDialogOpen}
+                    />
+                    <DeleteCouponAlert
+                        coupon={selectedCoupon}
+                        isOpen={isDeleteDialogOpen}
+                        onOpenChange={setIsDeleteDialogOpen}
+                    />
+                </>
+            )}
         </div>
     );
 }

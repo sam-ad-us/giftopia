@@ -18,12 +18,30 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { CreateOfferDialog } from './_components/CreateOfferDialog';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query } from 'firebase/firestore';
+import { collection, query, doc, updateDoc } from 'firebase/firestore';
 import { Offer } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { EditOfferDialog } from './_components/EditOfferDialog';
+import { DeleteOfferAlert } from './_components/DeleteOfferAlert';
 
 export default function AdminOffersPage() {
     const firestore = useFirestore();
+    const { toast } = useToast();
+    const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
+    const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const offersQuery = useMemoFirebase(
         () => (firestore ? query(collection(firestore, 'offers')) : null),
@@ -31,6 +49,37 @@ export default function AdminOffersPage() {
     );
 
     const { data: offers, isLoading } = useCollection<Offer>(offersQuery);
+
+    const handleEdit = (offer: Offer) => {
+        setSelectedOffer(offer);
+        setIsEditDialogOpen(true);
+    };
+
+    const handleDelete = (offer: Offer) => {
+        setSelectedOffer(offer);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const handleToggleStatus = async (offer: Offer) => {
+        if (!firestore) return;
+        const newStatus = offer.status === 'active' ? 'inactive' : 'active';
+        const offerRef = doc(firestore, 'offers', offer.id);
+        try {
+        await updateDoc(offerRef, { status: newStatus });
+        toast({
+            title: 'Offer Updated',
+            description: `Offer "${offer.name}" has been set to ${newStatus}.`,
+        });
+        } catch (error) {
+        console.error('Error updating offer status:', error);
+        toast({
+            title: 'Error',
+            description: 'Failed to update offer status.',
+            variant: 'destructive',
+        });
+        }
+    };
+
 
     return (
         <div>
@@ -54,6 +103,9 @@ export default function AdminOffersPage() {
                                 <TableHead>Type</TableHead>
                                 <TableHead>Value</TableHead>
                                 <TableHead>Status</TableHead>
+                                <TableHead>
+                                    <span className="sr-only">Actions</span>
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -63,10 +115,11 @@ export default function AdminOffersPage() {
                                     <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
                                 </TableRow>
                             ))}
                             {offers && offers.map((offer) => (
-                                <TableRow key={offer.id}>
+                                <TableRow key={offer.id} data-state={offer.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                     <TableCell className="font-medium">{offer.name}</TableCell>
                                     <TableCell className="capitalize">{offer.type}</TableCell>
                                     <TableCell>{offer.type === 'percentage' ? `${offer.value}%` : `$${offer.value.toFixed(2)}`}</TableCell>
@@ -74,6 +127,25 @@ export default function AdminOffersPage() {
                                         <Badge variant={offer.status === 'active' ? 'default' : 'secondary'}>
                                             {offer.status}
                                         </Badge>
+                                    </TableCell>
+                                     <TableCell>
+                                        <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button aria-haspopup="true" size="icon" variant="ghost">
+                                            <MoreHorizontal className="h-4 w-4" />
+                                            <span className="sr-only">Toggle menu</span>
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="end">
+                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                            <DropdownMenuItem onSelect={() => handleEdit(offer)}>Edit</DropdownMenuItem>
+                                            <DropdownMenuItem onSelect={() => handleToggleStatus(offer)}>
+                                                {offer.status === 'active' ? 'Disable' : 'Enable'}
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem className="text-destructive" onSelect={() => handleDelete(offer)}>Delete</DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -86,6 +158,20 @@ export default function AdminOffersPage() {
                     )}
                 </CardContent>
             </Card>
+            {selectedOffer && (
+                <>
+                    <EditOfferDialog
+                        offer={selectedOffer}
+                        isOpen={isEditDialogOpen}
+                        onOpenChange={setIsEditDialogOpen}
+                    />
+                    <DeleteOfferAlert
+                        offer={selectedOffer}
+                        isOpen={isDeleteDialogOpen}
+                        onOpenChange={setIsDeleteDialogOpen}
+                    />
+                </>
+            )}
         </div>
     );
 }

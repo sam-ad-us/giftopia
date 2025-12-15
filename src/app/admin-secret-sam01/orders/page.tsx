@@ -17,13 +17,29 @@ import {
 } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, orderBy } from 'firebase/firestore';
+import { collection, query, orderBy, doc, updateDoc } from 'firebase/firestore';
 import { Order } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuPortal,
+  DropdownMenuSubContent
+} from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
+import { MoreHorizontal, Truck, CheckCircle, XCircle } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminOrdersPage() {
   const firestore = useFirestore();
+  const { toast } = useToast();
 
   const ordersQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'orders'), orderBy('createdAt', 'desc')) : null),
@@ -47,6 +63,25 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleUpdateStatus = async (order: Order, status: Order['status']) => {
+    if (!firestore) return;
+    const orderRef = doc(firestore, 'orders', order.id);
+    try {
+      await updateDoc(orderRef, { status });
+      toast({
+        title: 'Order Status Updated',
+        description: `Order for ${order.customerName} is now ${status}.`,
+      });
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to update order status.',
+        variant: 'destructive',
+      });
+    }
+  };
+
   return (
     <div>
       <div className="mb-8">
@@ -67,27 +102,21 @@ export default function AdminOrdersPage() {
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Items</TableHead>
+                <TableHead>
+                  <span className="sr-only">Actions</span>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {isLoading &&
                 Array.from({ length: 5 }).map((_, i) => (
                   <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-5 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-32" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-16" />
-                    </TableCell>
-                     <TableCell>
-                      <Skeleton className="h-6 w-20 rounded-full" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-8" />
-                    </TableCell>
+                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-16" /></TableCell>
+                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-8" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
                   </TableRow>
                 ))}
               {orders &&
@@ -102,6 +131,40 @@ export default function AdminOrdersPage() {
                       </Badge>
                     </TableCell>
                     <TableCell>{order.items.reduce((acc, item) => acc + item.quantity, 0)}</TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Toggle menu</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuItem>View Order</DropdownMenuItem>
+                          <DropdownMenuSub>
+                            <DropdownMenuSubTrigger>Update Status</DropdownMenuSubTrigger>
+                            <DropdownMenuPortal>
+                              <DropdownMenuSubContent>
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'shipped')}>
+                                  <Truck className="mr-2 h-4 w-4" />
+                                  Shipped
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'delivered')}>
+                                  <CheckCircle className="mr-2 h-4 w-4" />
+                                  Delivered
+                                </DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive" onClick={() => handleUpdateStatus(order, 'cancelled')}>
+                                   <XCircle className="mr-2 h-4 w-4" />
+                                  Cancelled
+                                </DropdownMenuItem>
+                              </DropdownMenuSubContent>
+                            </DropdownMenuPortal>
+                          </DropdownMenuSub>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>

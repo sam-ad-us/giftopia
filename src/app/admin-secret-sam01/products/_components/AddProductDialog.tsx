@@ -29,6 +29,7 @@ import { useState } from 'react';
 import { useFirestore } from '@/firebase';
 import { addDoc, collection } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const productSchema = z.object({
   name: z.string().min(3, 'Product name must be at least 3 characters.'),
@@ -38,6 +39,7 @@ const productSchema = z.object({
   category: z.string({ required_error: 'Please select a category.' }),
   images: z.string().min(1, "Please provide at least one image ID."),
   stockStatus: z.enum(['in-stock', 'out-of-stock']).default('in-stock'),
+  status: z.enum(['active', 'inactive']).default('active'),
 });
 
 export function AddProductDialog() {
@@ -55,6 +57,7 @@ export function AddProductDialog() {
       category: '',
       images: '',
       stockStatus: 'in-stock',
+      status: 'active',
     },
   });
 
@@ -189,6 +192,36 @@ export function AddProductDialog() {
                 </FormItem>
               )}
             />
+             <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Initial Status</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center space-x-4"
+                      >
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="active" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Active</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="inactive" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Inactive</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             <DialogFooter>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? 'Adding...' : 'Add Product'}

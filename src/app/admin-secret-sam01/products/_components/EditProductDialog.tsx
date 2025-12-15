@@ -38,6 +38,7 @@ const productSchema = z.object({
   category: z.string({ required_error: 'Please select a category.' }),
   images: z.string().min(1, "Please provide at least one image ID."),
   stockStatus: z.enum(['in-stock', 'out-of-stock']),
+  status: z.enum(['active', 'inactive']),
 });
 
 interface EditProductDialogProps {
@@ -213,6 +214,36 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                             <RadioGroupItem value="out-of-stock" />
                           </FormControl>
                           <FormLabel className="font-normal">Out of Stock</FormLabel>
+                        </FormItem>
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem className="space-y-3">
+                    <FormLabel>Status</FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                        className="flex items-center space-x-4"
+                      >
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="active" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Active</FormLabel>
+                        </FormItem>
+                        <FormItem className="flex items-center space-x-2 space-y-0">
+                          <FormControl>
+                            <RadioGroupItem value="inactive" />
+                          </FormControl>
+                          <FormLabel className="font-normal">Inactive</FormLabel>
                         </FormItem>
                       </RadioGroup>
                     </FormControl>
