@@ -7,12 +7,16 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where } from 'firebase/firestore';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useState } from 'react';
+import { ProductDetailDialog } from '@/components/ProductDetailDialog';
 
 export default function CategoryPage() {
   const params = useParams();
   const categoryId = params.category as string;
   const firestore = useFirestore();
   const category = categories.find((c) => c.id === categoryId);
+
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const productsQuery = useMemoFirebase(
     () =>
@@ -48,7 +52,7 @@ export default function CategoryPage() {
       {!isLoading && products && products.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onProductClick={setSelectedProduct} />
           ))}
         </div>
       ) : !isLoading && (
@@ -56,6 +60,18 @@ export default function CategoryPage() {
           No gifts found in this category yet. Check back soon!
         </p>
       )}
+
+      {selectedProduct && (
+          <ProductDetailDialog 
+            product={selectedProduct} 
+            isOpen={!!selectedProduct} 
+            onOpenChange={(isOpen) => {
+              if (!isOpen) {
+                setSelectedProduct(null);
+              }
+            }} 
+          />
+        )}
     </div>
   );
 }

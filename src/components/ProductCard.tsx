@@ -13,9 +13,10 @@ import React from 'react';
 
 interface ProductCardProps {
   product: Product;
+  onProductClick: (product: Product) => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
     const { addToCart } = useCart();
 
@@ -24,10 +25,17 @@ export default function ProductCard({ product }: ProductCardProps) {
       e.stopPropagation();
       addToCart(product, 1);
     }
+    
+    const handleCardClick = () => {
+      onProductClick(product);
+    }
 
   return (
-    <Card className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col">
-        <Link href={`/product/${product.id}`} className="group block flex-grow">
+    <Card 
+        className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer"
+        onClick={handleCardClick}
+    >
+        <div className="group block flex-grow">
             <div className="relative aspect-square w-full">
             {productImage && (
                 <Image
@@ -50,7 +58,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 ${product.price.toFixed(2)}
             </p>
             </CardContent>
-        </Link>
+        </div>
         <CardFooter className="p-4 pt-0">
             <Button className="w-full" onClick={handleAddToCart}>
                 <ShoppingCart className="mr-2 h-4 w-4" />

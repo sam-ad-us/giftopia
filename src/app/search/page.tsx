@@ -8,11 +8,14 @@ import ProductCard from '@/components/ProductCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { SearchInput } from '@/components/SearchInput';
 import { Search } from 'lucide-react';
+import { useState } from 'react';
+import { ProductDetailDialog } from '@/components/ProductDetailDialog';
 
 export default function SearchPage() {
   const searchParams = useSearchParams();
   const q = searchParams.get('q');
   const firestore = useFirestore();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const productsQuery = useMemoFirebase(
     () => {
@@ -73,7 +76,7 @@ export default function SearchPage() {
       {!isLoading && q && products && products.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+            <ProductCard key={product.id} product={product} onProductClick={setSelectedProduct} />
           ))}
         </div>
       )}
@@ -95,6 +98,18 @@ export default function SearchPage() {
             </p>
         </div>
        )}
+
+        {selectedProduct && (
+            <ProductDetailDialog 
+                product={selectedProduct} 
+                isOpen={!!selectedProduct} 
+                onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                    setSelectedProduct(null);
+                }
+                }} 
+            />
+        )}
     </div>
   );
 }
