@@ -23,7 +23,7 @@ export default function Header() {
           </Link>
           <nav className="hidden md:flex items-center gap-4">
              <Button asChild variant="link" className="text-base text-primary-foreground/80 hover:text-primary-foreground">
-              <Link href="/catalog/personalized-gifts">Personalized Gifts</Link>
+              <Link href="/personalized-gifts">Personalized Gifts</Link>
             </Button>
           </nav>
         </div>
@@ -53,3 +53,5 @@ export default function Header() {
     </header>
   );
 }
+
+    

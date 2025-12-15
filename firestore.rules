@@ -184,5 +184,18 @@ service cloud.firestore {
       allow get: if true;
       allow write: if isAdmin();
     }
+
+    /**
+     * @description Manages user requests for personalized gifts.
+     * @path /personalizationRequests/{requestId}
+     * @allow (create) An authenticated user can create a request.
+     * @allow (read, list, update, delete) Only admins can manage requests.
+     */
+    match /personalizationRequests/{requestId} {
+        allow create: if isSignedIn() && newDocHasCorrectOwner(request.auth.uid);
+        allow read, list, update, delete: if isAdmin();
+    }
   }
 }
+
+    
