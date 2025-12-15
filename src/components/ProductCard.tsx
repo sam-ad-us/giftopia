@@ -10,6 +10,8 @@ import { Button } from './ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import React from 'react';
+import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface ProductCardProps {
   product: Product;
@@ -19,10 +21,20 @@ interface ProductCardProps {
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
     const { addToCart } = useCart();
+    const { toast } = useToast();
+    const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
 
     const handleAddToCart = (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
+      if (isOutOfStock) {
+        toast({
+            title: 'Product Unavailable',
+            description: 'This product is currently out of stock.',
+            variant: 'destructive',
+        });
+        return;
+      }
       addToCart(product, 1);
     }
     
@@ -35,7 +47,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer"
         onClick={handleCardClick}
     >
-        <div className="group block flex-grow">
+        <div className={cn("group block flex-grow", isOutOfStock && "opacity-60")}>
             <div className="relative aspect-square w-full">
             {productImage && (
                 <Image
@@ -60,9 +72,13 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             </CardContent>
         </div>
         <CardFooter className="p-4 pt-0">
-            <Button className="w-full" onClick={handleAddToCart}>
+            <Button 
+                className="w-full" 
+                onClick={handleAddToCart}
+                variant={isOutOfStock ? 'secondary' : 'default'}
+                >
                 <ShoppingCart className="mr-2 h-4 w-4" />
-                Add to Cart
+                {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
             </Button>
         </CardFooter>
     </Card>
