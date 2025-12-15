@@ -5,7 +5,7 @@ import React, { createContext, useContext, useState, ReactNode, useMemo, useCall
 import type { CartItem, Product, Coupon } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
+import { collection, query, where, limit } from 'firebase/firestore';
 
 
 interface CartContextType {
@@ -31,15 +31,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const { toast } = useToast();
   const firestore = useFirestore();
 
-  const couponsQuery = useMemoFirebase(
+  const couponQuery = useMemoFirebase(
     () =>
       firestore && couponCodeToApply
-        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), where('status', '==', 'active'))
+        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), where('status', '==', 'active'), limit(1))
         : null,
     [firestore, couponCodeToApply]
   );
   
-  const { data: coupons, isLoading: couponsLoading } = useCollection<Coupon>(couponsQuery);
+  const { data: coupons, isLoading: couponsLoading } = useCollection<Coupon>(couponQuery);
 
 
   const addToCart = useCallback((product: Product, quantity: number) => {
@@ -142,7 +142,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [appliedCoupon, cartSubtotal]);
 
   const cartTotal = useMemo(() => {
-      return cartSubtotal - discount;
+      return Math.max(0, cartSubtotal - discount);
   }, [cartSubtotal, discount]);
 
 
