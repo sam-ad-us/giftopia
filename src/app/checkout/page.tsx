@@ -22,7 +22,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { CreditCard, Landmark, Loader2, ArrowLeft } from 'lucide-react';
+import { CreditCard, Landmark, Loader2, ArrowLeft, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { Label } from '@/components/ui/label';
 
@@ -33,7 +33,7 @@ const shippingSchema = z.object({
   state: z.string().min(2, 'State / Province is required.'),
   zip: z.string().min(4, 'ZIP / Postal code is required.'),
   country: z.string().min(2, 'Country is required.'),
-  paymentMethod: z.enum(['card', 'bank'], {
+  paymentMethod: z.enum(['card', 'bank', 'cod'], {
     required_error: 'You need to select a payment method.',
   }),
 });
@@ -158,19 +158,26 @@ export default function CheckoutPage() {
                 </CardHeader>
                 <CardContent>
                    <FormField control={form.control} name="paymentMethod" render={({ field }) => ( <FormItem><FormControl>
-                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid sm:grid-cols-2 gap-4">
+                      <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         <FormItem>
-                            <Label htmlFor="card" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Label htmlFor="card" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary h-full">
                                 <RadioGroupItem value="card" id="card" className="sr-only" />
                                 <CreditCard className="mb-3 h-6 w-6" />
                                 Credit Card (Simulated)
                             </Label>
                         </FormItem>
                         <FormItem>
-                            <Label htmlFor="bank" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Label htmlFor="bank" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary h-full">
                                 <RadioGroupItem value="bank" id="bank" className="sr-only" />
                                 <Landmark className="mb-3 h-6 w-6" />
                                 Bank Transfer (Simulated)
+                            </Label>
+                        </FormItem>
+                         <FormItem>
+                            <Label htmlFor="cod" className="flex flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary h-full">
+                                <RadioGroupItem value="cod" id="cod" className="sr-only" />
+                                <Wallet className="mb-3 h-6 w-6" />
+                                Cash on Delivery
                             </Label>
                         </FormItem>
                       </RadioGroup>
