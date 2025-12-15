@@ -155,5 +155,17 @@ service cloud.firestore {
       allow list: if true;
       allow write: if isAdmin();
     }
+
+    /**
+     * @description Defines rules for discount coupons.
+     * @path /coupons/{couponId}
+     * @allow (get, list) Any user can view coupons.
+     * @allow (write) Write operations are restricted to the admin user.
+     */
+    match /coupons/{couponId} {
+      allow list: if true;
+      allow get: if true;
+      allow write: if isAdmin();
+    }
   }
 }

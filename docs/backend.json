@@ -143,7 +143,7 @@
         "addedDate"
       ]
     },
-     "Offer": {
+    "Offer": {
       "$schema": "http://json-schema.org/draft-07/schema#",
       "title": "Offer",
       "type": "object",
@@ -156,6 +156,21 @@
         "status": { "type": "string", "enum": ["active", "inactive"], "description": "The current status of the offer." }
       },
       "required": ["id", "name", "type", "value", "status"]
+    },
+    "Coupon": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Coupon",
+      "type": "object",
+      "description": "Represents a discount coupon.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID for the coupon." },
+        "code": { "type": "string", "description": "The coupon code." },
+        "type": { "type": "string", "enum": ["percentage", "flat"], "description": "The type of discount." },
+        "value": { "type": "number", "description": "The discount value." },
+        "minimumCartValue": { "type": "number", "description": "The minimum cart value to apply the coupon." },
+        "status": { "type": "string", "enum": ["active", "inactive"], "description": "The status of the coupon." }
+      },
+      "required": ["id", "code", "type", "value", "status"]
     }
   },
   "auth": {
@@ -247,6 +262,22 @@
             {
               "name": "offerId",
               "description": "The unique identifier for the offer."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/coupons/{couponId}",
+        "definition": {
+          "entityName": "Coupon",
+          "schema": {
+            "$ref": "#/backend/entities/Coupon"
+          },
+          "description": "Stores discount coupons, which can be publicly listed and are only writable by admins.",
+          "params": [
+            {
+              "name": "couponId",
+              "description": "The unique identifier for the coupon."
             }
           ]
         }

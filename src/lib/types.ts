@@ -1,3 +1,4 @@
+
 export interface Category {
   id: string;
   name: string;
@@ -23,11 +24,14 @@ export interface CartItem extends Product {
 }
 
 export interface Coupon {
+  id: string;
   code: string;
   type: 'percentage' | 'flat';
   value: number;
   minimumCartValue?: number;
+  status: 'active' | 'inactive';
 }
+
 
 export interface Offer {
   id: string;

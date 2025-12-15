@@ -1,9 +1,12 @@
+
 "use client";
 
 import React, { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import type { CartItem, Product, Coupon } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
-import { coupons } from '@/lib/data';
+import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, query, where } from 'firebase/firestore';
+
 
 interface CartContextType {
   cart: CartItem[];
@@ -23,7 +26,20 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponCodeToApply, setCouponCodeToApply] = useState<string | null>(null);
   const { toast } = useToast();
+  const firestore = useFirestore();
+
+  const couponsQuery = useMemoFirebase(
+    () =>
+      firestore && couponCodeToApply
+        ? query(collection(firestore, 'coupons'), where('code', '==', couponCodeToApply), where('status', '==', 'active'))
+        : null,
+    [firestore, couponCodeToApply]
+  );
+  
+  const { data: coupons, isLoading: couponsLoading } = useCollection<Coupon>(couponsQuery);
+
 
   const addToCart = useCallback((product: Product, quantity: number) => {
     setCart((prevCart) => {
@@ -72,7 +88,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, [cart]);
 
   const applyCoupon = useCallback((code: string) => {
-    const coupon = coupons.find(c => c.code.toLowerCase() === code.toLowerCase());
+    setCouponCodeToApply(code.toUpperCase());
+  }, []);
+
+  useMemo(() => {
+    if (couponsLoading || !couponCodeToApply) return;
+
+    const coupon = coupons?.[0];
+
     if (coupon) {
       if (coupon.minimumCartValue && cartSubtotal < coupon.minimumCartValue) {
         toast({
@@ -81,22 +104,24 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             variant: "destructive",
         });
         setAppliedCoupon(null);
-        return;
+      } else {
+        setAppliedCoupon(coupon);
+        toast({
+          title: "Coupon Applied!",
+          description: `You've received a discount.`,
+        });
       }
-      setAppliedCoupon(coupon);
-      toast({
-        title: "Coupon Applied!",
-        description: `You've received a discount.`,
-      });
     } else {
       toast({
         title: "Invalid Coupon",
-        description: "The coupon code you entered is not valid.",
+        description: "The coupon code you entered is not valid or has expired.",
         variant: "destructive",
       });
       setAppliedCoupon(null);
     }
-  }, [toast, cartSubtotal]);
+    setCouponCodeToApply(null);
+  }, [coupons, couponsLoading, cartSubtotal, toast, couponCodeToApply]);
+
 
   const discount = useMemo(() => {
     if (!appliedCoupon) return 0;
