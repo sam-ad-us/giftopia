@@ -68,14 +68,14 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const handleUpdateStatus = async (order: Order, status: Order['status']) => {
+  const handleUpdateStatus = async (orderId: string, customerName: string, status: Order['status']) => {
     if (!firestore) return;
-    const orderRef = doc(firestore, 'orders', order.id);
+    const orderRef = doc(firestore, 'orders', orderId);
     try {
       await updateDoc(orderRef, { status });
       toast({
         title: 'Order Status Updated',
-        description: `Order for ${order.customerName} is now ${status}.`,
+        description: `Order for ${customerName} is now ${status}.`,
       });
     } catch (error) {
       console.error('Error updating order status:', error);
@@ -126,7 +126,7 @@ export default function AdminOrdersPage() {
                     <TableCell><Skeleton className="h-5 w-16" /></TableCell>
                     <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
                     <TableCell><Skeleton className="h-5 w-8" /></TableCell>
-                    <TableCell><Skeleton className="h-8 w-8" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                   </TableRow>
                 ))}
               {orders &&
@@ -142,35 +142,10 @@ export default function AdminOrdersPage() {
                     </TableCell>
                     <TableCell>{order.items.reduce((acc, item) => acc + item.quantity, 0)}</TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Toggle menu</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                           <DropdownMenuItem onClick={() => handleViewDetails(order)}>
-                                <Eye className="mr-2 h-4 w-4" />
-                                View Details
-                            </DropdownMenuItem>
-                          <DropdownMenuLabel>Update Status</DropdownMenuLabel>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'shipped')}>
-                            <Truck className="mr-2 h-4 w-4" />
-                            Mark as Shipped
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => handleUpdateStatus(order, 'delivered')}>
-                            <CheckCircle className="mr-2 h-4 w-4" />
-                            Mark as Delivered
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem className="text-destructive" onClick={() => handleUpdateStatus(order, 'cancelled')}>
-                              <XCircle className="mr-2 h-4 w-4" />
-                            Mark as Cancelled
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <Button variant="outline" size="sm" onClick={() => handleViewDetails(order)}>
+                          <Eye className="h-4 w-4 mr-2" />
+                          View
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -194,6 +169,7 @@ export default function AdminOrdersPage() {
                     setSelectedOrder(null);
                 }
             }}
+            onUpdateStatus={handleUpdateStatus}
         />
       )}
 

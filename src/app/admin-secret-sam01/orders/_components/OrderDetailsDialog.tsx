@@ -7,6 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from '@/components/ui/dialog';
 import {
   Table,
@@ -20,14 +21,24 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Order } from '@/lib/types';
 import { format } from 'date-fns';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { CheckCircle, MoreVertical, Truck, XCircle } from 'lucide-react';
 
 interface OrderDetailsDialogProps {
   order: Order | null;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onUpdateStatus: (orderId: string, customerName: string, status: Order['status']) => void;
 }
 
-export function OrderDetailsDialog({ order, isOpen, onOpenChange }: OrderDetailsDialogProps) {
+export function OrderDetailsDialog({ order, isOpen, onOpenChange, onUpdateStatus }: OrderDetailsDialogProps) {
   if (!order) return null;
   
   const getStatusVariant = (status: Order['status']) => {
@@ -38,6 +49,10 @@ export function OrderDetailsDialog({ order, isOpen, onOpenChange }: OrderDetails
       case 'cancelled': return 'destructive';
       default: return 'secondary';
     }
+  };
+
+  const handleStatusUpdate = (status: Order['status']) => {
+    onUpdateStatus(order.id, order.customerName, status);
   };
 
   return (
@@ -111,6 +126,32 @@ export function OrderDetailsDialog({ order, isOpen, onOpenChange }: OrderDetails
                 </Table>
             </div>
         </div>
+        <DialogFooter className="pt-4 border-t">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline">
+                Update Status
+                <MoreVertical className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Change Status</DropdownMenuLabel>
+              <DropdownMenuItem onClick={() => handleStatusUpdate('shipped')}>
+                <Truck className="mr-2 h-4 w-4" />
+                Mark as Shipped
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => handleStatusUpdate('delivered')}>
+                <CheckCircle className="mr-2 h-4 w-4" />
+                Mark as Delivered
+              </DropdownMenuItem>
+              <DropdownMenuItem className="text-destructive" onClick={() => handleStatusUpdate('cancelled')}>
+                <XCircle className="mr-2 h-4 w-4" />
+                Mark as Cancelled
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <Button onClick={() => onOpenChange(false)}>Close</Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
