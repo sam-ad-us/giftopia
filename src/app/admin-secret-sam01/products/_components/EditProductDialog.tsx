@@ -63,7 +63,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
     defaultValues: {
         ...product,
         images: product.images.join(', '),
-        offerId: product.offerId || '',
+        offerId: product.offerId || 'none',
     }
   });
 
@@ -72,7 +72,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
       form.reset({
         ...product,
         images: product.images.join(', '),
-        offerId: product.offerId || '',
+        offerId: product.offerId || 'none',
       });
     }
   }, [product, form]);
@@ -84,7 +84,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
       const productData = {
         ...values,
         images: values.images.split(',').map(s => s.trim()),
-        offerId: values.offerId || null,
+        offerId: values.offerId === 'none' ? null : values.offerId,
       };
       await updateDoc(productRef, productData);
       toast({
@@ -200,7 +200,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            <SelectItem value="">No Offer</SelectItem>
+                            <SelectItem value="none">No Offer</SelectItem>
                             {offers?.map(offer => (
                                 <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
                             ))}

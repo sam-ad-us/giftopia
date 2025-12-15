@@ -78,7 +78,7 @@ export function AddProductDialog() {
             images: values.images.split(',').map(s => s.trim()), // Simple comma-separated string to array
             rating: 0, // Default value
             reviews: 0, // Default value
-            offerId: values.offerId || null,
+            offerId: values.offerId === 'none' ? null : values.offerId,
         };
       await addDoc(collection(firestore, 'products'), productData);
       toast({
@@ -201,7 +201,7 @@ export function AddProductDialog() {
                         </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                            <SelectItem value="">No Offer</SelectItem>
+                            <SelectItem value="none">No Offer</SelectItem>
                             {offers?.map(offer => (
                                 <SelectItem key={offer.id} value={offer.id}>{offer.name}</SelectItem>
                             ))}
