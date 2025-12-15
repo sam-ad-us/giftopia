@@ -34,7 +34,7 @@ export default function UserOrdersPage() {
 
   useEffect(() => {
     if (!isUserLoading && !user) {
-      router.replace('/login?redirect=/profile/orders');
+      router.replace('/login?redirect=/profile/your-order');
     }
   }, [user, isUserLoading, router]);
 

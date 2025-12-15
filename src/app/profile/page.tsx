@@ -141,7 +141,7 @@ export default function ProfilePage() {
                 </CardHeader>
                 <CardContent className="grid sm:grid-cols-2 gap-4">
                     <Button variant="outline" className="justify-start gap-2 h-12 text-base" asChild>
-                        <Link href="/profile/orders">
+                        <Link href="/profile/your-order">
                             <ShoppingBag className="h-5 w-5"/>
                             Order History
                         </Link>
