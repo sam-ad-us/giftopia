@@ -73,6 +73,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   }, [user, isUserLoading, router]);
 
   const handleSignOut = async () => {
+    if (!auth) return;
     await signOut(auth);
     router.push('/admin-secret-sam01/login');
   };
@@ -92,6 +93,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   }
 
   return (
+    <div className="font-body">
     <SidebarProvider>
       <Sidebar side="left" variant="sidebar" collapsible="icon" className="border-sidebar-border">
         <SidebarHeader>
@@ -178,6 +180,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
         <main className="flex-1 p-4 sm:p-6">{children}</main>
       </SidebarInset>
     </SidebarProvider>
+    </div>
   );
 }
 
