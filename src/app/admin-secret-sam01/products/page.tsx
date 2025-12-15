@@ -9,13 +9,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, PlusCircle } from 'lucide-react';
+import { MoreHorizontal } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
@@ -27,9 +28,15 @@ import { collection, query } from 'firebase/firestore';
 import { useFirestore, useMemoFirebase } from '@/firebase';
 import { Product } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { EditProductDialog } from './_components/EditProductDialog';
+import { DeleteProductAlert } from './_components/DeleteProductAlert';
+import { useState } from 'react';
 
 export default function AdminProductsPage() {
   const firestore = useFirestore();
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
   const productsQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'products')) : null),
@@ -37,6 +44,16 @@ export default function AdminProductsPage() {
   );
   
   const { data: products, isLoading } = useCollection<Product>(productsQuery);
+
+  const handleEdit = (product: Product) => {
+    setSelectedProduct(product);
+    setIsEditDialogOpen(true);
+  };
+
+  const handleDelete = (product: Product) => {
+    setSelectedProduct(product);
+    setIsDeleteDialogOpen(true);
+  };
 
   return (
     <div>
@@ -102,7 +119,7 @@ export default function AdminProductsPage() {
                                 </TableCell>
                                 <TableCell className="font-medium">{product.name}</TableCell>
                                 <TableCell>
-                                    <Badge variant="outline">In Stock</Badge>
+                                    <Badge variant={product.stockStatus === 'in-stock' ? 'default' : 'destructive'}>{product.stockStatus === 'in-stock' ? 'In Stock' : 'Out of Stock'}</Badge>
                                 </TableCell>
                                 <TableCell>${product.price.toFixed(2)}</TableCell>
                                 <TableCell className="hidden md:table-cell">{product.category}</TableCell>
@@ -116,8 +133,9 @@ export default function AdminProductsPage() {
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
                                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                        <DropdownMenuItem>Edit</DropdownMenuItem>
-                                        <DropdownMenuItem>Delete</DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => handleEdit(product)}>Edit</DropdownMenuItem>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem className="text-destructive" onClick={() => handleDelete(product)}>Delete</DropdownMenuItem>
                                     </DropdownMenuContent>
                                     </DropdownMenu>
                                 </TableCell>
@@ -128,6 +146,21 @@ export default function AdminProductsPage() {
                 </Table>
             </CardContent>
         </Card>
+        
+        {selectedProduct && (
+          <>
+            <EditProductDialog
+              product={selectedProduct}
+              isOpen={isEditDialogOpen}
+              onOpenChange={setIsEditDialogOpen}
+            />
+            <DeleteProductAlert
+              product={selectedProduct}
+              isOpen={isDeleteDialogOpen}
+              onOpenChange={setIsDeleteDialogOpen}
+            />
+          </>
+        )}
     </div>
   );
 }
