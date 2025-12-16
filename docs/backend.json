@@ -188,6 +188,23 @@
         "createdAt": { "type": "string", "format": "date-time", "description": "The date and time the request was submitted." }
       },
       "required": ["id", "userId", "productId", "status", "createdAt"]
+    },
+    "HomepageBanner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "HomepageBanner",
+      "type": "object",
+      "description": "Represents the main promotional banner on the homepage.",
+      "properties": {
+        "id": { "type": "string", "description": "Unique ID for the banner document (e.g., 'main-offer')." },
+        "badgeText": { "type": "string", "description": "Text for the badge (e.g., 'UP TO 30% OFF')." },
+        "title": { "type": "string", "description": "The main headline for the banner." },
+        "description": { "type": "string", "description": "The descriptive text for the banner." },
+        "buttonText": { "type": "string", "description": "Text for the call-to-action button." },
+        "buttonLink": { "type": "string", "description": "The URL the button links to." },
+        "imageId": { "type": "string", "description": "ID of the image from placeholder-images.json." },
+        "isActive": { "type": "boolean", "description": "Whether the banner is currently active." }
+      },
+      "required": ["id", "title", "description", "buttonText", "buttonLink", "imageId", "isActive"]
     }
   },
   "auth": {
@@ -314,10 +331,24 @@
             }
           ]
         }
+      },
+      {
+        "path": "/homepageBanner/{bannerId}",
+        "definition": {
+          "entityName": "HomepageBanner",
+          "schema": {
+            "$ref": "#/backend/entities/HomepageBanner"
+          },
+          "description": "Stores the content for the homepage promotional banner. It is publicly readable and only writable by admins.",
+          "params": [
+            {
+              "name": "bannerId",
+              "description": "The unique identifier for the banner document (e.g., 'main-offer')."
+            }
+          ]
+        }
       }
     ],
     "reasoning": "The Firestore data structure is designed to support Giftopia's e-commerce features, including product catalog browsing, shopping cart functionality, and user authentication. Key considerations include authorization independence, clarity of intent, and support for secure list operations. The structure leverages path-based ownership for user-specific data like cart items and incorporates the Google sign-in feature.\n\nAuthorization Independence:\nUser-specific data, such as cart items, are stored under the `/users/{userId}` path. This ensures that access control can be enforced based solely on the authenticated user's ID (`request.auth.uid`) without needing to fetch parent document data. This is a critical design choice to enable atomic operations (transactions/batches) and simplify security rules.\n\nSegregation and QAPs:\nProducts and Categories are stored in root-level collections (`/products`, `/categories`). This segregation enables efficient and secure listing operations. Security rules can be applied to these collections to control read access.  Since all documents in each collection share the same security requirements, this approach aligns with the Homogeneous Security Posture principle.\n\nGoogle Sign-in:\nThe `users` collection stores user data and includes a `googleId` field.  While not directly impacting the Firestore structure, this field allows associating a user document with their Google ID, enabling authentication via Google Sign-In. Firestore security rules can use `request.auth.uid` to verify the authenticated user's ID against the `userId` in the document path for user-specific collections.\n\nCart Items:\nCart items are stored as a subcollection under each user's document (`/users/{userId}/cart_items`). This reinforces ownership and allows for secure and efficient access to a user's cart data. Security rules can ensure that only the authenticated user can read or modify their own cart items."
   }
 }
-
-    

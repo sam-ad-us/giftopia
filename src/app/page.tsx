@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { categories } from '@/lib/data';
@@ -7,10 +9,86 @@ import Link from 'next/link';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
+import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { doc } from 'firebase/firestore';
+import { Skeleton } from '@/components/ui/skeleton';
+import { HomepageBanner } from '@/lib/types';
+
+
+function SpecialOfferSection() {
+    const firestore = useFirestore();
+
+    const bannerDocRef = useMemoFirebase(
+      () => (firestore ? doc(firestore, 'homepageBanner', 'main-offer') : null),
+      [firestore]
+    );
+  
+    const { data: banner, isLoading } = useDoc<HomepageBanner>(bannerDocRef);
+
+    if (isLoading) {
+        return (
+            <section id="special-offer" className="py-12 md:py-20 bg-background">
+                <div className="container mx-auto px-4">
+                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                        <div className="md:order-2">
+                             <Skeleton className="w-full aspect-[4/3]" />
+                        </div>
+                        <div className="md:order-1 text-center md:text-left">
+                            <Skeleton className="h-6 w-24 mb-4" />
+                            <Skeleton className="h-10 w-3/4 mb-4" />
+                            <Skeleton className="h-5 w-full mb-2" />
+                            <Skeleton className="h-5 w-5/6 mb-6" />
+                            <Skeleton className="h-12 w-48" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+        )
+    }
+
+    if (!banner || !banner.isActive) {
+        return null; // Don't render the section if there's no active banner
+    }
+
+    const bannerImage = PlaceHolderImages.find(p => p.id === banner.imageId);
+
+    return (
+        <section id="special-offer" className="py-12 md:py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div className="md:order-2">
+              {bannerImage && (
+                <Image 
+                  src={bannerImage.imageUrl}
+                  alt={bannerImage.description}
+                  width={600}
+                  height={450}
+                  className="rounded-lg object-cover w-full h-full"
+                  data-ai-hint={bannerImage.imageHint}
+                />
+              )}
+            </div>
+            <div className="md:order-1 text-center md:text-left">
+              {banner.badgeText && <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">{banner.badgeText}</Badge>}
+              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">{banner.title}</h2>
+              <p className="text-lg text-muted-foreground mb-6">
+                {banner.description}
+              </p>
+              <Button asChild size="lg">
+                <Link href={banner.buttonLink}>
+                  <ShoppingBag className="mr-2 h-5 w-5" />
+                  {banner.buttonText}
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+    )
+}
 
 export default function Home() {
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
-  const eidOfferImage = PlaceHolderImages.find(p => p.id === 'offer-eid');
 
   return (
     <div className="flex flex-col">
@@ -41,37 +119,7 @@ export default function Home() {
         </div>
       </section>
 
-       <section id="special-offer" className="py-12 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="md:order-2">
-              {eidOfferImage && (
-                <Image 
-                  src={eidOfferImage.imageUrl}
-                  alt={eidOfferImage.description}
-                  width={600}
-                  height={450}
-                  className="rounded-lg object-cover w-full h-full"
-                  data-ai-hint={eidOfferImage.imageHint}
-                />
-              )}
-            </div>
-            <div className="md:order-1 text-center md:text-left">
-              <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">UP TO 30% OFF</Badge>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">Eid Special Offer</h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                Celebrate this joyous occasion with our exclusive collection of Eid gifts. Find the perfect presents for your family and friends and enjoy special discounts.
-              </p>
-              <Button asChild size="lg">
-                <Link href="/catalog/festival-gifts">
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  Shop The Collection
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <SpecialOfferSection />
 
       <section id="categories" className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4">

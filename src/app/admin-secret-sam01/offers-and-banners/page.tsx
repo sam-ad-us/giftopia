@@ -9,7 +9,8 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { PlusCircle } from 'lucide-react';
+import { Edit } from 'lucide-react';
+import { EditHomepageBannerDialog } from './_components/EditHomepageBannerDialog';
 
 export default function AdminOffersAndBannersPage() {
     return (
@@ -19,18 +20,20 @@ export default function AdminOffersAndBannersPage() {
                     <h1 className="text-3xl font-bold tracking-tight">Offers and Banners</h1>
                     <p className="text-muted-foreground">Manage your promotional offers and banners.</p>
                 </div>
-                <Button>
-                    <PlusCircle className="mr-2 h-5 w-5" />
-                    Add Banner
-                </Button>
             </div>
              <Card>
                 <CardHeader>
-                    <CardTitle>Banner Management</CardTitle>
-                    <CardDescription>A placeholder for adding, editing, and managing banners.</CardDescription>
+                    <CardTitle>Homepage Banner</CardTitle>
+                    <CardDescription>Manage the main promotional banner on your homepage.</CardDescription>
                 </CardHeader>
-                <CardContent className="flex h-[300px] items-center justify-center">
-                    <p className="text-muted-foreground">Banner management interface will be here.</p>
+                <CardContent className="flex items-center justify-between">
+                    <p className="text-muted-foreground">Update the content of the special offer section.</p>
+                    <EditHomepageBannerDialog>
+                        <Button>
+                            <Edit className="mr-2 h-5 w-5" />
+                            Edit Homepage Banner
+                        </Button>
+                    </EditHomepageBannerDialog>
                 </CardContent>
             </Card>
         </div>

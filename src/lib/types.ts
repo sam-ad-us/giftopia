@@ -67,3 +67,14 @@ export interface Order {
     status: 'pending' | 'shipped' | 'delivered' | 'cancelled';
     createdAt: any; // Firestore ServerTimestamp
 }
+
+export interface HomepageBanner {
+  id: string;
+  badgeText?: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonLink: string;
+  imageId: string;
+  isActive: boolean;
+}

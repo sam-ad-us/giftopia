@@ -195,7 +195,17 @@ service cloud.firestore {
         allow create: if isSignedIn() && newDocHasCorrectOwner(request.auth.uid);
         allow read, list, update, delete: if isAdmin();
     }
+    
+    /**
+     * @description Manages the homepage banner content.
+     * @path /homepageBanner/{bannerId}
+     * @allow (get, list) Any user can view the banner content.
+     * @allow (write) Write operations are restricted to the admin user.
+     */
+    match /homepageBanner/{bannerId} {
+      allow get: if true;
+      allow list: if true;
+      allow write: if isAdmin();
+    }
   }
 }
-
-    
