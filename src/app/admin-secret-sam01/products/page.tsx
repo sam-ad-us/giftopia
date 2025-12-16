@@ -23,6 +23,7 @@ import { EditProductDialog } from './_components/EditProductDialog';
 import { DeleteProductAlert } from './_components/DeleteProductAlert';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { getImageUrl } from '@/lib/utils';
 
 export default function AdminProductsPage() {
   const firestore = useFirestore();
@@ -90,16 +91,16 @@ export default function AdminProductsPage() {
                         </TableRow>
                     ))}
                     {products && products.map((product) => {
-                        const productImage = product.images && product.images[0];
+                        const imageUrl = getImageUrl(product.images && product.images[0]);
                         return (
                             <TableRow key={product.id} data-state={product.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                 <TableCell className="hidden sm:table-cell">
-                                    {productImage ? (
+                                    {imageUrl ? (
                                     <Image
                                         alt={product.name}
                                         className="aspect-square rounded-md object-cover"
                                         height="64"
-                                        src={productImage}
+                                        src={imageUrl}
                                         width="64"
                                     />
                                     ) : (

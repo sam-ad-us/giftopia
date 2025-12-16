@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { Product, Offer } from '@/lib/types';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText, getImageUrl } from '@/lib/utils';
 import { Star, StarHalf, ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/contexts/CartContext';
@@ -42,18 +42,6 @@ function StarRating({ rating, reviewCount }: { rating: number, reviewCount: numb
     );
 }
 
-// Helper function to check if a string is a valid URL
-const isValidUrl = (urlString: string | null | undefined): boolean => {
-    if (!urlString) return false;
-    try {
-        new URL(urlString);
-        return true;
-    } catch (e) {
-        return false;
-    }
-};
-
-
 export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDetailDialogProps) {
     const { addToCart } = useCart();
     const { toast } = useToast();
@@ -81,7 +69,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const hasDiscount = discountedPrice < product.price;
 
     const productImages = product.images.filter(Boolean);
-    const mainImage = activeImage || (productImages.length > 0 ? productImages[0] : null);
+    const mainImageUrl = getImageUrl(activeImage || (productImages.length > 0 ? productImages[0] : null));
 
     const handleAddToCart = () => {
         if (product.stockStatus === 'out-of-stock' || product.status !== 'active') {
@@ -104,9 +92,9 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                  {/* Image Gallery */}
                 <div className="flex flex-col gap-4 p-6">
                     <div className="aspect-square relative rounded-lg overflow-hidden border">
-                        {isValidUrl(mainImage) ? (
+                        {mainImageUrl ? (
                             <Image
-                                src={mainImage!}
+                                src={mainImageUrl}
                                 alt={product.name}
                                 fill
                                 className="object-cover"
@@ -120,23 +108,26 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         )}
                     </div>
                     <div className="grid grid-cols-5 gap-4">
-                        {productImages.map((img, index) => isValidUrl(img) && (
-                            <button
-                                key={index}
-                                className={cn(
-                                    'aspect-square relative rounded-md overflow-hidden border-2 transition',
-                                    mainImage === img ? 'border-primary' : 'border-transparent'
-                                )}
-                                onClick={() => setActiveImage(img)}
-                            >
-                                <Image
-                                    src={img}
-                                    alt={`${product.name} thumbnail ${index + 1}`}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </button>
-                        ))}
+                        {productImages.map((img, index) => {
+                            const thumbUrl = getImageUrl(img);
+                            return thumbUrl && (
+                                <button
+                                    key={index}
+                                    className={cn(
+                                        'aspect-square relative rounded-md overflow-hidden border-2 transition',
+                                        activeImage === img ? 'border-primary' : 'border-transparent'
+                                    )}
+                                    onClick={() => setActiveImage(img)}
+                                >
+                                    <Image
+                                        src={thumbUrl}
+                                        alt={`${product.name} thumbnail ${index + 1}`}
+                                        fill
+                                        className="object-cover"
+                                    />
+                                </button>
+                            )
+                        })}
                     </div>
                 </div>
                 

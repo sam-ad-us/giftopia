@@ -10,7 +10,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText, getImageUrl } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import { Badge } from './ui/badge';
@@ -20,20 +20,9 @@ interface ProductCardProps {
   onProductClick: (product: Product) => void;
 }
 
-// Helper function to check if a string is a valid URL
-const isValidUrl = (urlString: string | null | undefined): boolean => {
-    if (!urlString) return false;
-    try {
-        new URL(urlString);
-        return true;
-    } catch (e) {
-        return false;
-    }
-};
-
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
-    const productImage = product.images && product.images[0] ? product.images[0] : null;
+    const imageUrl = getImageUrl(product.images && product.images[0]);
     const { addToCart } = useCart();
     const { toast } = useToast();
     const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
@@ -73,9 +62,9 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     >
         <div className={cn("group block flex-grow", isOutOfStock && "opacity-60")}>
             <div className="relative aspect-square w-full">
-            {isValidUrl(productImage) ? (
+            {imageUrl ? (
                 <Image
-                    src={productImage!}
+                    src={imageUrl}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
