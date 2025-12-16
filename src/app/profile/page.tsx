@@ -14,43 +14,14 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar, KeyRound } from 'lucide-react';
-import { signOut, updatePassword, type User, type FirebaseAuthError } from 'firebase/auth';
+import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar } from 'lucide-react';
+import { signOut } from 'firebase/auth';
 import Link from 'next/link';
-import { useToast } from '@/hooks/use-toast';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-const passwordSchema = z.object({
-  newPassword: z.string().min(8, 'Password must be at least 8 characters.'),
-  confirmPassword: z.string(),
-}).refine((data) => data.newPassword === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-});
-
 
 export default function ProfilePage() {
   const { user, isUserLoading } = useUser();
   const auth = useAuth();
   const router = useRouter();
-  const { toast } = useToast();
-  const [showPasswordFields, setShowPasswordFields] = useState(false);
-
-  const form = useForm<z.infer<typeof passwordSchema>>({
-    resolver: zodResolver(passwordSchema),
-    defaultValues: { newPassword: '', confirmPassword: '' },
-  });
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -68,24 +39,6 @@ export default function ProfilePage() {
     }
   };
 
-  const handlePasswordUpdate = async (values: z.infer<typeof passwordSchema>) => {
-    if (!user) return;
-    try {
-        await updatePassword(user as User, values.newPassword);
-        toast({ title: "Password Updated", description: "Your password has been changed successfully." });
-        setShowPasswordFields(false);
-        form.reset();
-    } catch (error) {
-        const fbError = error as FirebaseAuthError;
-        let errorMessage = "Failed to update password. Please try again.";
-        if (fbError.code === 'auth/requires-recent-login') {
-            errorMessage = "This is a sensitive action and requires a recent sign-in. Please sign out and log back in to change your password.";
-        }
-        console.error("Error updating password", error);
-        toast({ title: "Error Updating Password", description: errorMessage, variant: "destructive" });
-    }
-  }
-
   const getInitials = (name: string | null | undefined) => {
     if (!name) return 'U';
     const names = name.split(' ');
@@ -95,8 +48,6 @@ export default function ProfilePage() {
     return name[0];
   };
 
-  const isPasswordProvider = user?.providerData.some(p => p.providerId === 'password');
-  
   if (isUserLoading || !user) {
     return (
       <div className="container mx-auto px-4 py-12">
@@ -181,48 +132,6 @@ export default function ProfilePage() {
                         <p className="text-sm text-muted-foreground">Account Status</p>
                         <p className="font-medium text-green-600">Verified</p>
                         </div>
-                    </div>
-                </CardContent>
-            </Card>
-            
-            <Card className="mt-8">
-                <CardHeader>
-                    <CardTitle className="font-headline">Security</CardTitle>
-                    <CardDescription>Manage your password and account security.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div>
-                        {!showPasswordFields ? (
-                            <Button onClick={() => setShowPasswordFields(true)}>
-                                <KeyRound className="mr-2 h-4 w-4"/>
-                                {isPasswordProvider ? 'Change Password' : 'Set Password'}
-                            </Button>
-                        ) : (
-                            <Form {...form}>
-                                <form onSubmit={form.handleSubmit(handlePasswordUpdate)} className="space-y-4 max-w-sm">
-                                    <FormField control={form.control} name="newPassword" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>New Password</FormLabel>
-                                            <FormControl><Input type="password" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                    <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Confirm New Password</FormLabel>
-                                            <FormControl><Input type="password" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                    <div className="flex gap-2">
-                                        <Button type="submit" disabled={form.formState.isSubmitting}>
-                                            {isPasswordProvider ? 'Update Password' : 'Set Password'}
-                                        </Button>
-                                        <Button variant="ghost" onClick={() => { setShowPasswordFields(false); form.reset(); }}>Cancel</Button>
-                                    </div>
-                                </form>
-                            </Form>
-                        )}
                     </div>
                 </CardContent>
             </Card>
