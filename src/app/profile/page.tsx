@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser, useAuth } from '@/firebase';
@@ -15,7 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar, KeyRound } from 'lucide-react';
-import { signOut, sendPasswordResetEmail, updatePassword, type User } from 'firebase/auth';
+import { signOut, sendPasswordResetEmail, updatePassword, type User, type FirebaseAuthError } from 'firebase/auth';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -59,6 +60,7 @@ export default function ProfilePage() {
   }, [user, isUserLoading, router]);
 
   const handleSignOut = async () => {
+    if (!auth) return;
     try {
       await signOut(auth);
       router.push('/');
@@ -68,7 +70,7 @@ export default function ProfilePage() {
   };
   
   const handlePasswordReset = async () => {
-    if (!user?.email) {
+    if (!user?.email || !auth) {
        toast({ title: "Error", description: "No email address found for your account.", variant: "destructive" });
        return;
     };
@@ -89,8 +91,13 @@ export default function ProfilePage() {
         setShowPasswordFields(false);
         form.reset();
     } catch (error) {
+        const fbError = error as FirebaseAuthError;
+        let errorMessage = "Failed to update password. Please try again.";
+        if (fbError.code === 'auth/requires-recent-login') {
+            errorMessage = "This action requires you to have signed in recently. Please sign out and log back in to change your password.";
+        }
         console.error("Error updating password", error);
-        toast({ title: "Error", description: "Failed to update password. You may need to sign in again to complete this action.", variant: "destructive" });
+        toast({ title: "Error", description: errorMessage, variant: "destructive" });
     }
   }
 
