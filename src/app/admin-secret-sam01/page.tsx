@@ -122,14 +122,14 @@ export default function AdminDashboardPage() {
                         <CardTitle>Sales Over Time</CardTitle>
                          <CardDescription>Showing total revenue for the last 7 days.</CardDescription>
                     </CardHeader>
-                    <CardContent className="h-[300px] w-full p-0">
+                    <CardContent className="h-[300px] w-full pl-2">
                        {isLoadingOrders ? (
                            <div className="flex h-full items-center justify-center p-6">
                             <Skeleton className="h-full w-full" />
                            </div>
                        ) : (
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={salesData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                            <AreaChart data={salesData} margin={{ top: 10, right: 30, left: 10, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
                                     <stop offset="5%" stopColor="hsl(var(--chart-1))" stopOpacity={0.8}/>
@@ -217,5 +217,7 @@ export default function AdminDashboardPage() {
         </div>
     );
 }
+
+    
 
     
