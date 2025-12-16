@@ -61,6 +61,10 @@ export default function PersonalizedGiftsPage() {
 
   const form = useForm<z.infer<typeof personalizationSchema>>({
     resolver: zodResolver(personalizationSchema),
+    defaultValues: {
+      customText: '',
+      additionalInstructions: '',
+    },
   });
   
   useEffect(() => {
@@ -208,5 +212,3 @@ export default function PersonalizedGiftsPage() {
     </div>
   );
 }
-
-    
