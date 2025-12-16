@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -24,6 +23,9 @@ export default function Header() {
            <nav className="hidden md:flex items-center gap-1">
              <Button asChild variant="link" className="text-base text-sidebar-foreground/80 hover:text-sidebar-foreground">
               <Link href="/personalized-gifts">Personalized Gifts</Link>
+            </Button>
+             <Button asChild variant="link" className="text-base text-sidebar-foreground/80 hover:text-sidebar-foreground">
+              <Link href="/support">Support</Link>
             </Button>
           </nav>
         </div>
