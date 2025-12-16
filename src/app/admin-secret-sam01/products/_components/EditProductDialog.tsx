@@ -23,12 +23,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { categories } from '@/lib/data';
 import { useEffect } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, query, updateDoc, where } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
-import { Offer, Product } from '@/lib/types';
+import { Offer, Product, Category } from '@/lib/types';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const productSchema = z.object({
@@ -58,6 +57,12 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
     [firestore]
   );
   const { data: offers } = useCollection<Offer>(offersQuery);
+
+  const categoriesQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'categories')) : null),
+    [firestore]
+  );
+  const { data: categories, isLoading: isLoadingCategories } = useCollection<Category>(categoriesQuery);
 
   const form = useForm<z.infer<typeof productSchema>>({
     resolver: zodResolver(productSchema),
@@ -178,14 +183,14 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                     render={({ field }) => (
                         <FormItem>
                         <FormLabel>Category</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value}>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
                             <FormControl>
                             <SelectTrigger>
-                                <SelectValue placeholder="Select a category" />
+                                <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select a category"} />
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                            {categories.map(cat => (
+                            {categories?.map(cat => (
                                 <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                             ))}
                             </SelectContent>
