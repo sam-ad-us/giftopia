@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { Product, Offer } from '@/lib/types';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { cn, calculateDiscountedPrice, getOfferText, getImageUrl } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
 import { Star, StarHalf, ShoppingCart } from 'lucide-react';
 import { Button } from './ui/button';
 import { useCart } from '@/contexts/CartContext';
@@ -62,7 +62,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
 
     useEffect(() => {
         if (product && product.images.length > 0 && product.images[0]) {
-            setActiveImage(getImageUrl(product.images[0]));
+            setActiveImage(product.images[0]);
         } else {
             setActiveImage(null);
         }
@@ -80,7 +80,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const discountedPrice = calculateDiscountedPrice(product.price, productOffer);
     const hasDiscount = discountedPrice < product.price;
 
-    const productImages = product.images.filter(Boolean).map(getImageUrl);
+    const productImages = product.images.filter(Boolean);
     const mainImage = activeImage || (productImages.length > 0 ? productImages[0] : null);
 
     const handleAddToCart = () => {
