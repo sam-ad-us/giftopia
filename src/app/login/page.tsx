@@ -1,14 +1,44 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { useAuth, useUser } from '@/firebase';
-import { GoogleAuthProvider, signInWithPopup, type UserCredential, type FirebaseAuthError } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+  type UserCredential,
+  type FirebaseAuthError,
+} from 'firebase/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
 
-const ADMIN_EMAIL = 'admin-sam@giftopia.com';
+const loginSchema = z.object({
+  email: z.string().email('Please enter a valid email.'),
+  password: z.string().min(1, 'Password is required.'),
+});
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -21,22 +51,52 @@ function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
+const ADMIN_EMAIL = 'admin-sam@giftopia.com';
 
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectUrl = searchParams.get('redirect') || '/';
+
   const { user, isUserLoading } = useUser();
   const { toast } = useToast();
+
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
+  });
 
   const handleSuccessfulLogin = (result: UserCredential) => {
     if (result.user.email === ADMIN_EMAIL) {
       router.push('/admin-secret-sam01');
     } else {
-      router.push('/');
+      router.push(redirectUrl);
+    }
+  };
+
+  const handleEmailLogin = async (values: z.infer<typeof loginSchema>) => {
+    if (!auth) return;
+    try {
+      const result = await signInWithEmailAndPassword(auth, values.email, values.password);
+      handleSuccessfulLogin(result);
+    } catch (error) {
+      const fbError = error as FirebaseAuthError;
+       let errorMessage = "An unexpected error occurred. Please try again.";
+      if (fbError.code === 'auth/user-not-found' || fbError.code === 'auth/wrong-password' || fbError.code === 'auth/invalid-credential') {
+        errorMessage = "Invalid email or password. Please check your credentials and try again.";
+      }
+      toast({
+        title: "Login Failed",
+        description: errorMessage,
+        variant: "destructive",
+      });
+      console.error('Error signing in with email', fbError.code);
     }
   };
 
   const handleGoogleSignIn = async () => {
+    if (!auth) return;
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
@@ -46,9 +106,9 @@ export default function LoginPage() {
       if (fbError.code !== 'auth/cancelled-popup-request' && fbError.code !== 'auth/popup-closed-by-user') {
         console.error('Error signing in with Google', error);
         toast({
-          title: "Sign-in Failed",
-          description: "Could not sign in with Google. Please try again.",
-          variant: "destructive",
+          title: 'Sign-in Failed',
+          description: 'Could not sign in with Google. Please try again.',
+          variant: 'destructive',
         });
       }
     }
@@ -59,13 +119,13 @@ export default function LoginPage() {
         if (user.email === ADMIN_EMAIL) {
             router.push('/admin-secret-sam01');
         } else {
-            router.push('/');
+            router.push(redirectUrl);
         }
     }
-  }, [user, isUserLoading, router]);
+  }, [user, isUserLoading, router, redirectUrl]);
 
   if (isUserLoading || user) {
-      return null;
+    return null;
   }
 
   return (
@@ -73,14 +133,78 @@ export default function LoginPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="font-headline text-2xl">Sign In</CardTitle>
-          <CardDescription>Sign in with your Google account to continue.</CardDescription>
+          <CardDescription>
+            Enter your credentials to access your account.
+          </CardDescription>
         </CardHeader>
-        <CardContent>
-          <Button variant="outline" className="w-full" onClick={handleGoogleSignIn} type="button">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(handleEmailLogin)}>
+            <CardContent className="grid gap-4">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Email</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <div className="flex justify-between items-baseline">
+                        <FormLabel>Password</FormLabel>
+                        <Link href="/forgot-password"
+                            className="text-sm text-primary hover:underline">
+                            Forgot password?
+                        </Link>
+                    </div>
+                    <FormControl>
+                      <Input type="password" placeholder="••••••••" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting ? 'Signing In...' : 'Sign In'}
+              </Button>
+            </CardContent>
+          </form>
+        </Form>
+        <CardFooter className="flex flex-col gap-4">
+          <div className="relative w-full">
+            <Separator className="absolute top-1/2 -translate-y-1/2" />
+            <span className="relative bg-background px-2 text-xs text-muted-foreground z-10">
+              OR
+            </span>
+          </div>
+          <Button
+            variant="outline"
+            className="w-full"
+            onClick={handleGoogleSignIn}
+            type="button"
+          >
             <GoogleIcon className="mr-2 h-4 w-4" />
             Sign in with Google
           </Button>
-        </CardContent>
+          <p className="text-sm text-muted-foreground">
+            Don&apos;t have an account?{' '}
+            <Link href="/signup" className="text-primary hover:underline">
+              Sign up
+            </Link>
+          </p>
+        </CardFooter>
       </Card>
     </div>
   );
