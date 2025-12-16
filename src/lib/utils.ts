@@ -39,20 +39,32 @@ const isFullUrl = (urlString: string | null | undefined): boolean => {
 };
 
 /**
- * Constructs an absolute image URL. If the input is already a full URL (like from ImageKit),
- * it returns it as is. Otherwise, it generates a placeholder URL.
- * @param imagePath - The image path or filename, or a full URL.
- * @returns A full image URL or null if the input is invalid.
+ * Constructs an optimized ImageKit URL or returns a valid placeholder.
+ * @param imagePath - A full ImageKit URL or a path/ID.
+ * @param width - The desired width for optimization.
+ * @returns A full, optimized image URL or null.
  */
-export const getImageUrl = (imagePath: string | null | undefined): string | null => {
+export const getImageUrl = (imagePath: string | null | undefined, width?: number): string | null => {
     if (!imagePath) return null;
 
-    // If it's already a full URL (like from ImageKit), return it directly.
+    // If it's already a full ImageKit URL, append transformations.
+    if (isFullUrl(imagePath) && imagePath.includes('ik.imagekit.io')) {
+        const url = new URL(imagePath);
+        const transformations: string[] = ['q-auto', 'f-auto']; // quality and format auto
+        if (width) {
+            transformations.push(`w-${width}`);
+        }
+        url.searchParams.set('tr', transformations.join(','));
+        return url.toString();
+    }
+    
+    // If it's another full URL, return it as is.
     if (isFullUrl(imagePath)) {
         return imagePath;
     }
-    
-    // Otherwise, generate a placeholder URL.
+
+    // Otherwise, generate a placeholder URL based on the path/ID.
     const seed = imagePath.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return `https://picsum.photos/seed/${seed}/400/400`;
+    const placeholderWidth = width || 400;
+    return `https://picsum.photos/seed/${seed}/${placeholderWidth}/${placeholderWidth}`;
 };

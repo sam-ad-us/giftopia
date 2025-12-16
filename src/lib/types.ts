@@ -4,7 +4,7 @@ export interface Category {
   id: string;
   name: string;
   description: string;
-  image: string;
+  imageUrl: string;
   offer?: string | null;
   showInSubHeader?: boolean;
 }
@@ -77,6 +77,6 @@ export interface HomepageBanner {
   description: string;
   buttonText: string;
   buttonLink: string;
-  imageId: string;
+  imageUrl: string;
   isActive: boolean;
 }

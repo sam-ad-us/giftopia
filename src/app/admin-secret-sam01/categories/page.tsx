@@ -25,8 +25,8 @@ import { useState } from 'react';
 import { CreateCategoryDialog } from './_components/CreateCategoryDialog';
 import { EditCategoryDialog } from './_components/EditCategoryDialog';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
+import { getImageUrl } from '@/lib/utils';
 
 export default function AdminCategoriesPage() {
     const firestore = useFirestore();
@@ -85,7 +85,7 @@ export default function AdminCategoriesPage() {
                                 </TableRow>
                             ))}
                             {categories && categories.map((category) => {
-                                const categoryImage = PlaceHolderImages.find((p) => p.id === category.image);
+                                const categoryImage = getImageUrl(category.imageUrl, 64);
                                 return (
                                 <TableRow key={category.id}>
                                     <TableCell>
@@ -95,7 +95,7 @@ export default function AdminCategoriesPage() {
                                                     alt={category.name}
                                                     className="aspect-square rounded-md object-cover"
                                                     height="64"
-                                                    src={categoryImage.imageUrl}
+                                                    src={categoryImage}
                                                     width="64"
                                                 />
                                             ) : (

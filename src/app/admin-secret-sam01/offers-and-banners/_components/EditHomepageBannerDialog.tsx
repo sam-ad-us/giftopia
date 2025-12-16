@@ -30,7 +30,7 @@ const bannerSchema = z.object({
   badgeText: z.string().optional(),
   buttonText: z.string().min(3, 'Button text is required.'),
   buttonLink: z.string().url('Must be a valid URL (e.g., /catalog/sale).').or(z.string().startsWith('/', {message: "Must be a valid relative path (e.g., /catalog/sale)."})),
-  imageId: z.string().min(1, 'Image ID is required.'),
+  imageUrl: z.string().url('Please enter a valid ImageKit URL.'),
   isActive: z.boolean().default(true),
 });
 
@@ -68,7 +68,7 @@ export function EditHomepageBannerDialog({ children }: EditHomepageBannerDialogP
             badgeText: 'UP TO 30% OFF',
             buttonText: 'Shop The Collection',
             buttonLink: '/catalog/festival-gifts',
-            imageId: 'offer-eid',
+            imageUrl: '',
             isActive: true,
         });
     }
@@ -141,8 +141,8 @@ export function EditHomepageBannerDialog({ children }: EditHomepageBannerDialogP
                     <FormField control={form.control} name="badgeText" render={({ field }) => (
                         <FormItem><FormLabel>Badge Text (Optional)</FormLabel><FormControl><Input placeholder="e.g., 30% OFF" {...field} /></FormControl><FormMessage /></FormItem>
                     )} />
-                    <FormField control={form.control} name="imageId" render={({ field }) => (
-                        <FormItem><FormLabel>Image ID</FormLabel><FormControl><Input placeholder="e.g., offer-eid" {...field} /></FormControl><FormDescription className="text-xs">ID from placeholder-images.json</FormDescription><FormMessage /></FormItem>
+                    <FormField control={form.control} name="imageUrl" render={({ field }) => (
+                        <FormItem><FormLabel>Image URL</FormLabel><FormControl><Input placeholder="https://ik.imagekit.io/..." {...field} /></FormControl><FormDescription className="text-xs">Full URL from ImageKit.</FormDescription><FormMessage /></FormItem>
                     )} />
                 </div>
                  <div className="grid grid-cols-2 gap-4">

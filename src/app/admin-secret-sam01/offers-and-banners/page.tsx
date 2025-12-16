@@ -15,7 +15,6 @@ import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { doc, collection, query } from 'firebase/firestore';
 import { HomepageBanner, Offer } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
@@ -25,6 +24,7 @@ import { useCollection } from '@/firebase';
 import { useState } from 'react';
 import { EditOfferDialog } from '../offers/_components/EditOfferDialog';
 import { Separator } from '@/components/ui/separator';
+import { getImageUrl } from '@/lib/utils';
 
 export default function AdminOffersAndBannersPage() {
     const firestore = useFirestore();
@@ -36,7 +36,7 @@ export default function AdminOffersAndBannersPage() {
   
     const { data: banner, isLoading: isBannerLoading } = useDoc<HomepageBanner>(bannerDocRef);
 
-    const bannerImage = banner ? PlaceHolderImages.find(p => p.id === banner.imageId) : null;
+    const bannerImage = getImageUrl(banner?.imageUrl, 600);
     
     // Offer management logic
     const [selectedOffer, setSelectedOffer] = useState<Offer | null>(null);
@@ -95,12 +95,11 @@ export default function AdminOffersAndBannersPage() {
                             <div className="md:order-2">
                                 {bannerImage ? (
                                     <Image 
-                                    src={bannerImage.imageUrl}
-                                    alt={bannerImage.description}
+                                    src={bannerImage}
+                                    alt={banner.title}
                                     width={600}
                                     height={450}
                                     className="rounded-lg object-cover w-full h-full"
-                                    data-ai-hint={bannerImage.imageHint}
                                     />
                                 ) : (
                                     <div className="aspect-[4/3] bg-muted flex items-center justify-center rounded-lg">

@@ -3,11 +3,9 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { categories as staticCategories } from '@/lib/data';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, query, where } from 'firebase/firestore';
@@ -17,6 +15,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import ProductCard from '@/components/ProductCard';
 import { useState } from 'react';
 import { ProductDetailDialog } from '@/components/ProductDetailDialog';
+import { getImageUrl } from '@/lib/utils';
 
 function SpecialOfferProductsSection() {
     const firestore = useFirestore();
@@ -132,7 +131,7 @@ function SpecialOfferSection() {
         return null; // Don't render the section if there's no active banner
     }
 
-    const bannerImage = PlaceHolderImages.find(p => p.id === banner.imageId);
+    const bannerImage = getImageUrl(banner.imageUrl, 600);
 
     return (
         <section id="special-offer" className="py-12 md:py-20 bg-background">
@@ -141,12 +140,11 @@ function SpecialOfferSection() {
             <div className="md:order-2">
               {bannerImage && (
                 <Image 
-                  src={bannerImage.imageUrl}
-                  alt={bannerImage.description}
+                  src={bannerImage}
+                  alt={banner.title}
                   width={600}
                   height={450}
                   className="rounded-lg object-cover w-full h-full"
-                  data-ai-hint={bannerImage.imageHint}
                 />
               )}
             </div>
@@ -197,7 +195,7 @@ function CategorySection() {
                 </Card>
             ))}
             {categories && categories.map((category) => {
-              const categoryImage = PlaceHolderImages.find(p => p.id === category.image);
+              const categoryImage = getImageUrl(category.imageUrl, 400);
               return (
               <Link key={category.id} href={`/catalog/${category.id}`} className="group">
                 <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-0">
@@ -205,11 +203,10 @@ function CategorySection() {
                     <div className="relative aspect-square">
                       {categoryImage && (
                         <Image
-                          src={categoryImage.imageUrl}
+                          src={categoryImage}
                           alt={category.name}
                           fill
                           className="object-cover transition-transform duration-300 group-hover:scale-105"
-                          data-ai-hint={categoryImage.imageHint}
                         />
                       )}
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -239,19 +236,26 @@ function CategorySection() {
 }
 
 export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+  const firestore = useFirestore();
+  const bannerDocRef = useMemoFirebase(
+    () => (firestore ? doc(firestore, 'homepageBanner', 'main-offer') : null),
+    [firestore]
+  );
+  const { data: banner, isLoading } = useDoc<HomepageBanner>(bannerDocRef);
+  const heroImage = getImageUrl(banner?.imageUrl, 1920);
 
   return (
     <div className="flex flex-col">
       <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center text-white">
-        {heroImage && (
+        {isLoading ? (
+          <Skeleton className="absolute inset-0" />
+        ) : heroImage && (
            <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
+            src={heroImage}
+            alt={banner?.title || "A beautifully wrapped gift box"}
             fill
             className="object-cover"
             priority
-            data-ai-hint={heroImage.imageHint}
           />
         )}
         <div className="absolute inset-0 bg-black/60" />

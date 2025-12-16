@@ -27,7 +27,7 @@ const categorySchema = z.object({
   id: z.string().min(3, 'ID must be at least 3 characters.').regex(/^[a-z0-9-]+$/, 'ID must be lowercase with no spaces and only hyphens.'),
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
-  image: z.string().min(1, 'Image ID is required.'),
+  imageUrl: z.string().url('Please enter a valid ImageKit URL.'),
   offer: z.string().optional(),
   showInSubHeader: z.boolean().default(false).optional(),
 });
@@ -43,7 +43,7 @@ export function CreateCategoryDialog() {
       id: '',
       name: '',
       description: '',
-      image: '',
+      imageUrl: '',
       offer: '',
       showInSubHeader: false,
     },
@@ -144,14 +144,14 @@ export function CreateCategoryDialog() {
             />
             <FormField
               control={form.control}
-              name="image"
+              name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image ID</FormLabel>
+                  <FormLabel>Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., cat-birthday" {...field} />
+                    <Input placeholder="https://ik.imagekit.io/..." {...field} />
                   </FormControl>
-                   <FormDescription>ID of the image from placeholder-images.json.</FormDescription>
+                   <FormDescription>Full URL of the image from ImageKit.</FormDescription>
                    <FormMessage />
                 </FormItem>
               )}

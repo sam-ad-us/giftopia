@@ -27,7 +27,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 const categorySchema = z.object({
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
-  image: z.string().min(1, 'Image ID is required.'),
+  imageUrl: z.string().url('Please enter a valid ImageKit URL.'),
   offer: z.string().optional(),
   showInSubHeader: z.boolean().default(false).optional(),
 });
@@ -128,13 +128,14 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
             />
             <FormField
               control={form.control}
-              name="image"
+              name="imageUrl"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Image ID</FormLabel>
+                  <FormLabel>Image URL</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., cat-anniversary" {...field} />
+                    <Input placeholder="https://ik.imagekit.io/..." {...field} />
                   </FormControl>
+                   <FormDescription>Full URL of the image from ImageKit.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

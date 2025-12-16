@@ -1,6 +1,5 @@
 'use client';
 
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +8,7 @@ import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import type { Category } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { getImageUrl } from '@/lib/utils';
 
 export default function CatalogPage() {
   const firestore = useFirestore();
@@ -41,7 +41,7 @@ export default function CatalogPage() {
             </Card>
           ))}
         {!isLoading && categories?.map((category) => {
-          const categoryImage = PlaceHolderImages.find((p) => p.id === category.image);
+          const categoryImage = getImageUrl(category.imageUrl, 400);
           return (
             <Link key={category.id} href={`/catalog/${category.id}`} className="group">
               <Card className="overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-2 border-0">
@@ -49,11 +49,10 @@ export default function CatalogPage() {
                   <div className="relative aspect-square">
                     {categoryImage ? (
                       <Image
-                        src={categoryImage.imageUrl}
+                        src={categoryImage}
                         alt={category.name}
                         fill
                         className="object-cover transition-transform duration-300 group-hover:scale-105"
-                        data-ai-hint={categoryImage.imageHint}
                         sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
                       />
                     ) : (
