@@ -39,20 +39,20 @@ const isFullUrl = (urlString: string | null | undefined): boolean => {
 };
 
 /**
- * Constructs an absolute image URL. If the input is already a full URL,
- * it returns it as is. Otherwise, it prepends a base URL.
- * For now, we will use picsum as a placeholder.
+ * Constructs an absolute image URL. If the input is already a full URL (like from ImageKit),
+ * it returns it as is. Otherwise, it generates a placeholder URL.
  * @param imagePath - The image path or filename, or a full URL.
  * @returns A full image URL or null if the input is invalid.
  */
 export const getImageUrl = (imagePath: string | null | undefined): string | null => {
     if (!imagePath) return null;
+
+    // If it's already a full URL (like from ImageKit), return it directly.
     if (isFullUrl(imagePath)) {
         return imagePath;
     }
-    // In a real scenario, you'd use your image CDN base URL here.
-    // Example: `https://your-cdn.com/${imagePath}`
-    // Using picsum for placeholder demonstration.
+    
+    // Otherwise, generate a placeholder URL.
     const seed = imagePath.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
     return `https://picsum.photos/seed/${seed}/400/400`;
 };
