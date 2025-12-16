@@ -24,15 +24,8 @@ const nextConfig: NextConfig = {
         pathname: '/**',
       },
       {
-        protocol: 'https'
-        ,
-        hostname: 'picsum.photos',
-        port: '',
-        pathname: '/**',
-      },
-      {
         protocol: 'https',
-        hostname: 'img.prod.com',
+        hostname: 'picsum.photos',
         port: '',
         pathname: '/**',
       },
@@ -42,12 +35,6 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
-      {
-        protocol: 'https',
-        hostname: 'ik.imagekit.io',
-        port: '',
-        pathname: '/**',
-      }
     ],
   },
 };

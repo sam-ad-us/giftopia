@@ -10,7 +10,7 @@ import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
-import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
+import { cn, calculateDiscountedPrice, getOfferText, getImageUrl } from '@/lib/utils';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import { Badge } from './ui/badge';
@@ -33,7 +33,8 @@ const isValidUrl = (urlString: string | null | undefined): boolean => {
 
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
-    const productImage = product.images && product.images[0] ? product.images[0] : null;
+    const rawProductImage = product.images && product.images[0] ? product.images[0] : null;
+    const productImage = rawProductImage ? getImageUrl(rawProductImage) : null;
     const { addToCart } = useCart();
     const { toast } = useToast();
     const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
@@ -119,4 +120,3 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     </Card>
   );
 }
-

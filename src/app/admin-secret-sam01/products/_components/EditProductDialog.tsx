@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -37,7 +38,7 @@ const productSchema = z.object({
   price: z.coerce.number().positive('Price must be a positive number.'),
   category: z.string({ required_error: 'Please select a category.' }),
   offerId: z.string().optional(),
-  images: z.string().min(1, "Please provide at least one image URL."),
+  images: z.string().min(1, "Please provide at least one image ID or URL."),
   stockStatus: z.enum(['in-stock', 'out-of-stock']),
   status: z.enum(['active', 'inactive']),
 });
@@ -222,12 +223,12 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
               name="images"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Product Image URLs</FormLabel>
+                  <FormLabel>Product Images</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., https://.../image.jpg, https://.../image2.png" {...field} />
+                    <Input placeholder="image.jpg, another.png, https://.../image.jpg" {...field} />
                   </FormControl>
                   <FormDescription>
-                    Provide a comma-separated list of direct image URLs (.jpg, .png, etc.).
+                    Comma-separated list of ImageKit filenames or full URLs.
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

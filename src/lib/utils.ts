@@ -26,3 +26,15 @@ export const calculateDiscountedPrice = (originalPrice: number, offer: Offer | n
   }
   return originalPrice;
 };
+
+const IMAGEKIT_BASE_URL = "https://ik.imagekit.io/your-imagekit-id/"; // TODO: Replace with your ImageKit ID
+
+export const getImageUrl = (imageIdentifier: string): string => {
+  if (!imageIdentifier) return '';
+  // If it's already a full URL, return it
+  if (imageIdentifier.startsWith('http')) {
+    return imageIdentifier;
+  }
+  // Otherwise, construct the ImageKit URL
+  return `${IMAGEKIT_BASE_URL}${imageIdentifier}`;
+}
