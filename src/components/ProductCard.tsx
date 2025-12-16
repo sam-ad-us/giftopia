@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -21,7 +22,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
-    const productImage = product.images && product.images[0];
+    const productImage = product.images && product.images[0] ? product.images[0] : null;
     const { addToCart } = useCart();
     const { toast } = useToast();
     const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
@@ -49,8 +50,10 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const firestore = useFirestore();
 
     useEffect(() => {
-        if (product && product.images.length > 0) {
+        if (product && product.images.length > 0 && product.images[0]) {
             setActiveImage(product.images[0]);
+        } else {
+            setActiveImage(null);
         }
     }, [product]);
     
@@ -67,7 +70,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const hasDiscount = discountedPrice < product.price;
 
     const productImages = product.images.filter(Boolean);
-    const mainImage = activeImage || (productImages[0] || '');
+    const mainImage = activeImage || (productImages.length > 0 ? productImages[0] : null);
 
     const handleAddToCart = () => {
         if (product.stockStatus === 'out-of-stock' || product.status !== 'active') {
