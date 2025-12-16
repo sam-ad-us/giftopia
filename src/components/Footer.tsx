@@ -23,7 +23,7 @@ export default function Footer() {
             <h3 className="font-bold mb-4">Customer Help</h3>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
               <li><Link href="/support" className="hover:text-sidebar-primary">Support</Link></li>
-              <li><Link href="#" className="hover:text-sidebar-primary">FAQ</Link></li>
+              <li><Link href="/faq" className="hover:text-sidebar-primary">FAQ</Link></li>
               <li><Link href="#" className="hover:text-sidebar-primary">Shipping & Delivery</Link></li>
               <li><Link href="#" className="hover:text-sidebar-primary">Return & Refund Policy</Link></li>
               <li><Link href="#" className="hover:text-sidebar-primary">Order Tracking</Link></li>
