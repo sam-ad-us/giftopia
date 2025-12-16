@@ -36,7 +36,7 @@ export default function CategoryPage() {
 
   // If loading is finished and the category document doesn't exist, show a 404 page.
   if (!isLoading && !category) {
-    notFound();
+    return notFound();
   }
 
   return (
