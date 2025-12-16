@@ -34,8 +34,8 @@ export default function Footer() {
           <div>
             <h3 className="font-bold mb-4">Policies</h3>
             <ul className="space-y-2 text-sm text-sidebar-foreground/70">
-              <li><Link href="#" className="hover:text-sidebar-primary">Privacy Policy</Link></li>
-              <li><Link href="#" className="hover:text-sidebar-primary">Terms & Conditions</Link></li>
+              <li><Link href="/privacy-policy" className="hover:text-sidebar-primary">Privacy Policy</Link></li>
+              <li><Link href="/terms-and-conditions" className="hover:text-sidebar-primary">Terms & Conditions</Link></li>
               <li><Link href="#" className="hover:text-sidebar-primary">Cancellation Policy</Link></li>
             </ul>
           </div>
