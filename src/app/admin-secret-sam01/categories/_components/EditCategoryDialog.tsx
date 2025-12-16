@@ -96,7 +96,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
           <DialogDescription>Update the details for this product category.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto px-1">
             <FormField
               control={form.control}
               name="name"
@@ -150,7 +150,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
                 <FormItem>
                   <FormLabel>Offer Text (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Up to 20% Off" {...field} />
+                    <Input placeholder="e.g., Up to 20% Off" {...field} value={field.value || ''} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

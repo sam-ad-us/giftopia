@@ -85,7 +85,7 @@ export function EditOfferDialog({ offer, isOpen, onOpenChange }: EditOfferDialog
           <DialogDescription>Update the details for this special offer.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto px-1">
             <FormField
               control={form.control}
               name="name"

@@ -94,7 +94,7 @@ export function CreateCategoryDialog() {
           <DialogDescription>Fill in the details below to create a new product category.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-6 py-4 max-h-[70vh] overflow-y-auto px-1">
             <FormField
               control={form.control}
               name="name"
