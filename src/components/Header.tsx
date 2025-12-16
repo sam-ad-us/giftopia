@@ -14,21 +14,21 @@ export default function Header() {
   const { user, isUserLoading } = useUser();
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-primary-deeper/20 bg-primary-deeper text-primary-foreground">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <Gift className="h-7 w-7 text-accent" />
-            <span className="font-headline text-2xl font-bold">Giftopia</span>
+            <Gift className="h-7 w-7 text-primary" />
+            <span className="font-headline text-2xl font-bold text-foreground">Giftopia</span>
           </Link>
-          <nav className="hidden md:flex items-center gap-4">
-             <Button asChild variant="link" className="text-base text-primary-foreground/80 hover:text-primary-foreground">
+           <nav className="hidden md:flex items-center gap-1">
+             <Button asChild variant="link" className="text-base text-muted-foreground hover:text-primary">
               <Link href="/personalized-gifts">Personalized Gifts</Link>
             </Button>
           </nav>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
           <div className="hidden sm:block">
             <SearchInput />
           </div>
@@ -40,11 +40,11 @@ export default function Header() {
            </Button>
           <CartIcon />
           {isUserLoading ? (
-            <Skeleton className="h-8 w-16 bg-white/20" />
+            <Skeleton className="h-10 w-10 rounded-full" />
           ) : user ? (
             <UserNav />
           ) : (
-            <Button asChild variant="secondary">
+            <Button asChild>
               <Link href="/login">Login</Link>
             </Button>
           )}
@@ -53,5 +53,3 @@ export default function Header() {
     </header>
   );
 }
-
-    

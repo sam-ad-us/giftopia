@@ -24,7 +24,7 @@ export default function RootLayout({
   const isAdminPage = pathname.startsWith('/admin-secret-sam01');
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head>
         <title>Giftopia</title>
         <meta

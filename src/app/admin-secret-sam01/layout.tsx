@@ -51,9 +51,9 @@ const menuItems = [
   { href: '/admin-secret-sam01', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin-secret-sam01/products', icon: Package, label: 'Products' },
   { href: '/admin-secret-sam01/categories', icon: ShoppingBag, label: 'Categories' },
+  { href: '/admin-secret-sam01/orders', icon: ShoppingBag, label: 'Orders' },
   { href: '/admin-secret-sam01/offers', icon: Percent, label: 'Offers' },
   { href: '/admin-secret-sam01/coupons', icon: Ticket, label: 'Coupons' },
-  { href: '/admin-secret-sam01/orders', icon: ShoppingBag, label: 'Orders' },
   { href: '/admin-secret-sam01/gift-requests', icon: FileText, label: 'Gift Requests' },
   { href: '/admin-secret-sam01/tax', icon: Receipt, label: 'Tax' },
   { href: '/admin-secret-sam01/users', icon: Users, label: 'Users' },
@@ -99,10 +99,10 @@ function ProtectedAdminLayout({ children }: { children: ReactNode }) {
   return (
     <div className="font-body">
       <SidebarProvider>
-        <Sidebar side="left" variant="sidebar" collapsible="icon" className="border-sidebar-border">
+        <Sidebar side="left" variant="sidebar" collapsible="icon" className="border-sidebar-border bg-sidebar-background text-sidebar-foreground">
           <SidebarHeader>
-            <div className="flex h-12 items-center gap-2 px-2">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <div className="flex h-14 items-center gap-2 px-2 border-b border-sidebar-border">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <Gift className="size-5" />
               </div>
               <span className="text-lg font-semibold text-sidebar-primary">Giftopia</span>
@@ -128,7 +128,7 @@ function ProtectedAdminLayout({ children }: { children: ReactNode }) {
               ))}
             </SidebarMenu>
           </SidebarContent>
-          <SidebarFooter>
+          <SidebarFooter className="border-t border-sidebar-border">
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -151,8 +151,8 @@ function ProtectedAdminLayout({ children }: { children: ReactNode }) {
             <div className="ml-auto">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2">
-                    <Avatar className="h-8 w-8">
+                  <Button variant="ghost" className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9">
                       <AvatarImage src={user.photoURL || undefined} />
                       <AvatarFallback>{getInitials(user.displayName)}</AvatarFallback>
                     </Avatar>
@@ -163,7 +163,7 @@ function ProtectedAdminLayout({ children }: { children: ReactNode }) {
                     <ChevronDown className="hidden h-4 w-4 text-muted-foreground sm:block" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-56">
                   <DropdownMenuLabel>{user.displayName || 'Admin'}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>

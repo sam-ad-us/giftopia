@@ -98,12 +98,12 @@ export default function AdminLoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-sidebar-background px-4">
         <div className="w-full max-w-sm">
             <div className="mx-auto flex justify-center items-center gap-2 mb-6">
-                <Gift className="h-8 w-8 text-primary" />
-                <span className="text-2xl font-bold text-foreground">Giftopia Admin</span>
+                <Gift className="h-8 w-8 text-sidebar-primary" />
+                <span className="text-2xl font-bold text-sidebar-primary">Giftopia Admin</span>
             </div>
-            <Card>
+            <Card className="bg-background text-foreground">
                 <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">Admin Login</CardTitle>
+                    <CardTitle className="text-2xl font-headline">Admin Login</CardTitle>
                     <CardDescription>Enter your credentials to access the dashboard.</CardDescription>
                 </CardHeader>
                 <Form {...form}>
