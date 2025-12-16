@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -23,15 +22,19 @@ import { Order } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { format } from 'date-fns';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, Truck } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { UserOrderDetailsDialog } from './_components/UserOrderDetailsDialog';
 
 export default function UserOrdersPage() {
   const firestore = useFirestore();
   const { user, isUserLoading } = useUser();
   const router = useRouter();
+  const { toast } = useToast();
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   useEffect(() => {
     if (!isUserLoading && !user) {
@@ -70,6 +73,13 @@ export default function UserOrdersPage() {
         return 'secondary';
     }
   };
+
+  const handleTrackOrder = () => {
+    toast({
+      title: 'Coming Soon!',
+      description: 'Order tracking functionality will be available shortly.',
+    });
+  };
   
     if (isUserLoading || !user) {
         return (
@@ -92,6 +102,7 @@ export default function UserOrdersPage() {
     }
 
   return (
+    <>
     <div className="container mx-auto px-4 py-12">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="outline" size="icon" asChild>
@@ -115,6 +126,7 @@ export default function UserOrdersPage() {
                 <TableHead>Total</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-center">Items</TableHead>
+                <TableHead className="text-right">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -133,6 +145,9 @@ export default function UserOrdersPage() {
                     <TableCell className="text-center">
                       <Skeleton className="h-5 w-8 mx-auto" />
                     </TableCell>
+                    <TableCell className="text-right">
+                      <Skeleton className="h-8 w-24 ml-auto" />
+                    </TableCell>
                   </TableRow>
                 ))}
               {sortedOrders &&
@@ -146,6 +161,16 @@ export default function UserOrdersPage() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">{order.items.reduce((acc, item) => acc + item.quantity, 0)}</TableCell>
+                    <TableCell className="text-right space-x-2">
+                        <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>
+                            <Eye className="mr-2 h-4 w-4"/>
+                            Details
+                        </Button>
+                         <Button variant="secondary" size="sm" onClick={handleTrackOrder}>
+                            <Truck className="mr-2 h-4 w-4"/>
+                            Track
+                        </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
             </TableBody>
@@ -161,5 +186,13 @@ export default function UserOrdersPage() {
         </CardContent>
       </Card>
     </div>
+    {selectedOrder && (
+        <UserOrderDetailsDialog
+            order={selectedOrder}
+            isOpen={!!selectedOrder}
+            onOpenChange={(isOpen) => !isOpen && setSelectedOrder(null)}
+        />
+    )}
+    </>
   );
 }
