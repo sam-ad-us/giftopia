@@ -11,19 +11,19 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 import { useFirestore } from '@/firebase';
-import { addDoc, collection } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
 
 const categorySchema = z.object({
-  id: z.string().min(3, 'ID must be at least 3 characters.').regex(/^[a-z0-9-]+$/, 'ID must be lowercase with no spaces.'),
+  id: z.string().min(3, 'ID must be at least 3 characters.').regex(/^[a-z0-9-]+$/, 'ID must be lowercase with no spaces and only hyphens.'),
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   image: z.string().min(1, 'Image ID is required.'),
@@ -43,11 +43,19 @@ export function CreateCategoryDialog() {
       image: '',
     },
   });
+  
+  const watchedName = form.watch('name');
+
+  const generateIdFromName = (name: string) => {
+      return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+  }
 
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     if (!firestore) return;
     try {
-      await addDoc(collection(firestore, 'categories'), values);
+      const categoryRef = doc(firestore, 'categories', values.id);
+      await setDoc(categoryRef, values);
+
       toast({
         title: 'Category Created',
         description: `The category "${values.name}" has been successfully created.`,
@@ -86,7 +94,14 @@ export function CreateCategoryDialog() {
                 <FormItem>
                   <FormLabel>Category Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Birthday Gifts" {...field} />
+                    <Input 
+                        placeholder="e.g., Birthday Gifts" 
+                        {...field} 
+                        onChange={(e) => {
+                            field.onChange(e);
+                            form.setValue('id', generateIdFromName(e.target.value), { shouldValidate: true });
+                        }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -101,6 +116,7 @@ export function CreateCategoryDialog() {
                   <FormControl>
                     <Input placeholder="e.g., birthday-gifts" {...field} />
                   </FormControl>
+                   <FormDescription>This is the unique ID for the category URL (auto-generated from name).</FormDescription>
                    <FormMessage />
                 </FormItem>
               )}
@@ -127,6 +143,7 @@ export function CreateCategoryDialog() {
                   <FormControl>
                     <Input placeholder="e.g., cat-birthday" {...field} />
                   </FormControl>
+                   <FormDescription>ID of the image from placeholder-images.json.</FormDescription>
                    <FormMessage />
                 </FormItem>
               )}
