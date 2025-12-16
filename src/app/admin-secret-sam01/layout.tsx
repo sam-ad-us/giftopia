@@ -30,6 +30,7 @@ import {
   ChevronDown,
   Receipt,
   FileText,
+  Image as ImageIcon,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -53,6 +54,7 @@ const menuItems = [
   { href: '/admin-secret-sam01/categories', icon: ShoppingBag, label: 'Categories' },
   { href: '/admin-secret-sam01/orders', icon: ShoppingBag, label: 'Orders' },
   { href: '/admin-secret-sam01/offers', icon: Percent, label: 'Offers' },
+  { href: '/admin-secret-sam01/offers-and-banners', icon: ImageIcon, label: 'Offers and Banners' },
   { href: '/admin-secret-sam01/coupons', icon: Ticket, label: 'Coupons' },
   { href: '/admin-secret-sam01/gift-requests', icon: FileText, label: 'Gift Requests' },
   { href: '/admin-secret-sam01/tax', icon: Receipt, label: 'Tax' },
