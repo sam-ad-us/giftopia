@@ -24,9 +24,6 @@ export default function Header() {
              <Button asChild variant="link" className="text-base text-sidebar-foreground/80 hover:text-sidebar-foreground">
               <Link href="/personalized-gifts">Personalized Gifts</Link>
             </Button>
-             <Button asChild variant="link" className="text-base text-sidebar-foreground/80 hover:text-sidebar-foreground">
-              <Link href="/support">Support</Link>
-            </Button>
           </nav>
         </div>
 
