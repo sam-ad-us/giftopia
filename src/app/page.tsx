@@ -9,11 +9,93 @@ import Link from 'next/link';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
-import { useDoc, useFirestore, useMemoFirebase } from '@/firebase';
-import { doc } from 'firebase/firestore';
+import { useCollection, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, doc, query, where } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { HomepageBanner } from '@/lib/types';
+import { HomepageBanner, Product } from '@/lib/types';
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
+import ProductCard from '@/components/ProductCard';
+import { useState } from 'react';
+import { ProductDetailDialog } from '@/components/ProductDetailDialog';
 
+function SpecialOfferProductsSection() {
+    const firestore = useFirestore();
+    const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+    const offersQuery = useMemoFirebase(
+      () => (firestore ? query(collection(firestore, 'products'), where('offerId', '!=', null)) : null),
+      [firestore]
+    );
+
+    const { data: products, isLoading } = useCollection<Product>(offersQuery);
+
+    if (isLoading) {
+      return (
+          <section id="special-offer-products" className="py-12 md:py-20 bg-background">
+              <div className="container mx-auto px-4">
+                  <Skeleton className="h-10 w-1/2 mx-auto mb-12" />
+                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                          <div className="flex flex-col gap-2" key={i}>
+                              <Skeleton className="aspect-square w-full" />
+                              <Skeleton className="h-6 w-3/4" />
+                              <Skeleton className="h-8 w-1/2" />
+                              <Skeleton className="h-10 w-full" />
+                          </div>
+                      ))}
+                  </div>
+              </div>
+          </section>
+      );
+    }
+    
+    if (!products || products.length === 0) {
+        return null;
+    }
+
+    return (
+        <section id="special-offer-products" className="py-12 md:py-20 bg-secondary/50">
+            <div className="container mx-auto px-4">
+                <div className="text-center mb-12">
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold">
+                        Special Offers
+                    </h2>
+                    <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">Don't miss out on these limited-time deals!</p>
+                </div>
+                <Carousel
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                        {products.map((product) => (
+                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+                                <div className="p-1 h-full">
+                                    <ProductCard product={product} onProductClick={setSelectedProduct} />
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
+                </Carousel>
+                 {selectedProduct && (
+                    <ProductDetailDialog 
+                        product={selectedProduct} 
+                        isOpen={!!selectedProduct} 
+                        onOpenChange={(isOpen) => {
+                        if (!isOpen) {
+                            setSelectedProduct(null);
+                        }
+                        }} 
+                    />
+                )}
+            </div>
+        </section>
+    );
+}
 
 function SpecialOfferSection() {
     const firestore = useFirestore();
@@ -120,6 +202,8 @@ export default function Home() {
       </section>
 
       <SpecialOfferSection />
+
+      <SpecialOfferProductsSection />
 
       <section id="categories" className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4">
