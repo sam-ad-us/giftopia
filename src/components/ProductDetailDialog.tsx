@@ -1,10 +1,8 @@
-
 'use client';
 
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Product, Offer } from '@/lib/types';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { useState, useEffect } from 'react';
 import { cn, calculateDiscountedPrice, getOfferText } from '@/lib/utils';
 import { Star, StarHalf, ShoppingCart } from 'lucide-react';
@@ -52,10 +50,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
 
     useEffect(() => {
         if (product && product.images.length > 0) {
-            const mainProductImage = PlaceHolderImages.find(p => p.id === product.images[0]);
-            if (mainProductImage) {
-                setActiveImage(mainProductImage.imageUrl);
-            }
+            setActiveImage(product.images[0]);
         }
     }, [product]);
     
@@ -71,8 +66,8 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const discountedPrice = calculateDiscountedPrice(product.price, productOffer);
     const hasDiscount = discountedPrice < product.price;
 
-    const productImages = product.images.map(id => PlaceHolderImages.find(p => p.id === id)).filter(Boolean);
-    const mainImage = activeImage || (productImages[0]?.imageUrl || '');
+    const productImages = product.images.filter(Boolean);
+    const mainImage = activeImage || (productImages[0] || '');
 
     const handleAddToCart = () => {
         if (product.stockStatus === 'out-of-stock' || product.status !== 'active') {
@@ -114,16 +109,15 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                                 key={index}
                                 className={cn(
                                     'aspect-square relative rounded-md overflow-hidden border-2 transition',
-                                    mainImage === img.imageUrl ? 'border-primary' : 'border-transparent'
+                                    mainImage === img ? 'border-primary' : 'border-transparent'
                                 )}
-                                onClick={() => setActiveImage(img.imageUrl)}
+                                onClick={() => setActiveImage(img)}
                             >
                                 <Image
-                                    src={img.imageUrl}
+                                    src={img}
                                     alt={`${product.name} thumbnail ${index + 1}`}
                                     fill
                                     className="object-cover"
-                                    data-ai-hint={img.imageHint}
                                 />
                             </button>
                         ))}

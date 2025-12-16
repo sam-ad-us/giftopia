@@ -1,4 +1,3 @@
-
 'use client';
 
 import {
@@ -12,7 +11,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Edit } from 'lucide-react';
 import Image from 'next/image';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { AddProductDialog } from './_components/AddProductDialog';
@@ -92,19 +90,20 @@ export default function AdminProductsPage() {
                         </TableRow>
                     ))}
                     {products && products.map((product) => {
-                        const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+                        const productImage = product.images && product.images[0];
                         return (
                             <TableRow key={product.id} data-state={product.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                 <TableCell className="hidden sm:table-cell">
-                                    {productImage && (
+                                    {productImage ? (
                                     <Image
                                         alt={product.name}
                                         className="aspect-square rounded-md object-cover"
                                         height="64"
-                                        src={productImage.imageUrl}
+                                        src={productImage}
                                         width="64"
-                                        data-ai-hint={productImage.imageHint}
                                     />
+                                    ) : (
+                                        <div className="h-16 w-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">No Image</div>
                                     )}
                                 </TableCell>
                                 <TableCell className="font-medium">{product.name}</TableCell>

@@ -1,11 +1,9 @@
-
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { type Offer, type Product } from '@/lib/types';
-import { PlaceHolderImages } from '@/lib/placeholder-images';
 import { Button } from './ui/button';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
@@ -23,7 +21,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
-    const productImage = PlaceHolderImages.find(p => p.id === product.images[0]);
+    const productImage = product.images && product.images[0];
     const { addToCart } = useCart();
     const { toast } = useToast();
     const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
@@ -65,12 +63,11 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             <div className="relative aspect-square w-full">
             {productImage && (
                 <Image
-                    src={productImage.imageUrl}
+                    src={productImage}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    data-ai-hint={productImage.imageHint}
                 />
             )}
             {productOffer && (
