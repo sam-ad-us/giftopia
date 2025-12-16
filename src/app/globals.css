@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 30 50% 98%;
     --foreground: 240 10% 3.9%;
     --card: 0 0% 100%;
     --card-foreground: 240 10% 3.9%;
@@ -42,6 +42,7 @@
     --sidebar-accent-foreground: 30 100% 97%;
     --sidebar-border: 25 45% 30%;
     --sidebar-ring: 30 100% 97%;
+    --sub-header-background: 25 35% 85%;
   }
 
   .dark {
@@ -75,6 +76,7 @@
     --sidebar-accent-foreground: 30 100% 97%;
     --sidebar-border: 25 45% 30%;
     --sidebar-ring: 30 100% 97%;
+    --sub-header-background: 25 35% 85%;
   }
 }
 

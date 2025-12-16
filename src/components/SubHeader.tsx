@@ -15,7 +15,7 @@ export default function SubHeader() {
   const subHeaderCategories = categories.filter(category => category.id !== 'personalized-gifts');
 
   return (
-    <div className="sticky top-16 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="sticky top-16 z-40 w-full border-b bg-sub-header-background">
       <div className="container mx-auto px-4">
         <ScrollArea className="w-full whitespace-nowrap">
             <nav className="flex items-center justify-center gap-6 text-sm font-medium h-12">
@@ -26,8 +26,8 @@ export default function SubHeader() {
                     key={category.id}
                     href={`/catalog/${category.id}`}
                     className={cn(
-                        "text-muted-foreground transition-colors hover:text-primary whitespace-nowrap pb-2.5",
-                        isActive && "text-primary border-b-2 border-primary"
+                        "text-foreground/70 transition-colors hover:text-foreground whitespace-nowrap pb-2.5",
+                        isActive && "text-foreground border-b-2 border-foreground"
                     )}
                     >
                     {category.name}
