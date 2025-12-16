@@ -15,7 +15,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar, KeyRound } from 'lucide-react';
-import { signOut, sendPasswordResetEmail, updatePassword, type User, type FirebaseAuthError } from 'firebase/auth';
+import { signOut, updatePassword, type User, type FirebaseAuthError } from 'firebase/auth';
 import Link from 'next/link';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -67,20 +67,6 @@ export default function ProfilePage() {
       console.error('Error signing out', error);
     }
   };
-  
-  const handlePasswordReset = async () => {
-    if (!user?.email || !auth) {
-       toast({ title: "Error", description: "No email address found for your account.", variant: "destructive" });
-       return;
-    };
-    try {
-        await sendPasswordResetEmail(auth, user.email);
-        toast({ title: "Password Reset Email Sent", description: "Check your inbox for instructions to reset your password." });
-    } catch (error) {
-        console.error("Error sending password reset email", error);
-        toast({ title: "Error", description: "Could not send password reset email. Please try again later.", variant: "destructive" });
-    }
-  }
 
   const handlePasswordUpdate = async (values: z.infer<typeof passwordSchema>) => {
     if (!user) return;
@@ -205,44 +191,39 @@ export default function ProfilePage() {
                     <CardDescription>Manage your password and account security.</CardDescription>
                 </CardHeader>
                 <CardContent>
-                    {isPasswordProvider ? (
-                        <div>
-                            {!showPasswordFields ? (
-                                <Button onClick={() => setShowPasswordFields(true)}>
-                                    <KeyRound className="mr-2 h-4 w-4"/>
-                                    Change Password
-                                </Button>
-                            ) : (
-                                <Form {...form}>
-                                    <form onSubmit={form.handleSubmit(handlePasswordUpdate)} className="space-y-4 max-w-sm">
-                                        <FormField control={form.control} name="newPassword" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>New Password</FormLabel>
-                                                <FormControl><Input type="password" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Confirm New Password</FormLabel>
-                                                <FormControl><Input type="password" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <div className="flex gap-2">
-                                            <Button type="submit" disabled={form.formState.isSubmitting}>Update Password</Button>
-                                            <Button variant="ghost" onClick={() => { setShowPasswordFields(false); form.reset(); }}>Cancel</Button>
-                                        </div>
-                                    </form>
-                                </Form>
-                            )}
-                        </div>
-                    ) : (
-                         <div className="flex items-center justify-between rounded-lg border bg-background p-4">
-                            <p className="text-sm text-muted-foreground">You are signed in with Google. To set a password, please use the password reset option.</p>
-                            <Button onClick={handlePasswordReset}>Reset Password</Button>
-                        </div>
-                    )}
+                    <div>
+                        {!showPasswordFields ? (
+                            <Button onClick={() => setShowPasswordFields(true)}>
+                                <KeyRound className="mr-2 h-4 w-4"/>
+                                {isPasswordProvider ? 'Change Password' : 'Set Password'}
+                            </Button>
+                        ) : (
+                            <Form {...form}>
+                                <form onSubmit={form.handleSubmit(handlePasswordUpdate)} className="space-y-4 max-w-sm">
+                                    <FormField control={form.control} name="newPassword" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>New Password</FormLabel>
+                                            <FormControl><Input type="password" {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                    <FormField control={form.control} name="confirmPassword" render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Confirm New Password</FormLabel>
+                                            <FormControl><Input type="password" {...field} /></FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )} />
+                                    <div className="flex gap-2">
+                                        <Button type="submit" disabled={form.formState.isSubmitting}>
+                                            {isPasswordProvider ? 'Update Password' : 'Set Password'}
+                                        </Button>
+                                        <Button variant="ghost" onClick={() => { setShowPasswordFields(false); form.reset(); }}>Cancel</Button>
+                                    </div>
+                                </form>
+                            </Form>
+                        )}
+                    </div>
                 </CardContent>
             </Card>
 
