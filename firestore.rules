@@ -189,11 +189,15 @@ service cloud.firestore {
      * @description Manages user requests for personalized gifts.
      * @path /personalizationRequests/{requestId}
      * @allow (create) An authenticated user can create a request.
-     * @allow (read, list, update, delete) Only admins can manage requests.
+     * @allow (read) An authenticated user can read their own requests.
+     * @allow (list) An authenticated user can list their own requests.
+     * @allow (update, delete) Only admins can manage requests.
      */
     match /personalizationRequests/{requestId} {
         allow create: if isSignedIn() && newDocHasCorrectOwner(request.auth.uid);
-        allow read, list, update, delete: if isAdmin();
+        allow read: if isOwner(resource.data.userId) || isAdmin();
+        allow list: if isSignedIn() || isAdmin();
+        allow update, delete: if isAdmin();
     }
     
     /**

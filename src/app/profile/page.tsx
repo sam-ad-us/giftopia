@@ -14,7 +14,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar } from 'lucide-react';
+import { Settings, ShoppingBag, ShieldCheck, Mail, Calendar, Gift } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import Link from 'next/link';
 
@@ -145,6 +145,12 @@ export default function ProfilePage() {
                         <Link href="/profile/your-order">
                             <ShoppingBag className="h-5 w-5"/>
                             Order History
+                        </Link>
+                    </Button>
+                     <Button variant="outline" className="justify-start gap-2 h-12 text-base" asChild>
+                        <Link href="/profile/my-gift-requests">
+                            <Gift className="h-5 w-5"/>
+                            My Gift Requests
                         </Link>
                     </Button>
                      <Button variant="outline" className="justify-start gap-2 h-12 text-base" asChild>
