@@ -1,3 +1,4 @@
+
 'use client';
 
 import {
@@ -48,6 +49,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
     resolver: zodResolver(categorySchema),
     defaultValues: {
       ...category,
+      offer: category.offer || '',
       showInSubHeader: category.showInSubHeader || false,
     }
   });
@@ -56,6 +58,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
     if (category) {
       form.reset({
         ...category,
+        offer: category.offer || '',
         showInSubHeader: category.showInSubHeader || false,
       });
     }
