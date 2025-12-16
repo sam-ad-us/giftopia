@@ -1,11 +1,10 @@
 'use client';
 
-import { categories } from '@/lib/data';
 import ProductCard from '@/components/ProductCard';
 import { notFound, useParams } from 'next/navigation';
-import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
-import { collection, query, where } from 'firebase/firestore';
-import { Product } from '@/lib/types';
+import { useCollection, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
+import { collection, doc, query, where } from 'firebase/firestore';
+import { Product, Category } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useState } from 'react';
 import { ProductDetailDialog } from '@/components/ProductDetailDialog';
@@ -14,19 +13,26 @@ export default function CategoryPage() {
   const params = useParams();
   const categoryId = params.category as string;
   const firestore = useFirestore();
-  const category = categories.find((c) => c.id === categoryId);
-
+  
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const categoryDocRef = useMemoFirebase(
+    () => (firestore && categoryId ? doc(firestore, 'categories', categoryId) : null),
+    [firestore, categoryId]
+  );
+  const { data: category, isLoading: isCategoryLoading } = useDoc<Category>(categoryDocRef);
 
   const productsQuery = useMemoFirebase(
     () =>
-      firestore
+      firestore && categoryId
         ? query(collection(firestore, 'products'), where('category', '==', categoryId))
         : null,
     [firestore, categoryId]
   );
 
-  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  const { data: products, isLoading: areProductsLoading } = useCollection<Product>(productsQuery);
+  
+  const isLoading = isCategoryLoading || areProductsLoading;
 
   if (!category && !isLoading) {
     notFound();
@@ -34,9 +40,13 @@ export default function CategoryPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="font-headline text-4xl md:text-5xl font-bold mb-8">
-        {category?.name}
-      </h1>
+      {isLoading ? (
+        <Skeleton className="h-12 w-1/3 mb-8" />
+      ) : (
+        <h1 className="font-headline text-4xl md:text-5xl font-bold mb-8">
+          {category?.name}
+        </h1>
+      )}
       {isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {Array.from({ length: 4 }).map((_, i) => (
