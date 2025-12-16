@@ -226,7 +226,9 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                   <FormControl>
                     <Input placeholder="e.g., prod-1-1, prod-1-2" {...field} />
                   </FormControl>
-                  <FormDescription>Comma-separated list of placeholder image IDs.</FormDescription>
+                  <FormDescription>
+                    Provide a comma-separated list of image IDs from the placeholder-images.json file.
+                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
