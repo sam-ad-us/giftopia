@@ -9,14 +9,14 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { ArrowLeft, KeyRound } from 'lucide-react';
+import { ArrowLeft, KeyRound, User as UserIcon } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth, useUser } from '@/firebase';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { updatePassword, type User, type FirebaseAuthError, linkWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { updatePassword, type User, type FirebaseAuthError, linkWithCredential, EmailAuthProvider, updateProfile } from 'firebase/auth';
 import { useToast } from '@/hooks/use-toast';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -28,6 +28,59 @@ const passwordSchema = z.object({
   message: "Passwords don't match",
   path: ['confirmPassword'],
 });
+
+const profileSchema = z.object({
+    displayName: z.string().min(2, 'Name must be at least 2 characters.'),
+});
+
+function ProfileSettings() {
+    const { user } = useUser();
+    const { toast } = useToast();
+
+    const form = useForm<z.infer<typeof profileSchema>>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: {
+            displayName: user?.displayName || '',
+        },
+    });
+
+    const handleProfileUpdate = async (values: z.infer<typeof profileSchema>) => {
+        if (!user) return;
+        try {
+            await updateProfile(user as User, { displayName: values.displayName });
+            toast({
+                title: "Profile Updated",
+                description: "Your display name has been successfully updated.",
+            });
+        } catch (error) {
+            console.error("Error updating profile", error);
+            toast({
+                title: "Error Updating Profile",
+                description: "Failed to update your profile. Please try again.",
+                variant: "destructive",
+            });
+        }
+    };
+
+    return (
+        <CardContent>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleProfileUpdate)} className="space-y-4 max-w-sm">
+                    <FormField control={form.control} name="displayName" render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Display Name</FormLabel>
+                            <FormControl><Input {...field} /></FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )} />
+                    <Button type="submit" disabled={form.formState.isSubmitting || !form.formState.isDirty}>
+                        {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+                    </Button>
+                </form>
+            </Form>
+        </CardContent>
+    )
+}
 
 function SecuritySettings() {
     const { user } = useUser();
@@ -59,7 +112,7 @@ function SecuritySettings() {
             const fbError = error as FirebaseAuthError;
             let errorMessage = "Failed to update password. Please try again.";
             if (fbError.code === 'auth/requires-recent-login') {
-                errorMessage = "This is a sensitive action and requires a recent sign-in. Please sign out and log back in to change your password.";
+                errorMessage = "This is a sensitive action. Please sign out and log back in to change your password.";
             } else if (fbError.code === 'auth/credential-already-in-use') {
                  errorMessage = "This account is already linked with another user.";
             }
@@ -99,7 +152,7 @@ function SecuritySettings() {
                                 <Button type="submit" disabled={form.formState.isSubmitting}>
                                     {isPasswordProvider ? 'Update Password' : 'Set Password'}
                                 </Button>
-                                <Button variant="ghost" onClick={() => { setShowPasswordFields(false); form.reset(); }}>Cancel</Button>
+                                <Button variant="ghost" type="button" onClick={() => { setShowPasswordFields(false); form.reset(); }}>Cancel</Button>
                             </div>
                         </form>
                     </Form>
@@ -130,11 +183,9 @@ export default function UserSettingsPage() {
                     <Card>
                         <CardHeader>
                             <CardTitle>Profile Settings</CardTitle>
-                            <CardDescription>This is a placeholder for your account settings.</CardDescription>
+                            <CardDescription>Update your display name.</CardDescription>
                         </CardHeader>
-                        <CardContent className="flex h-[300px] items-center justify-center">
-                            <p className="text-muted-foreground">User settings and profile management interface will be here.</p>
-                        </CardContent>
+                        <ProfileSettings />
                     </Card>
                 </TabsContent>
                 <TabsContent value="security">
