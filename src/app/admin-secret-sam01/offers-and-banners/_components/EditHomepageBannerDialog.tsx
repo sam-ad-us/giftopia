@@ -53,15 +53,24 @@ export function EditHomepageBannerDialog({ children }: EditHomepageBannerDialogP
   const form = useForm<z.infer<typeof bannerSchema>>({
     resolver: zodResolver(bannerSchema),
     defaultValues: {
+        title: '',
+        description: '',
+        badgeText: '',
+        buttonText: '',
+        buttonLink: '',
+        imageUrl: '',
         isActive: true,
     }
   });
 
   useEffect(() => {
     if (bannerData) {
-      form.reset(bannerData);
-    } else {
-        // Set default values if no data exists, for creation
+      form.reset({
+        ...bannerData,
+        badgeText: bannerData.badgeText || '', // Ensure optional fields are not null/undefined
+      });
+    } else if (!isLoading) {
+        // Set default values for creation form if no data and not loading
         form.reset({
             title: 'Eid Special Offer',
             description: 'Celebrate this joyous occasion with our exclusive collection of Eid gifts. Find the perfect presents for your family and friends and enjoy special discounts.',
@@ -72,7 +81,7 @@ export function EditHomepageBannerDialog({ children }: EditHomepageBannerDialogP
             isActive: true,
         });
     }
-  }, [bannerData, form]);
+  }, [bannerData, isLoading, form]);
 
   const onSubmit = async (values: z.infer<typeof bannerSchema>) => {
     if (!firestore || !bannerDocRef) return;
