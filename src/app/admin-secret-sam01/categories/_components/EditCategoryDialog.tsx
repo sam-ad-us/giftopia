@@ -48,21 +48,25 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      ...category,
-      offer: category.offer || '',
-      showInSubHeader: category.showInSubHeader || false,
+      name: category?.name || '',
+      description: category?.description || '',
+      imageUrl: category?.imageUrl || '',
+      offer: category?.offer || '',
+      showInSubHeader: category?.showInSubHeader || false,
     }
   });
 
   useEffect(() => {
     if (category) {
       form.reset({
-        ...category,
+        name: category.name,
+        description: category.description,
+        imageUrl: category.imageUrl,
         offer: category.offer || '',
         showInSubHeader: category.showInSubHeader || false,
       });
     }
-  }, [category, form]);
+  }, [category, form, isOpen]);
 
   const onSubmit = async (values: z.infer<typeof categorySchema>) => {
     if (!firestore || !category.id) return;
@@ -150,7 +154,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
                 <FormItem>
                   <FormLabel>Offer Text (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Up to 20% Off" {...field} value={field.value || ''} onChange={field.onChange} />
+                    <Input placeholder="e.g., Up to 20% Off" {...field} value={field.value || ''} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
