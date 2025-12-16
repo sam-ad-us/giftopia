@@ -65,8 +65,7 @@ export default function AdminCategoriesPage() {
                             <TableRow>
                                 <TableHead className="w-[80px]">Image</TableHead>
                                 <TableHead>Name</TableHead>
-                                <TableHead>ID</TableHead>
-                                <TableHead>Description</TableHead>
+                                <TableHead>Offer Text</TableHead>
                                 <TableHead>Sub-header</TableHead>
                                 <TableHead>
                                     <span className="sr-only">Actions</span>
@@ -78,8 +77,7 @@ export default function AdminCategoriesPage() {
                                 <TableRow key={i}>
                                     <TableCell><Skeleton className="h-16 w-16 rounded-md" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-28" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-48" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                                 </TableRow>
@@ -101,12 +99,12 @@ export default function AdminCategoriesPage() {
                                             ) : (
                                                 <div className="h-16 w-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">No Image</div>
                                             )}
-                                            {category.offer && <Badge className="absolute -top-2 -right-3">{category.offer}</Badge>}
                                         </div>
                                     </TableCell>
                                     <TableCell className="font-medium">{category.name}</TableCell>
-                                    <TableCell className="font-mono text-xs">{category.id}</TableCell>
-                                    <TableCell className="text-muted-foreground max-w-[200px] truncate">{category.description}</TableCell>
+                                    <TableCell>
+                                        {category.offer ? <Badge variant="secondary">{category.offer}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
+                                    </TableCell>
                                     <TableCell>
                                         {category.showInSubHeader ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-muted-foreground" />}
                                     </TableCell>

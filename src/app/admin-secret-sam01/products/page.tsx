@@ -17,7 +17,7 @@ import { AddProductDialog } from './_components/AddProductDialog';
 import { useCollection } from '@/firebase';
 import { collection, doc, query, updateDoc } from 'firebase/firestore';
 import { useFirestore, useMemoFirebase } from '@/firebase';
-import { Product } from '@/lib/types';
+import { Product, Offer } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EditProductDialog } from './_components/EditProductDialog';
 import { DeleteProductAlert } from './_components/DeleteProductAlert';
@@ -36,13 +36,20 @@ export default function AdminProductsPage() {
     () => (firestore ? query(collection(firestore, 'products')) : null),
     [firestore]
   );
-  
-  const { data: products, isLoading } = useCollection<Product>(productsQuery);
+  const { data: products, isLoading: isLoadingProducts } = useCollection<Product>(productsQuery);
+
+  const offersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'offers')) : null),
+    [firestore]
+  );
+  const { data: offers, isLoading: isLoadingOffers } = useCollection<Offer>(offersQuery);
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
     setIsEditDialogOpen(true);
   };
+  
+  const isLoading = isLoadingProducts || isLoadingOffers;
 
   return (
     <div>
@@ -68,8 +75,8 @@ export default function AdminProductsPage() {
                     </TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Status</TableHead>
+                    <TableHead>Offer</TableHead>
                     <TableHead>Price</TableHead>
-                    <TableHead className="hidden md:table-cell">Category</TableHead>
                     <TableHead>
                         <span className="sr-only">Actions</span>
                     </TableHead>
@@ -83,8 +90,8 @@ export default function AdminProductsPage() {
                             </TableCell>
                             <TableCell><Skeleton className="h-5 w-32" /></TableCell>
                             <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                            <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
                             <TableCell><Skeleton className="h-5 w-12" /></TableCell>
-                            <TableCell className="hidden md:table-cell"><Skeleton className="h-5 w-24" /></TableCell>
                             <TableCell>
                                <Skeleton className="h-8 w-8" />
                             </TableCell>
@@ -92,6 +99,7 @@ export default function AdminProductsPage() {
                     ))}
                     {products && products.map((product) => {
                         const imageUrl = getImageUrl(product.images && product.images[0]);
+                        const offer = offers?.find(o => o.id === product.offerId);
                         return (
                             <TableRow key={product.id} data-state={product.status === 'inactive' ? 'disabled' : ''} className="data-[state=disabled]:opacity-50">
                                 <TableCell className="hidden sm:table-cell">
@@ -111,8 +119,10 @@ export default function AdminProductsPage() {
                                 <TableCell>
                                     <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>{product.status}</Badge>
                                 </TableCell>
+                                <TableCell>
+                                    {offer ? <Badge variant="destructive">{offer.name}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
+                                </TableCell>
                                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
-                                <TableCell className="hidden md:table-cell">{product.category}</TableCell>
                                 <TableCell>
                                     <Button variant="outline" size="sm" onClick={() => handleEdit(product)}>
                                         <Edit className="h-4 w-4 mr-2" />
