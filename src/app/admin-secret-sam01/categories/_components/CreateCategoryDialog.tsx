@@ -27,6 +27,7 @@ const categorySchema = z.object({
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   image: z.string().min(1, 'Image ID is required.'),
+  offer: z.string().optional(),
 });
 
 export function CreateCategoryDialog() {
@@ -41,6 +42,7 @@ export function CreateCategoryDialog() {
       name: '',
       description: '',
       image: '',
+      offer: '',
     },
   });
   
@@ -54,7 +56,10 @@ export function CreateCategoryDialog() {
     if (!firestore) return;
     try {
       const categoryRef = doc(firestore, 'categories', values.id);
-      await setDoc(categoryRef, values);
+      await setDoc(categoryRef, {
+        ...values,
+        offer: values.offer || null,
+      });
 
       toast({
         title: 'Category Created',
@@ -144,6 +149,20 @@ export function CreateCategoryDialog() {
                     <Input placeholder="e.g., cat-birthday" {...field} />
                   </FormControl>
                    <FormDescription>ID of the image from placeholder-images.json.</FormDescription>
+                   <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="offer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Offer Text (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Up to 20% Off" {...field} />
+                  </FormControl>
+                   <FormDescription>A small badge of text that appears on the category image.</FormDescription>
                    <FormMessage />
                 </FormItem>
               )}

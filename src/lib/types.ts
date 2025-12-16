@@ -3,8 +3,9 @@
 export interface Category {
   id: string;
   name: string;
+  description: string;
   image: string;
-  offer?: string;
+  offer?: string | null;
 }
 
 export interface Product {

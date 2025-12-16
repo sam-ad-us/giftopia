@@ -3,7 +3,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { categories } from '@/lib/data';
+import { categories as staticCategories } from '@/lib/data';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ShoppingBag } from 'lucide-react';
@@ -12,7 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { useCollection, useDoc, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, doc, query, where } from 'firebase/firestore';
 import { Skeleton } from '@/components/ui/skeleton';
-import { HomepageBanner, Product } from '@/lib/types';
+import { HomepageBanner, Product, Category } from '@/lib/types';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import ProductCard from '@/components/ProductCard';
 import { useState } from 'react';
@@ -169,43 +169,16 @@ function SpecialOfferSection() {
     )
 }
 
-export default function Home() {
-  const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+function CategorySection() {
+    const firestore = useFirestore();
+    const categoriesQuery = useMemoFirebase(
+      () => (firestore ? query(collection(firestore, 'categories')) : null),
+      [firestore]
+    );
+    const { data: categories, isLoading } = useCollection<Category>(categoriesQuery);
 
-  return (
-    <div className="flex flex-col">
-      <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center text-white">
-        {heroImage && (
-           <Image
-            src={heroImage.imageUrl}
-            alt={heroImage.description}
-            fill
-            className="object-cover"
-            priority
-            data-ai-hint={heroImage.imageHint}
-          />
-        )}
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 p-4 max-w-4xl mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
-            The Perfect Gift for Every Occasion
-          </h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
-            Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
-          </p>
-          <Button asChild size="lg" className="font-bold text-lg px-8 py-6">
-            <Link href="#categories">
-              Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
-      </section>
-
-      <SpecialOfferSection />
-
-      <SpecialOfferProductsSection />
-
-      <section id="categories" className="py-12 md:py-20 bg-background">
+    return (
+        <section id="categories" className="py-12 md:py-20 bg-background">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-bold">
@@ -214,7 +187,16 @@ export default function Home() {
             <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">Find the perfect present by exploring our thoughtfully selected categories.</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {categories.map((category) => {
+            {isLoading && Array.from({length: 8}).map((_, i) => (
+                <Card key={i} className="overflow-hidden border-0">
+                    <CardContent className="p-0 relative">
+                        <div className="relative aspect-square">
+                            <Skeleton className="w-full h-full" />
+                        </div>
+                    </CardContent>
+                </Card>
+            ))}
+            {categories && categories.map((category) => {
               const categoryImage = PlaceHolderImages.find(p => p.id === category.image);
               return (
               <Link key={category.id} href={`/catalog/${category.id}`} className="group">
@@ -253,6 +235,47 @@ export default function Home() {
           </div>
         </div>
       </section>
+    )
+}
+
+export default function Home() {
+  const heroImage = PlaceHolderImages.find(p => p.id === 'hero');
+
+  return (
+    <div className="flex flex-col">
+      <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center text-white">
+        {heroImage && (
+           <Image
+            src={heroImage.imageUrl}
+            alt={heroImage.description}
+            fill
+            className="object-cover"
+            priority
+            data-ai-hint={heroImage.imageHint}
+          />
+        )}
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="relative z-10 p-4 max-w-4xl mx-auto">
+          <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
+            The Perfect Gift for Every Occasion
+          </h1>
+          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
+            Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
+          </p>
+          <Button asChild size="lg" className="font-bold text-lg px-8 py-6">
+            <Link href="#categories">
+              Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      <SpecialOfferSection />
+
+      <SpecialOfferProductsSection />
+
+      <CategorySection />
+
     </div>
   );
 }

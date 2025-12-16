@@ -26,6 +26,7 @@ import { CreateCategoryDialog } from './_components/CreateCategoryDialog';
 import { EditCategoryDialog } from './_components/EditCategoryDialog';
 import Image from 'next/image';
 import { PlaceHolderImages } from '@/lib/placeholder-images';
+import { Badge } from '@/components/ui/badge';
 
 export default function AdminCategoriesPage() {
     const firestore = useFirestore();
@@ -66,6 +67,7 @@ export default function AdminCategoriesPage() {
                                 <TableHead>Name</TableHead>
                                 <TableHead>ID</TableHead>
                                 <TableHead>Description</TableHead>
+                                <TableHead>Offer</TableHead>
                                 <TableHead>
                                     <span className="sr-only">Actions</span>
                                 </TableHead>
@@ -78,6 +80,7 @@ export default function AdminCategoriesPage() {
                                     <TableCell><Skeleton className="h-5 w-24" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-28" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-48" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
                                     <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                                 </TableRow>
                             ))}
@@ -86,21 +89,25 @@ export default function AdminCategoriesPage() {
                                 return (
                                 <TableRow key={category.id}>
                                     <TableCell>
-                                        {categoryImage ? (
-                                            <Image
-                                                alt={category.name}
-                                                className="aspect-square rounded-md object-cover"
-                                                height="64"
-                                                src={categoryImage.imageUrl}
-                                                width="64"
-                                            />
-                                        ) : (
-                                             <div className="h-16 w-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">No Image</div>
-                                        )}
+                                        <div className="relative">
+                                            {categoryImage ? (
+                                                <Image
+                                                    alt={category.name}
+                                                    className="aspect-square rounded-md object-cover"
+                                                    height="64"
+                                                    src={categoryImage.imageUrl}
+                                                    width="64"
+                                                />
+                                            ) : (
+                                                <div className="h-16 w-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">No Image</div>
+                                            )}
+                                            {category.offer && <Badge className="absolute -top-2 -right-3">{category.offer}</Badge>}
+                                        </div>
                                     </TableCell>
                                     <TableCell className="font-medium">{category.name}</TableCell>
                                     <TableCell className="font-mono text-xs">{category.id}</TableCell>
-                                    <TableCell className="text-muted-foreground max-w-sm truncate">{category.description}</TableCell>
+                                    <TableCell className="text-muted-foreground max-w-[200px] truncate">{category.description}</TableCell>
+                                    <TableCell className="text-muted-foreground">{category.offer || 'N/A'}</TableCell>
                                     <TableCell>
                                         <Button variant="outline" size="sm" onClick={() => handleEdit(category)}>
                                             <Edit className="h-4 w-4 mr-2" />

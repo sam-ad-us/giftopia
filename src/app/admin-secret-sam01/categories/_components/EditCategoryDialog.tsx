@@ -27,6 +27,7 @@ const categorySchema = z.object({
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   image: z.string().min(1, 'Image ID is required.'),
+  offer: z.string().optional(),
 });
 
 
@@ -56,7 +57,10 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
     if (!firestore || !category.id) return;
     try {
       const categoryRef = doc(firestore, 'categories', category.id);
-      await updateDoc(categoryRef, values);
+      await updateDoc(categoryRef, {
+        ...values,
+        offer: values.offer || null,
+      });
       toast({
         title: 'Category Updated',
         description: `The category "${values.name}" has been successfully updated.`,
@@ -122,6 +126,19 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
                   <FormLabel>Image ID</FormLabel>
                   <FormControl>
                     <Input placeholder="e.g., cat-anniversary" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="offer"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Offer Text (Optional)</FormLabel>
+                  <FormControl>
+                    <Input placeholder="e.g., Up to 20% Off" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
