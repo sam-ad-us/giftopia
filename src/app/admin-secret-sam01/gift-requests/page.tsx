@@ -26,26 +26,20 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { MoreHorizontal, CheckCircle, Clock } from 'lucide-react';
+import { MoreHorizontal, CheckCircle, Clock, XCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useState } from 'react';
+import { CancelRequestDialog } from './_components/CancelRequestDialog';
+import type { PersonalizationRequest } from '@/lib/types';
 
-// Define the type for a Personalization Request
-interface PersonalizationRequest {
-    id: string;
-    userId: string;
-    productId: string;
-    customText?: string;
-    customImageUrl?: string;
-    additionalInstructions?: string;
-    status: 'pending' | 'in-progress' | 'completed';
-    createdAt: any; // Firestore ServerTimestamp
-}
 
 export default function AdminGiftRequestsPage() {
   const firestore = useFirestore();
   const { toast } = useToast();
+  const [requestToCancel, setRequestToCancel] = useState<PersonalizationRequest | null>(null);
 
   const requestsQuery = useMemoFirebase(
     () => (firestore ? query(collection(firestore, 'personalizationRequests'), orderBy('createdAt', 'desc')) : null),
@@ -62,6 +56,8 @@ export default function AdminGiftRequestsPage() {
         return 'default';
       case 'completed':
         return 'outline';
+      case 'cancelled':
+        return 'destructive';
       default:
         return 'secondary';
     }
@@ -87,6 +83,7 @@ export default function AdminGiftRequestsPage() {
   };
 
   return (
+    <>
     <div>
       <div className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Personalization Requests</h1>
@@ -135,7 +132,7 @@ export default function AdminGiftRequestsPage() {
                     <TableCell>
                       <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                          <Button aria-haspopup="true" size="icon" variant="ghost">
+                          <Button aria-haspopup="true" size="icon" variant="ghost" disabled={request.status === 'completed' || request.status === 'cancelled'}>
                             <MoreHorizontal className="h-4 w-4" />
                             <span className="sr-only">Toggle menu</span>
                           </Button>
@@ -150,6 +147,11 @@ export default function AdminGiftRequestsPage() {
                             <CheckCircle className="mr-2 h-4 w-4" />
                             Mark as Completed
                           </DropdownMenuItem>
+                          <DropdownMenuSeparator />
+                           <DropdownMenuItem className="text-destructive" onClick={() => setRequestToCancel(request)}>
+                                <XCircle className="mr-2 h-4 w-4" />
+                                Cancel Request
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </TableCell>
@@ -165,5 +167,15 @@ export default function AdminGiftRequestsPage() {
         </CardContent>
       </Card>
     </div>
+    <CancelRequestDialog
+        request={requestToCancel}
+        isOpen={!!requestToCancel}
+        onOpenChange={(open) => {
+            if (!open) {
+                setRequestToCancel(null);
+            }
+        }}
+    />
+    </>
   );
 }

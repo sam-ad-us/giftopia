@@ -188,8 +188,9 @@
         "customText": { "type": "string", "description": "The text to be engraved or printed on the product." },
         "customImageUrl": { "type": "string", "description": "URL of the user-uploaded image for personalization." },
         "additionalInstructions": { "type": "string", "description": "Any additional instructions from the user." },
-        "status": { "type": "string", "enum": ["pending", "in-progress", "completed"], "description": "The status of the request." },
-        "createdAt": { "type": "string", "format": "date-time", "description": "The date and time the request was submitted." }
+        "status": { "type": "string", "enum": ["pending", "in-progress", "completed", "cancelled"], "description": "The status of the request." },
+        "createdAt": { "type": "string", "format": "date-time", "description": "The date and time the request was submitted." },
+        "cancellationReason": { "type": "string", "description": "Reason for cancellation, if applicable." }
       },
       "required": ["id", "userId", "productId", "status", "createdAt"]
     },

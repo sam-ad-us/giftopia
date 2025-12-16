@@ -80,3 +80,15 @@ export interface HomepageBanner {
   imageUrl: string;
   isActive: boolean;
 }
+
+export interface PersonalizationRequest {
+    id: string;
+    userId: string;
+    productId: string;
+    customText?: string;
+    customImageUrl?: string;
+    additionalInstructions?: string;
+    status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
+    createdAt: any; // Firestore ServerTimestamp
+    cancellationReason?: string;
+}
