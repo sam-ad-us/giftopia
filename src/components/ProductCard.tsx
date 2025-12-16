@@ -20,6 +20,17 @@ interface ProductCardProps {
   onProductClick: (product: Product) => void;
 }
 
+// Helper function to check if a string is a valid URL
+const isValidUrl = (urlString: string | null | undefined): boolean => {
+    if (!urlString) return false;
+    try {
+        new URL(urlString);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
     const productImage = product.images && product.images[0] ? product.images[0] : null;
@@ -62,14 +73,16 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     >
         <div className={cn("group block flex-grow", isOutOfStock && "opacity-60")}>
             <div className="relative aspect-square w-full">
-            {productImage && (
+            {isValidUrl(productImage) ? (
                 <Image
-                    src={productImage}
+                    src={productImage!}
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+            ) : (
+                <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
             )}
             {productOffer && (
                 <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
@@ -106,3 +119,4 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     </Card>
   );
 }
+

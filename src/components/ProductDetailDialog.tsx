@@ -42,6 +42,17 @@ function StarRating({ rating, reviewCount }: { rating: number, reviewCount: numb
     );
 }
 
+// Helper function to check if a string is a valid URL
+const isValidUrl = (urlString: string | null | undefined): boolean => {
+    if (!urlString) return false;
+    try {
+        new URL(urlString);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};
+
 
 export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDetailDialogProps) {
     const { addToCart } = useCart();
@@ -93,21 +104,23 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                  {/* Image Gallery */}
                 <div className="flex flex-col gap-4 p-6">
                     <div className="aspect-square relative rounded-lg overflow-hidden border">
-                        {mainImage && (
+                        {isValidUrl(mainImage) ? (
                             <Image
-                                src={mainImage}
+                                src={mainImage!}
                                 alt={product.name}
                                 fill
                                 className="object-cover"
                                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
+                        ) : (
+                            <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
                         )}
                         {productOffer && (
                             <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
                         )}
                     </div>
                     <div className="grid grid-cols-5 gap-4">
-                        {productImages.map((img, index) => img && (
+                        {productImages.map((img, index) => isValidUrl(img) && (
                             <button
                                 key={index}
                                 className={cn(
