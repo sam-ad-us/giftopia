@@ -99,6 +99,10 @@
         "description": {
           "type": "string",
           "description": "A description of the category."
+        },
+        "showInSubHeader": {
+            "type": "boolean",
+            "description": "Determines if the category should be displayed in the sub-header navigation."
         }
       },
       "required": [

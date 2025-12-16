@@ -20,7 +20,7 @@ import { collection, query } from 'firebase/firestore';
 import { Category } from '@/lib/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { Edit } from 'lucide-react';
+import { Edit, Check, X } from 'lucide-react';
 import { useState } from 'react';
 import { CreateCategoryDialog } from './_components/CreateCategoryDialog';
 import { EditCategoryDialog } from './_components/EditCategoryDialog';
@@ -67,7 +67,7 @@ export default function AdminCategoriesPage() {
                                 <TableHead>Name</TableHead>
                                 <TableHead>ID</TableHead>
                                 <TableHead>Description</TableHead>
-                                <TableHead>Offer</TableHead>
+                                <TableHead>Sub-header</TableHead>
                                 <TableHead>
                                     <span className="sr-only">Actions</span>
                                 </TableHead>
@@ -80,7 +80,7 @@ export default function AdminCategoriesPage() {
                                     <TableCell><Skeleton className="h-5 w-24" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-28" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-48" /></TableCell>
-                                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-12" /></TableCell>
                                     <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                                 </TableRow>
                             ))}
@@ -107,7 +107,9 @@ export default function AdminCategoriesPage() {
                                     <TableCell className="font-medium">{category.name}</TableCell>
                                     <TableCell className="font-mono text-xs">{category.id}</TableCell>
                                     <TableCell className="text-muted-foreground max-w-[200px] truncate">{category.description}</TableCell>
-                                    <TableCell className="text-muted-foreground">{category.offer || 'N/A'}</TableCell>
+                                    <TableCell>
+                                        {category.showInSubHeader ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-muted-foreground" />}
+                                    </TableCell>
                                     <TableCell>
                                         <Button variant="outline" size="sm" onClick={() => handleEdit(category)}>
                                             <Edit className="h-4 w-4 mr-2" />

@@ -6,6 +6,7 @@ export interface Category {
   description: string;
   image: string;
   offer?: string | null;
+  showInSubHeader?: boolean;
 }
 
 export interface Product {

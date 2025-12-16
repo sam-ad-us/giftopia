@@ -21,6 +21,7 @@ import { useFirestore } from '@/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const categorySchema = z.object({
   id: z.string().min(3, 'ID must be at least 3 characters.').regex(/^[a-z0-9-]+$/, 'ID must be lowercase with no spaces and only hyphens.'),
@@ -28,6 +29,7 @@ const categorySchema = z.object({
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   image: z.string().min(1, 'Image ID is required.'),
   offer: z.string().optional(),
+  showInSubHeader: z.boolean().default(false).optional(),
 });
 
 export function CreateCategoryDialog() {
@@ -43,6 +45,7 @@ export function CreateCategoryDialog() {
       description: '',
       image: '',
       offer: '',
+      showInSubHeader: false,
     },
   });
   
@@ -164,6 +167,28 @@ export function CreateCategoryDialog() {
                   </FormControl>
                    <FormDescription>A small badge of text that appears on the category image.</FormDescription>
                    <FormMessage />
+                </FormItem>
+              )}
+            />
+             <FormField
+              control={form.control}
+              name="showInSubHeader"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Show in Sub-header
+                    </FormLabel>
+                    <FormDescription>
+                      If checked, this category will appear in the navigation sub-header.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,12 +22,14 @@ import { Category } from '@/lib/types';
 import { Textarea } from '@/components/ui/textarea';
 import { Trash } from 'lucide-react';
 import { DeleteCategoryAlert } from './DeleteCategoryAlert';
+import { Checkbox } from '@/components/ui/checkbox';
 
 const categorySchema = z.object({
   name: z.string().min(3, 'Category name must be at least 3 characters.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   image: z.string().min(1, 'Image ID is required.'),
   offer: z.string().optional(),
+  showInSubHeader: z.boolean().default(false).optional(),
 });
 
 
@@ -44,12 +46,18 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
 
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
-    defaultValues: category,
+    defaultValues: {
+      ...category,
+      showInSubHeader: category.showInSubHeader || false,
+    }
   });
 
   useEffect(() => {
     if (category) {
-      form.reset(category);
+      form.reset({
+        ...category,
+        showInSubHeader: category.showInSubHeader || false,
+      });
     }
   }, [category, form]);
 
@@ -141,6 +149,28 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
                     <Input placeholder="e.g., Up to 20% Off" {...field} />
                   </FormControl>
                   <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="showInSubHeader"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>
+                      Show in Sub-header
+                    </FormLabel>
+                    <FormDescription>
+                      If checked, this category will appear in the navigation sub-header.
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />
