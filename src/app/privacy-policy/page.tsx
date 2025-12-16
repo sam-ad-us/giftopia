@@ -30,14 +30,12 @@ export default function PrivacyPolicyPage() {
                     <p>
                         We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used.
                     </p>
-                    <p>
-                        Information we collect includes:
-                        <ul>
-                            <li><strong>Personal Identification Information:</strong> Name, email address, shipping address, phone number when you create an account or place an order.</li>
-                            <li><strong>Payment Information:</strong> We do not store your credit card details. All payment processing is handled by our secure third-party payment gateways.</li>
-                            <li><strong>Order Information:</strong> Details about the products you purchase and your order history.</li>
-                        </ul>
-                    </p>
+                    <p>Information we collect includes:</p>
+                    <ul>
+                        <li><strong>Personal Identification Information:</strong> Name, email address, shipping address, phone number when you create an account or place an order.</li>
+                        <li><strong>Payment Information:</strong> We do not store your credit card details. All payment processing is handled by our secure third-party payment gateways.</li>
+                        <li><strong>Order Information:</strong> Details about the products you purchase and your order history.</li>
+                    </ul>
                     <h2>2. How We Use Your Information</h2>
                     <p>We use the information we collect in various ways, including to:</p>
                     <ul>
