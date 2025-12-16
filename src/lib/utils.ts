@@ -27,7 +27,7 @@ export const calculateDiscountedPrice = (originalPrice: number, offer: Offer | n
   return originalPrice;
 };
 
-const IMAGEKIT_BASE_URL = "https://ik.imagekit.io/yjjw7jgiw/"; 
+const IMAGEKIT_BASE_URL = "https://ik.imagekit.io/5wpkzy7ok/"; 
 
 export const getImageUrl = (imageIdentifier: string): string => {
   if (!imageIdentifier) return '';
