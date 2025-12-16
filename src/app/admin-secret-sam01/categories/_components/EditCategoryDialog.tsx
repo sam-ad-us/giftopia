@@ -53,11 +53,11 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
       imageUrl: category?.imageUrl || '',
       offer: category?.offer || '',
       showInSubHeader: category?.showInSubHeader || false,
-    }
+    },
   });
 
   useEffect(() => {
-    if (category) {
+    if (isOpen && category) {
       form.reset({
         name: category.name,
         description: category.description,
@@ -154,7 +154,7 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
                 <FormItem>
                   <FormLabel>Offer Text (Optional)</FormLabel>
                   <FormControl>
-                    <Input placeholder="e.g., Up to 20% Off" {...field} value={field.value || ''} />
+                    <Input placeholder="e.g., Up to 20% Off" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -201,7 +201,6 @@ export function EditCategoryDialog({ category, isOpen, onOpenChange }: EditCateg
         onOpenChange={(open) => {
             setIsDeleteDialogOpen(open);
             if (!open) {
-                // If the delete dialog is closed without deleting, we also close the edit dialog
                 onOpenChange(false);
             }
         }}
