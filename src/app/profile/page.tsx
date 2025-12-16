@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useUser, useAuth } from '@/firebase';
@@ -94,10 +93,10 @@ export default function ProfilePage() {
         const fbError = error as FirebaseAuthError;
         let errorMessage = "Failed to update password. Please try again.";
         if (fbError.code === 'auth/requires-recent-login') {
-            errorMessage = "This action requires you to have signed in recently. Please sign out and log back in to change your password.";
+            errorMessage = "This is a sensitive action and requires a recent sign-in. Please sign out and log back in to change your password.";
         }
         console.error("Error updating password", error);
-        toast({ title: "Error", description: errorMessage, variant: "destructive" });
+        toast({ title: "Error Updating Password", description: errorMessage, variant: "destructive" });
     }
   }
 
