@@ -24,6 +24,8 @@ import { Edit } from 'lucide-react';
 import { useState } from 'react';
 import { CreateCategoryDialog } from './_components/CreateCategoryDialog';
 import { EditCategoryDialog } from './_components/EditCategoryDialog';
+import Image from 'next/image';
+import { PlaceHolderImages } from '@/lib/placeholder-images';
 
 export default function AdminCategoriesPage() {
     const firestore = useFirestore();
@@ -60,6 +62,7 @@ export default function AdminCategoriesPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="w-[80px]">Image</TableHead>
                                 <TableHead>Name</TableHead>
                                 <TableHead>ID</TableHead>
                                 <TableHead>Description</TableHead>
@@ -71,14 +74,30 @@ export default function AdminCategoriesPage() {
                         <TableBody>
                             {isLoading && Array.from({ length: 4 }).map((_, i) => (
                                 <TableRow key={i}>
+                                    <TableCell><Skeleton className="h-16 w-16 rounded-md" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-24" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-28" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-48" /></TableCell>
                                     <TableCell><Skeleton className="h-8 w-20" /></TableCell>
                                 </TableRow>
                             ))}
-                            {categories && categories.map((category) => (
+                            {categories && categories.map((category) => {
+                                const categoryImage = PlaceHolderImages.find((p) => p.id === category.image);
+                                return (
                                 <TableRow key={category.id}>
+                                    <TableCell>
+                                        {categoryImage ? (
+                                            <Image
+                                                alt={category.name}
+                                                className="aspect-square rounded-md object-cover"
+                                                height="64"
+                                                src={categoryImage.imageUrl}
+                                                width="64"
+                                            />
+                                        ) : (
+                                             <div className="h-16 w-16 bg-muted rounded-md flex items-center justify-center text-xs text-muted-foreground">No Image</div>
+                                        )}
+                                    </TableCell>
                                     <TableCell className="font-medium">{category.name}</TableCell>
                                     <TableCell className="font-mono text-xs">{category.id}</TableCell>
                                     <TableCell className="text-muted-foreground max-w-sm truncate">{category.description}</TableCell>
@@ -89,7 +108,7 @@ export default function AdminCategoriesPage() {
                                         </Button>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            )})}
                         </TableBody>
                     </Table>
                      {!isLoading && (!categories || categories.length === 0) && (
