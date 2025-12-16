@@ -243,6 +243,14 @@ export default function Home() {
               </Link>
             )})}
           </div>
+          <div className="text-center mt-12">
+            <Button variant="outline" size="lg" asChild>
+                <Link href="/catalog">
+                    View All Categories
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+            </Button>
+          </div>
         </div>
       </section>
     </div>
