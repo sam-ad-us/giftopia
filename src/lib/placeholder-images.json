@@ -67,6 +67,12 @@
       "imageHint": "festival decorations"
     },
     {
+      "id": "offer-eid",
+      "description": "A festive setting for an Eid celebration with gifts and lanterns.",
+      "imageUrl": "https://images.unsplash.com/photo-1621295941969-93510e0f936c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxlaWQlMjBnaWZ0fGVufDB8fHx8MTc2NTc5Mjg5NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "eid gift"
+    },
+    {
       "id": "prod-1-1",
       "description": "A premium box of assorted artisan chocolates.",
       "imageUrl": "https://images.unsplash.com/photo-1760307207865-c49d6670e572?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw2fHxhcnRpc2FuJTIwY2hvY29sYXRlfGVufDB8fHx8MTc2NTY1NzMxMXww&ixlib=rb-4.1.0&q=80&w=1080",
