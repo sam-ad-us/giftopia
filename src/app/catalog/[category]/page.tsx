@@ -34,8 +34,9 @@ export default function CategoryPage() {
   
   const isLoading = isCategoryLoading || areProductsLoading;
 
-  // If loading is finished and the category document doesn't exist, show a 404 page.
-  if (!isLoading && !category) {
+  // This is a more robust check. We only trigger notFound if the slug is invalid,
+  // not just because the category data hasn't loaded yet.
+  if (!categoryId) {
     return notFound();
   }
 
@@ -49,10 +50,10 @@ export default function CategoryPage() {
       ) : (
         <div className="mb-12">
           <h1 className="font-headline text-4xl md:text-5xl font-bold">
-            {category?.name}
+            {category?.name || 'Gifts'}
           </h1>
           <p className="text-lg text-muted-foreground mt-2 max-w-3xl">
-            {category?.description}
+            {category?.description || 'Browse our collection of wonderful gifts.'}
           </p>
         </div>
       )}
@@ -78,7 +79,7 @@ export default function CategoryPage() {
         <div className="text-center py-24">
           <h2 className="text-2xl font-semibold">Coming Soon!</h2>
           <p className="text-muted-foreground mt-2 max-w-md mx-auto">
-            No gifts have been added to the "{category?.name}" category yet. Please check back later!
+            No gifts have been added to the "{category?.name || categoryId}" category yet. Please check back later!
           </p>
         </div>
       )}
