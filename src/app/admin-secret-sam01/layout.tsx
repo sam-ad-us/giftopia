@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useUser } from '@/firebase';
@@ -89,7 +90,7 @@ function ProtectedAdminLayout({ children }: { children: ReactNode }) {
   
   if (isUserLoading || !user || user.uid !== ADMIN_UID) {
     return (
-      <div className="flex h-screen items-center justify-center bg-sidebar-background">
+      <div className="flex h-screen items-center justify-center bg-background">
         <div className="h-10 w-10 animate-spin rounded-full border-4 border-primary border-t-transparent" />
       </div>
     );
