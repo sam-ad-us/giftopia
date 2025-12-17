@@ -174,7 +174,7 @@ export default function AdminDashboardPage() {
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader className="flex flex-row items-center">
+                    <CardHeader className="flex flex-row items-center justify-between">
                         <div className="grid gap-2">
                             <CardTitle>Recent Orders</CardTitle>
                             <CardDescription>The last 5 orders from your store.</CardDescription>
@@ -223,7 +223,3 @@ export default function AdminDashboardPage() {
         </div>
     );
 }
-
-    
-
-    
