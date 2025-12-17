@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { type Offer, type Product } from '@/lib/types';
 import { Button } from './ui/button';
-import { ShoppingCart } from 'lucide-react';
+import { ShoppingCart, ArrowRight } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import React from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -14,6 +14,7 @@ import { cn, calculateDiscountedPrice, getOfferText, getImageUrl } from '@/lib/u
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import { Badge } from './ui/badge';
+import { useRouter } from 'next/navigation';
 
 interface ProductCardProps {
   product: Product;
@@ -22,6 +23,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onProductClick }: ProductCardProps) {
     const firestore = useFirestore();
+    const router = useRouter();
     const imageUrl = getImageUrl(product.images && product.images[0]);
     const { addToCart } = useCart();
     const { toast } = useToast();
@@ -49,6 +51,21 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         return;
       }
       addToCart(product, 1, productOffer);
+    }
+
+    const handleBuyNow = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isOutOfStock) {
+            toast({
+                title: 'Product Unavailable',
+                description: 'This product is currently out of stock.',
+                variant: 'destructive',
+            });
+            return;
+        }
+        addToCart(product, 1, productOffer);
+        router.push('/checkout');
     }
     
     const handleCardClick = () => {
@@ -96,14 +113,24 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             </CardContent>
         </div>
         <CardFooter className="p-4 pt-0">
-            <Button 
-                className="w-full" 
-                onClick={handleAddToCart}
-                variant={isOutOfStock ? 'secondary' : 'default'}
-                >
-                <ShoppingCart className="mr-2 h-4 w-4" />
-                {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-            </Button>
+            <div className="grid grid-cols-2 gap-2 w-full">
+                <Button 
+                    onClick={handleAddToCart}
+                    variant={isOutOfStock ? 'secondary' : 'default'}
+                    disabled={isOutOfStock}
+                    >
+                    <ShoppingCart className="mr-2 h-4 w-4" />
+                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                </Button>
+                 <Button 
+                    onClick={handleBuyNow}
+                    variant="secondary"
+                    disabled={isOutOfStock}
+                    >
+                    Buy Now
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+            </div>
         </CardFooter>
     </Card>
   );
