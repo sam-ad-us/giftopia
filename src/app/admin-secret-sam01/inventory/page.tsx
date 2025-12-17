@@ -46,8 +46,8 @@ export default function AdminInventoryPage() {
         const lowercasedQuery = searchQuery.toLowerCase();
         return products.filter(
             (product) =>
-                product.name.toLowerCase().includes(lowercasedQuery) ||
-                product.sku.toLowerCase().includes(lowercasedQuery)
+                (product.name && product.name.toLowerCase().includes(lowercasedQuery)) ||
+                (product.sku && product.sku.toLowerCase().includes(lowercasedQuery))
         );
     }, [products, searchQuery]);
     
