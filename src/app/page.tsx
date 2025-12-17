@@ -13,7 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { HomepageBanner, Product, Category } from '@/lib/types';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import ProductCard from '@/components/ProductCard';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ProductDetailDialog } from '@/components/ProductDetailDialog';
 import { getImageUrl } from '@/lib/utils';
 import Autoplay from 'embla-carousel-autoplay';
@@ -105,71 +105,80 @@ function SpecialOfferProductsSection() {
 
 function SpecialOfferSection() {
     const firestore = useFirestore();
+    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
 
-    const bannerDocRef = useMemoFirebase(
-      () => (firestore ? doc(firestore, 'homepageBanner', 'main-offer') : null),
+    const bannersQuery = useMemoFirebase(
+      () => (firestore ? query(collection(firestore, 'homepageBanner'), where('isActive', '==', true)) : null),
       [firestore]
     );
   
-    const { data: banner, isLoading } = useDoc<HomepageBanner>(bannerDocRef);
+    const { data: banners, isLoading } = useCollection<HomepageBanner>(bannersQuery);
 
     if (isLoading) {
         return (
             <section id="special-offer" className="py-12 md:py-20 bg-background">
                 <div className="container mx-auto px-4">
-                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                        <div className="md:order-2">
-                             <Skeleton className="w-full aspect-[4/3]" />
-                        </div>
-                        <div className="md:order-1 text-center md:text-left">
-                            <Skeleton className="h-6 w-24 mb-4" />
-                            <Skeleton className="h-10 w-3/4 mb-4" />
-                            <Skeleton className="h-5 w-full mb-2" />
-                            <Skeleton className="h-5 w-5/6 mb-6" />
-                            <Skeleton className="h-12 w-48" />
-                        </div>
+                    <div className="bg-secondary rounded-lg p-8 md:p-12">
+                        <Skeleton className="w-full aspect-[16/6]" />
                     </div>
                 </div>
             </section>
         )
     }
 
-    if (!banner || !banner.isActive) {
+    if (!banners || banners.length === 0) {
         return null; // Don't render the section if there's no active banner
     }
 
-    const bannerImage = getImageUrl(banner.imageUrl, 600);
-
     return (
         <section id="special-offer" className="py-12 md:py-20 bg-background">
-        <div className="container mx-auto px-4">
-          <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="md:order-2">
-              {bannerImage && (
-                <Image 
-                  src={bannerImage}
-                  alt={banner.title}
-                  width={600}
-                  height={450}
-                  className="rounded-lg object-cover w-full h-full"
-                />
-              )}
+            <div className="container mx-auto px-4">
+                 <Carousel
+                    opts={{ align: "start", loop: true, direction: 'rtl' }}
+                    plugins={[plugin.current]}
+                    onMouseEnter={plugin.current.stop}
+                    onMouseLeave={plugin.current.reset}
+                    className="w-full"
+                >
+                    <CarouselContent>
+                       {banners.map((banner) => {
+                            const bannerImage = getImageUrl(banner.imageUrl, 600);
+                            return (
+                                <CarouselItem key={banner.id}>
+                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                        <div className="md:order-2">
+                                        {bannerImage && (
+                                            <Image 
+                                            src={bannerImage}
+                                            alt={banner.title}
+                                            width={600}
+                                            height={450}
+                                            className="rounded-lg object-cover w-full h-full"
+                                            />
+                                        )}
+                                        </div>
+                                        <div className="md:order-1 text-center md:text-left">
+                                        {banner.badgeText && <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">{banner.badgeText}</Badge>}
+                                        <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">{banner.title}</h2>
+                                        <p className="text-lg text-muted-foreground mb-6">
+                                            {banner.description}
+                                        </p>
+                                        <Button asChild size="lg">
+                                            <Link href={banner.buttonLink}>
+                                            <ShoppingBag className="mr-2 h-5 w-5" />
+                                            {banner.buttonText}
+                                            </Link>
+                                        </Button>
+                                        </div>
+                                    </div>
+                                </CarouselItem>
+                            )
+                       })}
+                    </CarouselContent>
+                    <CarouselPrevious className="hidden md:flex" />
+                    <CarouselNext className="hidden md:flex" />
+                </Carousel>
             </div>
-            <div className="md:order-1 text-center md:text-left">
-              {banner.badgeText && <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">{banner.badgeText}</Badge>}
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">{banner.title}</h2>
-              <p className="text-lg text-muted-foreground mb-6">
-                {banner.description}
-              </p>
-              <Button asChild size="lg">
-                <Link href={banner.buttonLink}>
-                  <ShoppingBag className="mr-2 h-5 w-5" />
-                  {banner.buttonText}
-                </Link>
-              </Button>
-            </div>
-          </div>
-        </div>
       </section>
     )
 }
@@ -244,26 +253,37 @@ function CategorySection() {
 
 export default function Home() {
   const firestore = useFirestore();
-  const bannerDocRef = useMemoFirebase(
-    () => (firestore ? doc(firestore, 'homepageBanner', 'main-offer') : null),
+  const bannersQuery = useMemoFirebase(
+    () => (firestore ? query(collection(firestore, 'homepageBanner'), where('isActive', '==', true)) : null),
     [firestore]
   );
-  const { data: banner, isLoading } = useDoc<HomepageBanner>(bannerDocRef);
-  const heroImage = getImageUrl(banner?.imageUrl, 1920);
+  const { data: banners, isLoading } = useCollection<HomepageBanner>(bannersQuery);
+  
+  const [heroImage, setHeroImage] = useState<string | null>(null);
+  
+  useEffect(() => {
+    if (banners && banners.length > 0) {
+      // Use the image from the first active banner for the main hero section
+      setHeroImage(getImageUrl(banners[0].imageUrl, 1920));
+    }
+  }, [banners]);
+
 
   return (
     <div className="flex flex-col">
       <section className="relative w-full h-[50vh] md:h-[60vh] flex items-center justify-center text-center text-white">
         {isLoading ? (
           <Skeleton className="absolute inset-0" />
-        ) : heroImage && (
+        ) : heroImage ? (
            <Image
             src={heroImage}
-            alt={banner?.title || "A beautifully wrapped gift box"}
+            alt={banners?.[0]?.title || "A beautifully wrapped gift box"}
             fill
             className="object-cover"
             priority
           />
+        ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-deeper"></div>
         )}
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 p-4 max-w-4xl mx-auto">
