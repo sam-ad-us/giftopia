@@ -2,7 +2,7 @@
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Percent, ShoppingBag, IndianRupee } from 'lucide-react';
+import { Package, Percent, ShoppingBag, IndianRupee, Warehouse } from 'lucide-react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query, where, orderBy, limit } from 'firebase/firestore';
 import { Product, Offer, Order } from '@/lib/types';
@@ -67,6 +67,11 @@ export default function AdminDashboardPage() {
         return orders.reduce((acc, order) => acc + order.total, 0);
     }, [orders]);
 
+    const totalUnitsInStock = useMemo(() => {
+        if (!products) return 0;
+        return products.reduce((acc, product) => acc + (product.quantity || 0), 0);
+    }, [products]);
+
     const salesData = useMemo(() => {
         if (!orders) return [];
         
@@ -109,9 +114,10 @@ export default function AdminDashboardPage() {
                 <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                 <p className="text-muted-foreground">An overview of your gift shop's performance.</p>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                 <StatCard title="Total Revenue" value={`₹${totalRevenue.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`} icon={IndianRupee} isLoading={isLoadingOrders} change="+20.1%"/>
-                <StatCard title="Total Products" value={products?.length ?? 0} icon={Package} isLoading={isLoadingProducts} change="+12.5%"/>
+                <StatCard title="Unique Products" value={products?.length ?? 0} icon={Package} isLoading={isLoadingProducts} change="+12.5%"/>
+                <StatCard title="Total Units in Stock" value={totalUnitsInStock} icon={Warehouse} isLoading={isLoadingProducts} />
                 <StatCard title="Active Offers" value={activeOffers?.length ?? 0} icon={Percent} isLoading={isLoadingOffers} change="+5" />
                 <StatCard title="Total Orders" value={orders?.length ?? 0} icon={ShoppingBag} isLoading={isLoadingOrders} change="+180.1%" />
             </div>
