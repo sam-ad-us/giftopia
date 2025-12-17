@@ -79,7 +79,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="bg-secondary min-h-[calc(100vh-14rem)] py-12">
+    <div className="bg-secondary min-h-[calc(100vh-14rem)] py-6 md:py-12">
         <div className="container mx-auto px-4">
         <div className="grid md:grid-cols-4 gap-8">
             <div className="md:col-span-1">

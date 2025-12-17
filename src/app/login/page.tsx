@@ -164,10 +164,9 @@ export default function LoginPage() {
                   <FormItem>
                     <div className="flex justify-between items-baseline">
                         <FormLabel>Password</FormLabel>
-                        <Link href="/forgot-password"
-                            className="text-sm text-primary hover:underline">
-                            Forgot password?
-                        </Link>
+                        <Button asChild variant="link" size="sm" className="h-auto p-0 text-xs">
+                          <Link href="/forgot-password">Forgot password?</Link>
+                        </Button>
                     </div>
                     <FormControl>
                       <Input type="password" placeholder="••••••••" {...field} />
@@ -183,9 +182,9 @@ export default function LoginPage() {
           </form>
         </Form>
         <CardFooter className="flex flex-col gap-4">
-          <div className="relative w-full">
-            <Separator className="absolute top-1/2 -translate-y-1/2" />
-            <span className="relative bg-background px-2 text-xs text-muted-foreground z-10">
+          <div className="relative w-full flex justify-center items-center">
+            <Separator className="w-full" />
+            <span className="absolute bg-background px-2 text-xs text-muted-foreground">
               OR
             </span>
           </div>

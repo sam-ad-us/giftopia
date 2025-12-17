@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useCart } from '@/contexts/CartContext';
@@ -145,7 +144,7 @@ export default function CheckoutPage() {
         <Button variant="outline" size="icon" asChild>
             <Link href="/cart"><ArrowLeft /></Link>
         </Button>
-        <h1 className="font-headline text-4xl md:text-5xl font-bold">Checkout</h1>
+        <h1 className="font-headline text-3xl md:text-4xl font-bold">Checkout</h1>
       </div>
       
       <div className="grid lg:grid-cols-3 gap-12">
@@ -157,7 +156,7 @@ export default function CheckoutPage() {
                   <CardTitle>Shipping Information</CardTitle>
                 </CardHeader>
                 <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <FormField control={form.control} name="name" render={({ field }) => ( <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
+                  <FormField control={form.control} name="name" render={({ field }) => ( <FormItem className="sm:col-span-2"><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="address" render={({ field }) => ( <FormItem className="sm:col-span-2"><FormLabel>Street Address</FormLabel><FormControl><Input placeholder="123 Main St" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="city" render={({ field }) => ( <FormItem><FormLabel>City</FormLabel><FormControl><Input placeholder="Anytown" {...field} /></FormControl><FormMessage /></FormItem>)} />
                   <FormField control={form.control} name="state" render={({ field }) => ( <FormItem><FormLabel>State / Province</FormLabel><FormControl><Input placeholder="CA" {...field} /></FormControl><FormMessage /></FormItem>)} />

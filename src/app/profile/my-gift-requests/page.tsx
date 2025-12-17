@@ -94,7 +94,7 @@ export default function UserGiftRequestsPage() {
             <Link href="/profile"><ArrowLeft /></Link>
         </Button>
         <div>
-            <h1 className="text-3xl font-bold tracking-tight font-headline">My Gift Requests</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight font-headline">My Gift Requests</h1>
             <p className="text-muted-foreground">Track your personalization requests.</p>
         </div>
       </div>
@@ -104,63 +104,65 @@ export default function UserGiftRequestsPage() {
           <CardDescription>A list of all your submitted personalization requests.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Product ID</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Custom Text</TableHead>
-                <TableHead>Reason for Cancellation</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading &&
-                Array.from({ length: 3 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
-                    <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                    <TableCell><Skeleton className="h-5 w-40" /></TableCell>
-                  </TableRow>
-                ))}
-              {sortedRequests &&
-                sortedRequests.map((request) => (
-                  <TableRow key={request.id}>
-                    <TableCell>{request.createdAt ? format(request.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
-                    <TableCell className="font-mono text-xs">{request.productId}</TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(request.status)}>
-                        {request.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="truncate max-w-xs">
-                        <Tooltip>
-                            <TooltipTrigger>
-                                <p className="truncate max-w-xs">{request.customText || "N/A"}</p>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{request.customText}</p>
-                            </TooltipContent>
-                        </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                        {request.cancellationReason ? (
-                            <Tooltip>
-                                <TooltipTrigger>
-                                    <p className="truncate max-w-xs text-destructive">{request.cancellationReason}</p>
-                                </TooltipTrigger>
-                                <TooltipContent className="bg-destructive text-destructive-foreground max-w-sm">
-                                    <p>{request.cancellationReason}</p>
-                                </TooltipContent>
-                            </Tooltip>
-                        ) : 'N/A'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Product ID</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead>Custom Text</TableHead>
+                  <TableHead>Reason for Cancellation</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading &&
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                      <TableCell><Skeleton className="h-6 w-20 rounded-full" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-40" /></TableCell>
+                      <TableCell><Skeleton className="h-5 w-40" /></TableCell>
+                    </TableRow>
+                  ))}
+                {sortedRequests &&
+                  sortedRequests.map((request) => (
+                    <TableRow key={request.id}>
+                      <TableCell className="whitespace-nowrap">{request.createdAt ? format(request.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
+                      <TableCell className="font-mono text-xs whitespace-nowrap">{request.productId}</TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusVariant(request.status)}>
+                          {request.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="truncate max-w-xs">
+                          <Tooltip>
+                              <TooltipTrigger>
+                                  <p className="truncate max-w-[150px] sm:max-w-xs">{request.customText || "N/A"}</p>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                  <p>{request.customText}</p>
+                              </TooltipContent>
+                          </Tooltip>
+                      </TableCell>
+                      <TableCell>
+                          {request.cancellationReason ? (
+                              <Tooltip>
+                                  <TooltipTrigger>
+                                      <p className="truncate max-w-[150px] sm:max-w-xs text-destructive">{request.cancellationReason}</p>
+                                  </TooltipTrigger>
+                                  <TooltipContent className="bg-destructive text-destructive-foreground max-w-sm">
+                                      <p>{request.cancellationReason}</p>
+                                  </TooltipContent>
+                              </Tooltip>
+                          ) : 'N/A'}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
           {!isLoading && (!sortedRequests || sortedRequests.length === 0) && (
             <div className="flex flex-col items-center justify-center text-center py-16">
                 <Gift className="h-12 w-12 text-muted-foreground mb-4"/>

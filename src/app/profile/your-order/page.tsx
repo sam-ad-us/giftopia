@@ -109,7 +109,7 @@ export default function UserOrdersPage() {
             <Link href="/profile"><ArrowLeft /></Link>
         </Button>
         <div>
-            <h1 className="text-3xl font-bold tracking-tight font-headline">My Orders</h1>
+            <h1 className="text-2xl md:text-3xl font-bold tracking-tight font-headline">My Orders</h1>
             <p className="text-muted-foreground">View your complete order history.</p>
         </div>
       </div>
@@ -119,62 +119,64 @@ export default function UserOrdersPage() {
           <CardDescription>A list of all orders you've placed with Giftopia.</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead className="text-center">Items</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {isLoading &&
-                Array.from({ length: 3 }).map((_, i) => (
-                  <TableRow key={i}>
-                    <TableCell>
-                      <Skeleton className="h-5 w-24" />
-                    </TableCell>
-                    <TableCell>
-                      <Skeleton className="h-5 w-16" />
-                    </TableCell>
-                     <TableCell>
-                      <Skeleton className="h-6 w-20 rounded-full" />
-                    </TableCell>
-                    <TableCell className="text-center">
-                      <Skeleton className="h-5 w-8 mx-auto" />
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <Skeleton className="h-8 w-24 ml-auto" />
-                    </TableCell>
-                  </TableRow>
-                ))}
-              {sortedOrders &&
-                sortedOrders.map((order) => (
-                  <TableRow key={order.id}>
-                    <TableCell>{order.createdAt ? format(order.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
-                    <TableCell>₹{order.total.toFixed(2)}</TableCell>
-                    <TableCell>
-                      <Badge variant={getStatusVariant(order.status)}>
-                        {order.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-center">{order.items.reduce((acc, item) => acc + item.quantity, 0)}</TableCell>
-                    <TableCell className="text-right space-x-2">
-                        <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>
-                            <Eye className="mr-2 h-4 w-4"/>
-                            Details
-                        </Button>
-                         <Button variant="secondary" size="sm" onClick={handleTrackOrder}>
-                            <Truck className="mr-2 h-4 w-4"/>
-                            Track
-                        </Button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Total</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-center">Items</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {isLoading &&
+                  Array.from({ length: 3 }).map((_, i) => (
+                    <TableRow key={i}>
+                      <TableCell>
+                        <Skeleton className="h-5 w-24" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-5 w-16" />
+                      </TableCell>
+                      <TableCell>
+                        <Skeleton className="h-6 w-20 rounded-full" />
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <Skeleton className="h-5 w-8 mx-auto" />
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <Skeleton className="h-8 w-24 ml-auto" />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                {sortedOrders &&
+                  sortedOrders.map((order) => (
+                    <TableRow key={order.id}>
+                      <TableCell className="whitespace-nowrap">{order.createdAt ? format(order.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
+                      <TableCell>₹{order.total.toFixed(2)}</TableCell>
+                      <TableCell>
+                        <Badge variant={getStatusVariant(order.status)}>
+                          {order.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-center">{order.items.reduce((acc, item) => acc + item.quantity, 0)}</TableCell>
+                      <TableCell className="text-right space-x-2 whitespace-nowrap">
+                          <Button variant="outline" size="sm" onClick={() => setSelectedOrder(order)}>
+                              <Eye className="mr-2 h-4 w-4"/>
+                              Details
+                          </Button>
+                          <Button variant="secondary" size="sm" onClick={handleTrackOrder}>
+                              <Truck className="mr-2 h-4 w-4"/>
+                              Track
+                          </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
           {!isLoading && (!sortedOrders || sortedOrders.length === 0) && (
             <div className="flex flex-col items-center justify-center text-center py-16">
               <p className="text-lg font-medium text-muted-foreground">You haven't placed any orders yet.</p>

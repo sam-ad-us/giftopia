@@ -7,6 +7,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
+  CardFooter
 } from '@/components/ui/card';
 import {
   Form,
@@ -105,18 +106,16 @@ export default function ForgotPasswordPage() {
                 )}
               />
             </CardContent>
-            <CardContent>
+            <CardFooter className="flex-col gap-4">
               <Button type="submit" className="w-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? 'Sending...' : 'Send Reset Link'}
               </Button>
-            </CardContent>
-          </form>
-        </Form>
-        <CardFooter className="justify-center">
-            <Button variant="link" asChild>
+              <Button variant="link" asChild>
                 <Link href="/login">Back to Sign In</Link>
             </Button>
-        </CardFooter>
+            </CardFooter>
+          </form>
+        </Form>
       </Card>
     </div>
   );
