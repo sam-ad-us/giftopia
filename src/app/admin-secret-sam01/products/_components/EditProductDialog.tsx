@@ -137,6 +137,36 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-4">
+                 <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Category</FormLabel>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select a category"} />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {categories?.map(cat => (
+                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                 />
+                 <FormItem>
+                    <FormLabel>SKU</FormLabel>
+                    <FormControl>
+                        <Input value={product.sku} readOnly disabled className="bg-muted" />
+                    </FormControl>
+                </FormItem>
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -179,50 +209,28 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                     />
                 <FormField
                     control={form.control}
-                    name="category"
+                    name="offerId"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Category</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
+                        <FormLabel>Offer (Optional)</FormLabel>
+                            <Select onValueChange={field.onChange} value={field.value}>
                             <FormControl>
                             <SelectTrigger>
-                                <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select a category"} />
+                                <SelectValue placeholder="Select an offer" />
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                            {categories?.map(cat => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                            ))}
+                                <SelectItem value="none">No Offer</SelectItem>
+                                {offers?.map(offer => (
+                                    <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
                     )}
-                 />
-            </div>
-             <FormField
-                control={form.control}
-                name="offerId"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Offer (Optional)</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                        <FormControl>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select an offer" />
-                        </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            <SelectItem value="none">No Offer</SelectItem>
-                            {offers?.map(offer => (
-                                <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                    </FormItem>
-                )}
                 />
+            </div>
             <FormField
               control={form.control}
               name="images"
@@ -310,3 +318,5 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
     </Dialog>
   );
 }
+
+    
