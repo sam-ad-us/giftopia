@@ -34,7 +34,7 @@ function SpecialOfferProductsSection() {
 
     if (isLoading) {
       return (
-          <section id="special-offer-products" className="py-12 md:py-20 bg-background">
+          <section id="special-offer-products" className="py-6 md:py-10 bg-background">
               <div className="container mx-auto px-4">
                   <Skeleton className="h-10 w-1/2 mx-auto mb-12" />
                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -77,7 +77,7 @@ function SpecialOfferProductsSection() {
                 >
                     <CarouselContent>
                         {products.map((product) => (
-                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/3">
+                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
                                 <div className="p-1 h-full">
                                     <ProductCard product={product} onProductClick={setSelectedProduct} />
                                 </div>
