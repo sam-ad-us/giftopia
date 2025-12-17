@@ -175,8 +175,8 @@ function SpecialOfferSection() {
                                 )
                         })}
                         </CarouselContent>
-                        <CarouselPrevious className="left-[-1rem] md:left-4" />
-                        <CarouselNext className="right-[-1rem] md:right-4" />
+                        <CarouselPrevious className="left-[-1rem] md:left-[-2rem]" />
+                        <CarouselNext className="right-[-1rem] md:right-[-2rem]" />
                     </Carousel>
                 </div>
             </div>
