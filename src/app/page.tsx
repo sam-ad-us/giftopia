@@ -105,7 +105,7 @@ function SpecialOfferProductsSection() {
 
 function SpecialOfferSection() {
     const firestore = useFirestore();
-    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
+    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true, playOnInit: true, direction: 'rtl' }));
 
     const bannersQuery = useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'homepageBanner'), where('isActive', '==', true)) : null),
@@ -133,51 +133,53 @@ function SpecialOfferSection() {
     return (
         <section id="special-offer" className="py-12 md:py-20 bg-background">
             <div className="container mx-auto px-4">
-                 <Carousel
-                    opts={{ align: "start", loop: true }}
-                    plugins={[plugin.current]}
-                    onMouseEnter={plugin.current.stop}
-                    onMouseLeave={plugin.current.reset}
-                    className="w-full"
-                >
-                    <CarouselContent>
-                       {banners.map((banner) => {
-                            const bannerImage = getImageUrl(banner.imageUrl, 600);
-                            return (
-                                <CarouselItem key={banner.id}>
-                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                        <div className="md:order-2">
-                                        {bannerImage && (
-                                            <Image 
-                                            src={bannerImage}
-                                            alt={banner.title}
-                                            width={600}
-                                            height={450}
-                                            className="rounded-lg object-cover w-full h-full"
-                                            />
-                                        )}
+                 <div className="px-0 md:px-12">
+                     <Carousel
+                        opts={{ align: "start", loop: true }}
+                        plugins={[plugin.current]}
+                        onMouseEnter={plugin.current.stop}
+                        onMouseLeave={plugin.current.reset}
+                        className="w-full"
+                    >
+                        <CarouselContent>
+                        {banners.map((banner) => {
+                                const bannerImage = getImageUrl(banner.imageUrl, 600);
+                                return (
+                                    <CarouselItem key={banner.id}>
+                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                            <div className="md:order-2">
+                                            {bannerImage && (
+                                                <Image 
+                                                src={bannerImage}
+                                                alt={banner.title}
+                                                width={600}
+                                                height={450}
+                                                className="rounded-lg object-cover w-full h-full"
+                                                />
+                                            )}
+                                            </div>
+                                            <div className="md:order-1 text-center md:text-left">
+                                            {banner.badgeText && <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">{banner.badgeText}</Badge>}
+                                            <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">{banner.title}</h2>
+                                            <p className="text-lg text-muted-foreground mb-6">
+                                                {banner.description}
+                                            </p>
+                                            <Button asChild size="lg">
+                                                <Link href={banner.buttonLink}>
+                                                <ShoppingBag className="mr-2 h-5 w-5" />
+                                                {banner.buttonText}
+                                                </Link>
+                                            </Button>
+                                            </div>
                                         </div>
-                                        <div className="md:order-1 text-center md:text-left">
-                                        {banner.badgeText && <Badge variant="destructive" className="text-sm py-1 px-3 mb-4">{banner.badgeText}</Badge>}
-                                        <h2 className="font-headline text-3xl md:text-4xl font-bold mb-4">{banner.title}</h2>
-                                        <p className="text-lg text-muted-foreground mb-6">
-                                            {banner.description}
-                                        </p>
-                                        <Button asChild size="lg">
-                                            <Link href={banner.buttonLink}>
-                                            <ShoppingBag className="mr-2 h-5 w-5" />
-                                            {banner.buttonText}
-                                            </Link>
-                                        </Button>
-                                        </div>
-                                    </div>
-                                </CarouselItem>
-                            )
-                       })}
-                    </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex left-4" />
-                    <CarouselNext className="hidden md:flex right-4" />
-                </Carousel>
+                                    </CarouselItem>
+                                )
+                        })}
+                        </CarouselContent>
+                        <CarouselPrevious className="left-[-1rem] md:left-4" />
+                        <CarouselNext className="right-[-1rem] md:right-4" />
+                    </Carousel>
+                </div>
             </div>
       </section>
     )
