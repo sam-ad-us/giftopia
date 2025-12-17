@@ -105,7 +105,7 @@ function SpecialOfferProductsSection() {
 
 function SpecialOfferSection() {
     const firestore = useFirestore();
-    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true, playOnInit: true, direction: 'rtl' }));
+    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true, playOnInit: true }));
 
     const bannersQuery = useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'homepageBanner'), where('isActive', '==', true)) : null),
@@ -146,15 +146,14 @@ function SpecialOfferSection() {
                                 const bannerImage = getImageUrl(banner.imageUrl, 600);
                                 return (
                                     <CarouselItem key={banner.id}>
-                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                                            <div className="md:order-2">
+                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[450px]">
+                                            <div className="md:order-2 h-full w-full relative">
                                             {bannerImage && (
                                                 <Image 
                                                 src={bannerImage}
                                                 alt={banner.title}
-                                                width={600}
-                                                height={450}
-                                                className="rounded-lg object-cover w-full h-full"
+                                                fill
+                                                className="rounded-lg object-cover"
                                                 />
                                             )}
                                             </div>
