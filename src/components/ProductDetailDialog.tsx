@@ -72,7 +72,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
     const mainImageUrl = getImageUrl(activeImage || (productImages.length > 0 ? productImages[0] : null));
 
     const handleAddToCart = () => {
-        if (product.stockStatus === 'out-of-stock' || product.status !== 'active') {
+        if (isOutOfStock) {
             toast({
                 title: 'Product Unavailable',
                 description: 'This product is currently out of stock.',
@@ -84,7 +84,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
         onOpenChange(false);
     };
 
-    const isOutOfStock = product.stockStatus === 'out-of-stock';
+    const isOutOfStock = product.quantity === 0 || product.status !== 'active';
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -105,6 +105,9 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         )}
                         {productOffer && (
                             <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
+                        )}
+                         {isOutOfStock && (
+                            <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>
                         )}
                     </div>
                     <div className="grid grid-cols-5 gap-4">
@@ -146,6 +149,13 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         </div>
                         <StarRating rating={product.rating} reviewCount={product.reviews} />
                     </div>
+
+                     {product.quantity > 0 && product.quantity <= 10 && (
+                        <p className="text-sm text-destructive font-medium">Hurry, only {product.quantity} pieces left!</p>
+                    )}
+                     {product.quantity > 10 && (
+                        <p className="text-sm text-green-600 font-medium">{product.quantity} pieces available</p>
+                    )}
                     
                     <DialogDescription className="text-muted-foreground">{product.description}</DialogDescription>
                     
@@ -155,6 +165,7 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                         size="lg"
                         onClick={handleAddToCart}
                         className="w-full h-12 text-base"
+                        disabled={isOutOfStock}
                     >
                         <ShoppingCart className="mr-2 h-5 w-5" />
                         {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}

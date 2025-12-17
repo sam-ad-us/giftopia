@@ -51,15 +51,16 @@ export default function AdminInventoryPage() {
         );
     }, [products, searchQuery]);
     
-    const getStockStatusVariant = (status: Product['stockStatus']) => {
-        switch (status) {
-            case 'in-stock':
-                return 'default';
-            case 'out-of-stock':
-                return 'destructive';
-            default:
-                return 'secondary';
-        }
+    const getStockStatusVariant = (quantity: number) => {
+        if (quantity > 10) return 'default';
+        if (quantity > 0) return 'secondary';
+        return 'destructive';
+    };
+    
+    const getStockStatusText = (quantity: number) => {
+        if (quantity > 10) return 'In Stock';
+        if (quantity > 0) return 'Low Stock';
+        return 'Out of Stock';
     };
 
     return (
@@ -91,6 +92,7 @@ export default function AdminInventoryPage() {
                                 <TableHead className="w-[80px]">Image</TableHead>
                                 <TableHead>Product Name</TableHead>
                                 <TableHead>SKU</TableHead>
+                                <TableHead className="text-right">Quantity</TableHead>
                                 <TableHead>Stock Status</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -100,6 +102,7 @@ export default function AdminInventoryPage() {
                                     <TableCell><Skeleton className="h-16 w-16 rounded-md" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-40" /></TableCell>
                                     <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                                    <TableCell><Skeleton className="h-5 w-12 ml-auto" /></TableCell>
                                     <TableCell><Skeleton className="h-6 w-24 rounded-full" /></TableCell>
                                 </TableRow>
                             ))}
@@ -122,9 +125,10 @@ export default function AdminInventoryPage() {
                                     </TableCell>
                                     <TableCell className="font-medium">{product.name}</TableCell>
                                     <TableCell className="font-mono text-xs">{product.sku}</TableCell>
+                                    <TableCell className="text-right font-medium">{product.quantity}</TableCell>
                                     <TableCell>
-                                        <Badge variant={getStockStatusVariant(product.stockStatus)}>
-                                            {product.stockStatus === 'in-stock' ? 'In Stock' : 'Out of Stock'}
+                                        <Badge variant={getStockStatusVariant(product.quantity)}>
+                                            {getStockStatusText(product.quantity)}
                                         </Badge>
                                     </TableCell>
                                 </TableRow>

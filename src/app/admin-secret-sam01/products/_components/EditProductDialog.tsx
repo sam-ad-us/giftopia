@@ -38,7 +38,7 @@ const productSchema = z.object({
   category: z.string({ required_error: 'Please select a category.' }),
   offerId: z.string().optional(),
   images: z.string().min(1, "Please provide at least one image ID or URL."),
-  stockStatus: z.enum(['in-stock', 'out-of-stock']),
+  quantity: z.coerce.number().min(0, "Quantity can't be negative."),
   status: z.enum(['active', 'inactive']),
 });
 
@@ -193,7 +193,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
                  <FormField
                     control={form.control}
                     name="price"
@@ -207,6 +207,19 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                         </FormItem>
                     )}
                     />
+                 <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                            <Input type="number" placeholder="100" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                 />
                 <FormField
                     control={form.control}
                     name="offerId"
@@ -247,36 +260,6 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
                 </FormItem>
               )}
             />
-             <FormField
-                control={form.control}
-                name="stockStatus"
-                render={({ field }) => (
-                  <FormItem className="space-y-3">
-                    <FormLabel>Stock Status</FormLabel>
-                    <FormControl>
-                      <RadioGroup
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                        className="flex items-center space-x-4"
-                      >
-                        <FormItem className="flex items-center space-x-2 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="in-stock" />
-                          </FormControl>
-                          <FormLabel className="font-normal">In Stock</FormLabel>
-                        </FormItem>
-                        <FormItem className="flex items-center space-x-2 space-y-0">
-                          <FormControl>
-                            <RadioGroupItem value="out-of-stock" />
-                          </FormControl>
-                          <FormLabel className="font-normal">Out of Stock</FormLabel>
-                        </FormItem>
-                      </RadioGroup>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="status"
@@ -318,5 +301,3 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
     </Dialog>
   );
 }
-
-    

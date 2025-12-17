@@ -20,7 +20,7 @@ export interface Product {
   images: string[];
   rating: number;
   reviews: number;
-  stockStatus?: 'in-stock' | 'out-of-stock';
+  quantity: number;
   status: 'active' | 'inactive';
   offerId?: string | null;
 }

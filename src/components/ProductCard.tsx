@@ -27,7 +27,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
     const imageUrl = getImageUrl(product.images && product.images[0]);
     const { addToCart } = useCart();
     const { toast } = useToast();
-    const isOutOfStock = product.stockStatus === 'out-of-stock' || product.status !== 'active';
+    const isOutOfStock = product.quantity === 0 || product.status !== 'active';
     
     const offersQuery = useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'offers')) : null),
@@ -90,6 +90,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             ) : (
                 <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
             )}
+             {isOutOfStock && <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>}
             {productOffer && (
                 <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
             )}
@@ -120,7 +121,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     disabled={isOutOfStock}
                     >
                     <ShoppingCart className="mr-2 h-4 w-4" />
-                    {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                    Add to Cart
                 </Button>
                  <Button 
                     onClick={handleBuyNow}

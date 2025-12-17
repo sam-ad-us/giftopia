@@ -41,7 +41,7 @@ const productSchema = z.object({
   category: z.string({ required_error: 'Please select a category.' }),
   offerId: z.string().optional(),
   images: z.string().min(1, "Please provide at least one image ID or URL."),
-  stockStatus: z.enum(['in-stock', 'out-of-stock']).default('in-stock'),
+  quantity: z.coerce.number().min(0, "Quantity can't be negative."),
   status: z.enum(['active', 'inactive']).default('active'),
 });
 
@@ -74,7 +74,7 @@ export function AddProductDialog() {
       category: '',
       offerId: 'none',
       images: '',
-      stockStatus: 'in-stock',
+      quantity: 100,
       status: 'active',
     },
   });
@@ -221,7 +221,7 @@ export function AddProductDialog() {
                 </FormItem>
               )}
             />
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
                  <FormField
                     control={form.control}
                     name="price"
@@ -235,6 +235,19 @@ export function AddProductDialog() {
                         </FormItem>
                     )}
                     />
+                 <FormField
+                    control={form.control}
+                    name="quantity"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Quantity</FormLabel>
+                        <FormControl>
+                            <Input type="number" placeholder="100" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                 />
                 <FormField
                     control={form.control}
                     name="offerId"
