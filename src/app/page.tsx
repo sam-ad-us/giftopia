@@ -57,7 +57,7 @@ function SpecialOfferProductsSection() {
     }
 
     return (
-        <section id="special-offer-products" className="py-12 md:py-20 bg-secondary/50">
+        <section id="special-offer-products" className="py-6 md:py-10 bg-secondary/50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-3xl md:text-4xl font-bold">
