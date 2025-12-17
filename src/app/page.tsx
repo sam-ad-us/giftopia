@@ -146,7 +146,7 @@ function SpecialOfferSection() {
                                 const bannerImage = getImageUrl(banner.imageUrl, 600);
                                 return (
                                     <CarouselItem key={banner.id}>
-                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[300px]">
+                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[450px]">
                                             <div className="md:order-2 h-full w-full relative">
                                             {bannerImage && (
                                                 <Image 
