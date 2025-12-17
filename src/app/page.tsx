@@ -139,14 +139,13 @@ function SpecialOfferSection() {
                     onMouseEnter={plugin.current.stop}
                     onMouseLeave={plugin.current.reset}
                     className="w-full"
-                    dir="rtl"
                 >
                     <CarouselContent>
                        {banners.map((banner) => {
                             const bannerImage = getImageUrl(banner.imageUrl, 600);
                             return (
                                 <CarouselItem key={banner.id}>
-                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center" dir="ltr">
+                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
                                         <div className="md:order-2">
                                         {bannerImage && (
                                             <Image 
@@ -176,8 +175,8 @@ function SpecialOfferSection() {
                             )
                        })}
                     </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex left-4 right-auto" />
-                    <CarouselNext className="hidden md:flex right-4 left-auto" />
+                    <CarouselPrevious className="hidden md:flex left-4" />
+                    <CarouselNext className="hidden md:flex right-4" />
                 </Carousel>
             </div>
       </section>
