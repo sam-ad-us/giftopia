@@ -13,13 +13,17 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { HomepageBanner, Product, Category } from '@/lib/types';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import ProductCard from '@/components/ProductCard';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ProductDetailDialog } from '@/components/ProductDetailDialog';
 import { getImageUrl } from '@/lib/utils';
+import Autoplay from 'embla-carousel-autoplay';
 
 function SpecialOfferProductsSection() {
     const firestore = useFirestore();
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+    const plugin = useRef(
+      Autoplay({ delay: 3000, stopOnInteraction: true })
+    );
 
     const offersQuery = useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'products'), where('offerId', '!=', null)) : null),
@@ -66,6 +70,9 @@ function SpecialOfferProductsSection() {
                         align: "start",
                         loop: true,
                     }}
+                    plugins={[plugin.current]}
+                    onMouseEnter={plugin.current.stop}
+                    onMouseLeave={plugin.current.reset}
                     className="w-full"
                 >
                     <CarouselContent>
