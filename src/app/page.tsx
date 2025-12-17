@@ -105,7 +105,7 @@ function SpecialOfferProductsSection() {
 
 function SpecialOfferSection() {
     const firestore = useFirestore();
-    const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true, playOnInit: true }));
+    const plugin = useRef(Autoplay({ delay: 2000, stopOnInteraction: true, playOnInit: true }));
 
     const bannersQuery = useMemoFirebase(
       () => (firestore ? query(collection(firestore, 'homepageBanner'), where('isActive', '==', true)) : null),
