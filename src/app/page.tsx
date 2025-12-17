@@ -34,11 +34,11 @@ function SpecialOfferProductsSection() {
 
     if (isLoading) {
       return (
-          <section id="special-offer-products" className="py-6 md:py-10 bg-background">
+          <section id="special-offer-products" className="py-6 md:py-8 bg-background">
               <div className="container mx-auto px-4">
                   <Skeleton className="h-10 w-1/2 mx-auto mb-12" />
-                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
-                      {Array.from({ length: 4 }).map((_, i) => (
+                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                      {Array.from({ length: 5 }).map((_, i) => (
                           <div className="flex flex-col gap-2" key={i}>
                               <Skeleton className="aspect-square w-full" />
                               <Skeleton className="h-6 w-3/4" />
@@ -57,7 +57,7 @@ function SpecialOfferProductsSection() {
     }
 
     return (
-        <section id="special-offer-products" className="py-6 md:py-10 bg-secondary/50">
+        <section id="special-offer-products" className="py-6 md:py-8 bg-secondary/50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-3xl md:text-4xl font-bold">
@@ -77,7 +77,7 @@ function SpecialOfferProductsSection() {
                 >
                     <CarouselContent>
                         {products.map((product) => (
-                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4">
+                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/5">
                                 <div className="p-1 h-full">
                                     <ProductCard product={product} onProductClick={setSelectedProduct} />
                                 </div>
@@ -116,7 +116,7 @@ function SpecialOfferSection() {
 
     if (isLoading) {
         return (
-            <section id="special-offer" className="py-12 md:py-20 bg-background">
+            <section id="special-offer" className="py-6 md:py-8 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="bg-secondary rounded-lg p-8 md:p-12">
                         <Skeleton className="w-full aspect-[16/6]" />
@@ -131,7 +131,7 @@ function SpecialOfferSection() {
     }
 
     return (
-        <section id="special-offer" className="py-12 md:py-20 bg-background">
+        <section id="special-offer" className="py-6 md:py-8 bg-background">
             <div className="container mx-auto px-4">
                  <div className="px-0 md:px-12">
                      <Carousel
@@ -146,7 +146,7 @@ function SpecialOfferSection() {
                                 const bannerImage = getImageUrl(banner.imageUrl, 600);
                                 return (
                                     <CarouselItem key={banner.id}>
-                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[450px]">
+                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[300px]">
                                             <div className="md:order-2 h-full w-full relative">
                                             {bannerImage && (
                                                 <Image 
