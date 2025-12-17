@@ -134,18 +134,19 @@ function SpecialOfferSection() {
         <section id="special-offer" className="py-12 md:py-20 bg-background">
             <div className="container mx-auto px-4">
                  <Carousel
-                    opts={{ align: "start", loop: true, direction: 'rtl' }}
+                    opts={{ align: "start", loop: true }}
                     plugins={[plugin.current]}
                     onMouseEnter={plugin.current.stop}
                     onMouseLeave={plugin.current.reset}
                     className="w-full"
+                    dir="rtl"
                 >
                     <CarouselContent>
                        {banners.map((banner) => {
                             const bannerImage = getImageUrl(banner.imageUrl, 600);
                             return (
                                 <CarouselItem key={banner.id}>
-                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                                    <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center" dir="ltr">
                                         <div className="md:order-2">
                                         {bannerImage && (
                                             <Image 
@@ -175,8 +176,8 @@ function SpecialOfferSection() {
                             )
                        })}
                     </CarouselContent>
-                    <CarouselPrevious className="hidden md:flex" />
-                    <CarouselNext className="hidden md:flex" />
+                    <CarouselPrevious className="hidden md:flex left-4 right-auto" />
+                    <CarouselNext className="hidden md:flex right-4 left-auto" />
                 </Carousel>
             </div>
       </section>
