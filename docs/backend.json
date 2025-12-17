@@ -56,6 +56,10 @@
           "type": "string",
           "description": "The name of the product."
         },
+        "sku": {
+          "type": "string",
+          "description": "Stock Keeping Unit, a unique code for the product."
+        },
         "description": {
           "type": "string",
           "description": "A detailed description of the product."
@@ -77,6 +81,7 @@
       "required": [
         "id",
         "name",
+        "sku",
         "description",
         "price",
         "imageUrl",

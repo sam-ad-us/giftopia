@@ -25,7 +25,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { PlusCircle } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { addDoc, collection, query, where } from 'firebase/firestore';
 import { useToast } from '@/hooks/use-toast';
@@ -34,6 +34,7 @@ import { Offer, Category } from '@/lib/types';
 
 const productSchema = z.object({
   name: z.string().min(3, 'Product name must be at least 3 characters.'),
+  sku: z.string().min(3, 'SKU is required.'),
   description: z.string().min(10, 'Description must be at least 10 characters.'),
   longDescription: z.string().min(20, 'Long description must be at least 20 characters.'),
   price: z.coerce.number().positive('Price must be a positive number.'),
@@ -66,6 +67,7 @@ export function AddProductDialog() {
     resolver: zodResolver(productSchema),
     defaultValues: {
       name: '',
+      sku: '',
       description: '',
       longDescription: '',
       price: 0,
@@ -76,6 +78,23 @@ export function AddProductDialog() {
       status: 'active',
     },
   });
+
+  const watchedName = form.watch('name');
+  const watchedCategory = form.watch('category');
+
+  useEffect(() => {
+    const generateSku = () => {
+        if (!watchedCategory || !watchedName) {
+            form.setValue('sku', '');
+            return;
+        };
+        const categoryPrefix = categories?.find(c => c.id === watchedCategory)?.name.substring(0, 3).toUpperCase() || 'GEN';
+        const namePart = watchedName.trim().replace(/\s+/g, '-').substring(0, 10).toUpperCase();
+        const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+        form.setValue('sku', `${categoryPrefix}-${namePart}-${randomSuffix}`);
+    };
+    generateSku();
+  }, [watchedName, watchedCategory, categories, form]);
 
   const onSubmit = async (values: z.infer<typeof productSchema>) => {
     if (!firestore) return;
@@ -139,6 +158,43 @@ export function AddProductDialog() {
                 </FormItem>
               )}
             />
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Category</FormLabel>
+                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
+                            <FormControl>
+                            <SelectTrigger>
+                                <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select a category"} />
+                            </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                            {categories?.map(cat => (
+                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
+                            ))}
+                            </SelectContent>
+                        </Select>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                 />
+                 <FormField
+                    control={form.control}
+                    name="sku"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>SKU</FormLabel>
+                        <FormControl>
+                            <Input placeholder="Auto-generated" {...field} readOnly className="bg-muted" />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                    />
+            </div>
             <FormField
               control={form.control}
               name="description"
@@ -181,50 +237,29 @@ export function AddProductDialog() {
                     />
                 <FormField
                     control={form.control}
-                    name="category"
+                    name="offerId"
                     render={({ field }) => (
                         <FormItem>
-                        <FormLabel>Category</FormLabel>
-                         <Select onValueChange={field.onChange} defaultValue={field.value} disabled={isLoadingCategories}>
+                        <FormLabel>Offer (Optional)</FormLabel>
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
                             <FormControl>
                             <SelectTrigger>
-                                <SelectValue placeholder={isLoadingCategories ? "Loading..." : "Select a category"} />
+                                <SelectValue placeholder="Select an offer" />
                             </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                            {categories?.map(cat => (
-                                <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
-                            ))}
+                                <SelectItem value="none">No Offer</SelectItem>
+                                {offers?.map(offer => (
+                                    <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
+                                ))}
                             </SelectContent>
                         </Select>
                         <FormMessage />
                         </FormItem>
                     )}
-                 />
+                    />
             </div>
-             <FormField
-                control={form.control}
-                name="offerId"
-                render={({ field }) => (
-                    <FormItem>
-                    <FormLabel>Offer (Optional)</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select an offer" />
-                        </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                            <SelectItem value="none">No Offer</SelectItem>
-                            {offers?.map(offer => (
-                                <SelectItem key={offer.id} value={offer.id}>{getOfferText(offer)}</SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <FormMessage />
-                    </FormItem>
-                )}
-                />
+             
             <FormField
               control={form.control}
               name="images"
