@@ -31,6 +31,7 @@ import {
   Receipt,
   FileText,
   Image as ImageIcon,
+  Warehouse,
 } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -51,6 +52,7 @@ const ADMIN_UID = 'hxXvnUjr13WjNPbuv9NbMNWOSGF2';
 const menuItems = [
   { href: '/admin-secret-sam01', icon: LayoutDashboard, label: 'Dashboard' },
   { href: '/admin-secret-sam01/products', icon: Package, label: 'Products' },
+  { href: '/admin-secret-sam01/inventory', icon: Warehouse, label: 'Inventory' },
   { href: '/admin-secret-sam01/categories', icon: ShoppingBag, label: 'Categories' },
   { href: '/admin-secret-sam01/orders', icon: ShoppingBag, label: 'Orders' },
   { href: '/admin-secret-sam01/offers-and-banners', icon: ImageIcon, label: 'Offers & Banners' },
