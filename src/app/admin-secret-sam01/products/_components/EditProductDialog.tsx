@@ -70,6 +70,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
         ...product,
         images: product.images.join(', '),
         offerId: product.offerId || 'none',
+        quantity: product.quantity ?? 0,
     }
   });
 
@@ -79,6 +80,7 @@ export function EditProductDialog({ product, isOpen, onOpenChange }: EditProduct
         ...product,
         images: product.images.join(', '),
         offerId: product.offerId || 'none',
+        quantity: product.quantity ?? 0,
       });
     }
   }, [product, form]);
