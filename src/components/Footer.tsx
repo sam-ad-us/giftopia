@@ -55,8 +55,8 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-sidebar-border pt-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left">
-           <div className="flex items-center gap-2 mb-4 md:mb-0">
+        <div className="border-t border-sidebar-border pt-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+           <div className="flex items-center gap-2">
             <Gift className="h-6 w-6 text-sidebar-primary" />
             <span className="font-headline text-xl font-bold text-sidebar-primary">Giftopia</span>
           </div>

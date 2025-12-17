@@ -118,7 +118,7 @@ export default function AdminInventoryPage() {
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
                         </div>
-                        <div className="flex gap-4">
+                        <div className="flex flex-col sm:flex-row gap-4">
                             <Select value={statusFilter} onValueChange={(value) => setStatusFilter(value as StatusFilter)}>
                                 <SelectTrigger className="w-full sm:w-[180px]">
                                     <SelectValue placeholder="Filter by status" />

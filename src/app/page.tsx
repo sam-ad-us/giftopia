@@ -77,7 +77,7 @@ function SpecialOfferProductsSection() {
                 >
                     <CarouselContent>
                         {products.map((product) => (
-                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/5">
+                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4 xl:basis-1/5">
                                 <div className="p-1 h-full">
                                     <ProductCard product={product} onProductClick={setSelectedProduct} />
                                 </div>
@@ -146,8 +146,8 @@ function SpecialOfferSection() {
                                 const bannerImage = getImageUrl(banner.imageUrl, 600);
                                 return (
                                     <CarouselItem key={banner.id}>
-                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center h-[450px]">
-                                            <div className="md:order-2 h-full w-full relative">
+                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-[450px]">
+                                            <div className="md:order-2 h-full w-full relative min-h-[250px] md:min-h-0">
                                             {bannerImage && (
                                                 <Image 
                                                 src={bannerImage}
@@ -272,7 +272,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-[50vh] md:h-[60vh] flex items-center justify-center text-center text-white">
+      <section className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center text-center text-white">
         {isLoading ? (
           <Skeleton className="absolute inset-0" />
         ) : heroImage ? (
@@ -294,7 +294,7 @@ export default function Home() {
           <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
             Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
           </p>
-          <Button asChild size="lg" className="font-bold text-lg px-8 py-6">
+          <Button asChild size="lg" className="font-bold text-lg px-8 py-6 h-auto">
             <Link href="#categories">
               Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
