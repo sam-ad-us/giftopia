@@ -37,7 +37,7 @@ function SpecialOfferProductsSection() {
           <section id="special-offer-products" className="py-6 md:py-8 bg-background">
               <div className="container mx-auto px-4">
                   <Skeleton className="h-10 w-1/2 mx-auto mb-12" />
-                   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+                   <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
                       {Array.from({ length: 5 }).map((_, i) => (
                           <div className="flex flex-col gap-2" key={i}>
                               <Skeleton className="aspect-square w-full" />
@@ -57,7 +57,7 @@ function SpecialOfferProductsSection() {
     }
 
     return (
-        <section id="special-offer-products" className="py-6 md:py-8 bg-secondary/50">
+        <section id="special-offer-products" className="py-8 md:py-12 bg-secondary/50">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h2 className="font-headline text-3xl md:text-4xl font-bold">
@@ -77,7 +77,7 @@ function SpecialOfferProductsSection() {
                 >
                     <CarouselContent>
                         {products.map((product) => (
-                            <CarouselItem key={product.id} className="md:basis-1/2 lg:basis-1/4 xl:basis-1/5">
+                            <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
                                 <div className="p-1 h-full">
                                     <ProductCard product={product} onProductClick={setSelectedProduct} />
                                 </div>
@@ -119,7 +119,7 @@ function SpecialOfferSection() {
             <section id="special-offer" className="py-6 md:py-8 bg-background">
                 <div className="container mx-auto px-4">
                     <div className="bg-secondary rounded-lg p-8 md:p-12">
-                        <Skeleton className="w-full aspect-[16/6]" />
+                        <Skeleton className="w-full aspect-video md:aspect-[16/6]" />
                     </div>
                 </div>
             </section>
@@ -133,7 +133,7 @@ function SpecialOfferSection() {
     return (
         <section id="special-offer" className="py-6 md:py-8 bg-background">
             <div className="container mx-auto px-4">
-                 <div className="px-0 md:px-12">
+                 <div className="px-0">
                      <Carousel
                         opts={{ align: "start", loop: true }}
                         plugins={[plugin.current]}
@@ -146,7 +146,7 @@ function SpecialOfferSection() {
                                 const bannerImage = getImageUrl(banner.imageUrl, 600);
                                 return (
                                     <CarouselItem key={banner.id}>
-                                        <div className="bg-secondary rounded-lg p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-[450px]">
+                                        <div className="bg-secondary rounded-lg p-6 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center min-h-[450px]">
                                             <div className="md:order-2 h-full w-full relative min-h-[250px] md:min-h-0">
                                             {bannerImage && (
                                                 <Image 
@@ -175,8 +175,8 @@ function SpecialOfferSection() {
                                 )
                         })}
                         </CarouselContent>
-                        <CarouselPrevious className="left-[-1rem] md:left-[-2rem]" />
-                        <CarouselNext className="right-[-1rem] md:right-[-2rem]" />
+                        <CarouselPrevious className="left-2 md:left-[-2rem]" />
+                        <CarouselNext className="right-2 md:right-[-2rem]" />
                     </Carousel>
                 </div>
             </div>
@@ -201,7 +201,7 @@ function CategorySection() {
             </h2>
             <p className="text-lg text-muted-foreground mt-2 max-w-2xl mx-auto">Find the perfect present by exploring our thoughtfully selected categories.</p>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {isLoading && Array.from({length: 8}).map((_, i) => (
                 <Card key={i} className="overflow-hidden border-0">
                     <CardContent className="p-0 relative">
@@ -232,7 +232,7 @@ function CategorySection() {
                       <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">{category.offer}</Badge>
                     )}
                     <div className="absolute bottom-0 p-4">
-                      <h3 className="font-headline text-2xl font-bold text-white">{category.name}</h3>
+                      <h3 className="font-headline text-lg md:text-2xl font-bold text-white">{category.name}</h3>
                     </div>
                   </CardContent>
                 </Card>
@@ -272,7 +272,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-[60vh] md:h-[70vh] flex items-center justify-center text-center text-white">
+      <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center text-white">
         {isLoading ? (
           <Skeleton className="absolute inset-0" />
         ) : heroImage ? (
@@ -288,7 +288,7 @@ export default function Home() {
         )}
         <div className="absolute inset-0 bg-black/60" />
         <div className="relative z-10 p-4 max-w-4xl mx-auto">
-          <h1 className="font-headline text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
+          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
             The Perfect Gift for Every Occasion
           </h1>
           <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">

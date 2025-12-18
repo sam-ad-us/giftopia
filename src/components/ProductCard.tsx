@@ -85,7 +85,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     alt={product.name}
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 768px) 50vw, 33vw"
                 />
             ) : (
                 <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
@@ -95,12 +95,12 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                 <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
             )}
             </div>
-            <CardHeader className="flex-grow">
-            <CardTitle className="font-body text-lg leading-tight group-hover:text-primary transition-colors">
+            <CardHeader className="flex-grow p-4">
+            <CardTitle className="font-body text-base leading-tight group-hover:text-primary transition-colors">
                 {product.name}
             </CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-4 pt-0">
                 <div className="flex items-baseline gap-2">
                     <p className="text-xl font-bold text-primary">
                         ₹{discountedPrice.toFixed(2)}
@@ -113,12 +113,13 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                 </div>
             </CardContent>
         </div>
-        <CardFooter className="p-4 pt-0">
-            <div className="grid grid-cols-2 gap-2 w-full">
+        <CardFooter className="p-2 pt-0">
+            <div className="grid grid-cols-1 gap-2 w-full">
                 <Button 
                     onClick={handleAddToCart}
                     variant={isOutOfStock ? 'secondary' : 'default'}
                     disabled={isOutOfStock}
+                    size="sm"
                     >
                     <ShoppingCart className="mr-2 h-4 w-4" />
                     Add to Cart
@@ -127,6 +128,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     onClick={handleBuyNow}
                     variant="secondary"
                     disabled={isOutOfStock}
+                    size="sm"
                     >
                     Buy Now
                     <ArrowRight className="ml-2 h-4 w-4" />

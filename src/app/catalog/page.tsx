@@ -29,7 +29,7 @@ export default function CatalogPage() {
           Explore all our gift categories to find the perfect present for any occasion.
         </p>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
         {isLoading &&
           Array.from({ length: 8 }).map((_, i) => (
             <Card key={i} className="overflow-hidden border-0">
@@ -67,8 +67,8 @@ export default function CatalogPage() {
                       {category.offer}
                     </Badge>
                   )}
-                  <div className="absolute bottom-0 p-4">
-                    <h3 className="font-headline text-2xl font-bold text-white">
+                  <div className="absolute bottom-0 p-2 md:p-4">
+                    <h3 className="font-headline text-lg md:text-2xl font-bold text-white">
                       {category.name}
                     </h3>
                   </div>

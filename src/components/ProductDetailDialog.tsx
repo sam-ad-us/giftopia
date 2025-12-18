@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useCollection, useFirestore, useMemoFirebase } from '@/firebase';
 import { collection, query } from 'firebase/firestore';
 import { Badge } from './ui/badge';
+import { ScrollArea } from './ui/scroll-area';
 
 interface ProductDetailDialogProps {
   product: Product | null;
@@ -88,94 +89,96 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
 
     return (
         <Dialog open={isOpen} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-4xl max-h-[90vh] grid grid-cols-1 md:grid-cols-2 gap-8 p-0 overflow-y-auto">
-                 {/* Image Gallery */}
-                <div className="flex flex-col gap-4 p-6">
-                    <div className="aspect-square relative rounded-lg overflow-hidden border">
-                        {mainImageUrl ? (
-                            <Image
-                                src={mainImageUrl}
-                                alt={product.name}
-                                fill
-                                className="object-cover"
-                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
-                        ) : (
-                            <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
-                        )}
-                        {productOffer && (
-                            <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
-                        )}
-                         {isOutOfStock && (
-                            <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>
-                        )}
-                    </div>
-                    <div className="grid grid-cols-5 gap-4">
-                        {productImages.map((img, index) => {
-                            const thumbUrl = getImageUrl(img);
-                            return thumbUrl && (
-                                <button
-                                    key={index}
-                                    className={cn(
-                                        'aspect-square relative rounded-md overflow-hidden border-2 transition',
-                                        activeImage === img ? 'border-primary' : 'border-transparent'
-                                    )}
-                                    onClick={() => setActiveImage(img)}
-                                >
-                                    <Image
-                                        src={thumbUrl}
-                                        alt={`${product.name} thumbnail ${index + 1}`}
-                                        fill
-                                        className="object-cover"
-                                    />
-                                </button>
-                            )
-                        })}
-                    </div>
-                </div>
-                
-                {/* Product Details */}
-                <div className="flex flex-col gap-4 p-6 pr-8">
-                    <DialogTitle className="font-headline text-3xl md:text-4xl font-bold">{product.name}</DialogTitle>
-                    
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-baseline gap-3">
-                            <p className="text-3xl font-bold text-primary">₹{discountedPrice.toFixed(2)}</p>
-                            {hasDiscount && (
-                                <p className="text-xl text-muted-foreground line-through">
-                                    ₹{product.price.toFixed(2)}
-                                </p>
+            <DialogContent className="max-w-4xl max-h-[90vh] grid grid-cols-1 md:grid-cols-2 gap-0 p-0">
+                <ScrollArea className="h-full">
+                    <div className="flex flex-col gap-4 p-6">
+                        <div className="aspect-square relative rounded-lg overflow-hidden border">
+                            {mainImageUrl ? (
+                                <Image
+                                    src={mainImageUrl}
+                                    alt={product.name}
+                                    fill
+                                    className="object-cover"
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            ) : (
+                                <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
+                            )}
+                            {productOffer && (
+                                <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
+                            )}
+                            {isOutOfStock && (
+                                <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>
                             )}
                         </div>
-                        <StarRating rating={product.rating} reviewCount={product.reviews} />
+                        <div className="grid grid-cols-5 gap-4">
+                            {productImages.map((img, index) => {
+                                const thumbUrl = getImageUrl(img);
+                                return thumbUrl && (
+                                    <button
+                                        key={index}
+                                        className={cn(
+                                            'aspect-square relative rounded-md overflow-hidden border-2 transition',
+                                            activeImage === img ? 'border-primary' : 'border-transparent'
+                                        )}
+                                        onClick={() => setActiveImage(img)}
+                                    >
+                                        <Image
+                                            src={thumbUrl}
+                                            alt={`${product.name} thumbnail ${index + 1}`}
+                                            fill
+                                            className="object-cover"
+                                        />
+                                    </button>
+                                )
+                            })}
+                        </div>
                     </div>
+                </ScrollArea>
+                
+                <ScrollArea className="h-full">
+                    <div className="flex flex-col gap-4 p-6 md:pr-8">
+                        <DialogTitle className="font-headline text-2xl md:text-3xl font-bold">{product.name}</DialogTitle>
+                        
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <div className="flex items-baseline gap-3">
+                                <p className="text-2xl font-bold text-primary">₹{discountedPrice.toFixed(2)}</p>
+                                {hasDiscount && (
+                                    <p className="text-lg text-muted-foreground line-through">
+                                        ₹{product.price.toFixed(2)}
+                                    </p>
+                                )}
+                            </div>
+                            <StarRating rating={product.rating} reviewCount={product.reviews} />
+                        </div>
 
-                     {product.quantity > 0 && product.quantity <= 10 && (
-                        <p className="text-sm text-destructive font-medium">Hurry, only {product.quantity} pieces left!</p>
-                    )}
-                     {product.quantity > 10 && (
-                        <p className="text-sm text-green-600 font-medium">{product.quantity} pieces available</p>
-                    )}
-                    
-                    <DialogDescription className="text-muted-foreground">{product.description}</DialogDescription>
-                    
-                    <Separator />
+                        {product.quantity > 0 && product.quantity <= 10 && (
+                            <p className="text-sm text-destructive font-medium">Hurry, only {product.quantity} pieces left!</p>
+                        )}
+                        {product.quantity > 10 && (
+                            <p className="text-sm text-green-600 font-medium">{product.quantity} pieces available</p>
+                        )}
+                        
+                        <DialogDescription className="text-muted-foreground">{product.description}</DialogDescription>
+                        
+                        <Separator />
 
-                    <Button
-                        size="lg"
-                        onClick={handleAddToCart}
-                        className="w-full h-12 text-base"
-                        disabled={isOutOfStock}
-                    >
-                        <ShoppingCart className="mr-2 h-5 w-5" />
-                        {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
-                    </Button>
-                    
-                    <div className="prose prose-sm text-foreground max-w-none">
-                        <h3 className="font-bold">Product Details</h3>
-                        <p>{product.longDescription}</p>
+                        <Button
+                            size="lg"
+                            onClick={handleAddToCart}
+                            className="w-full h-12 text-base"
+                            disabled={isOutOfStock}
+                        >
+                            <ShoppingCart className="mr-2 h-5 w-5" />
+                            {isOutOfStock ? 'Out of Stock' : 'Add to Cart'}
+                        </Button>
+                        
+                        <div className="prose prose-sm text-foreground max-w-none">
+                            <h3 className="font-bold">Product Details</h3>
+                            <p>{product.longDescription}</p>
+                        </div>
                     </div>
-                </div>
+                </ScrollArea>
             </DialogContent>
         </Dialog>
     );

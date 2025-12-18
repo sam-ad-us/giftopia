@@ -44,8 +44,8 @@ export default function CategoryPage() {
     <div className="container mx-auto px-4 py-12">
       {isLoading ? (
         <>
-          <Skeleton className="h-12 w-1/3 mb-8" />
-          <Skeleton className="h-6 w-1/2 mb-12" />
+          <Skeleton className="h-12 w-2/3 md:w-1/3 mb-4" />
+          <Skeleton className="h-6 w-full md:w-1/2" />
         </>
       ) : (
         <div className="mb-12">
@@ -59,7 +59,7 @@ export default function CategoryPage() {
       )}
       
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
           {Array.from({ length: 8 }).map((_, i) => (
              <div className="flex flex-col gap-2" key={i}>
                 <Skeleton className="aspect-square w-full rounded-lg" />
@@ -70,7 +70,7 @@ export default function CategoryPage() {
           ))}
         </div>
       ) : products && products.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
           {products.map((product) => (
             <ProductCard key={product.id} product={product} onProductClick={setSelectedProduct} />
           ))}
