@@ -121,10 +121,10 @@ export default function AdminProductsPage() {
                                 <TableCell className="font-medium">{product.name}</TableCell>
                                 <TableCell className="font-mono text-xs">{product.sku}</TableCell>
                                 <TableCell>
-                                    <Badge variant={product.status === 'active' ? 'default' : 'secondary'}>{product.status}</Badge>
+                                    <Badge variant={product.status === 'active' ? 'default' : 'secondary'} size="sm">{product.status}</Badge>
                                 </TableCell>
                                 <TableCell>
-                                    {offer ? <Badge variant="destructive">{offer.name}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
+                                    {offer ? <Badge variant="destructive" size="sm">{offer.name}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
                                 </TableCell>
                                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
                                 <TableCell>

@@ -121,7 +121,7 @@ export default function AdminOffersAndBannersPage() {
                                     </TableCell>
                                     <TableCell className="font-medium">{banner.title}</TableCell>
                                     <TableCell>
-                                        <Badge variant={banner.isActive ? 'default' : 'secondary'}>
+                                        <Badge variant={banner.isActive ? 'default' : 'secondary'} size="sm">
                                             {banner.isActive ? 'Active' : 'Inactive'}
                                         </Badge>
                                     </TableCell>
@@ -185,7 +185,7 @@ export default function AdminOffersAndBannersPage() {
                                     <TableCell className="capitalize">{offer.type}</TableCell>
                                     <TableCell>{offer.type === 'percentage' ? `${offer.value}%` : `₹${offer.value.toFixed(2)}`}</TableCell>
                                     <TableCell>
-                                        <Badge variant={offer.status === 'active' ? 'default' : 'secondary'}>
+                                        <Badge variant={offer.status === 'active' ? 'default' : 'secondary'} size="sm">
                                             {offer.status}
                                         </Badge>
                                     </TableCell>

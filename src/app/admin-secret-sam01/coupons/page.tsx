@@ -94,7 +94,7 @@ export default function AdminCouponsPage() {
                                     <TableCell>{coupon.type === 'percentage' ? `${coupon.value}%` : `₹${coupon.value.toFixed(2)}`}</TableCell>
                                     <TableCell>{coupon.minimumCartValue ? `₹${coupon.minimumCartValue.toFixed(2)}` : 'N/A'}</TableCell>
                                     <TableCell>
-                                        <Badge variant={coupon.status === 'active' ? 'default' : 'secondary'}>
+                                        <Badge variant={coupon.status === 'active' ? 'default' : 'secondary'} size="sm">
                                             {coupon.status}
                                         </Badge>
                                     </TableCell>

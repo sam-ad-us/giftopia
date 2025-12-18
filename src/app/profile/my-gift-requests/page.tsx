@@ -132,7 +132,7 @@ export default function UserGiftRequestsPage() {
                       <TableCell className="whitespace-nowrap">{request.createdAt ? format(request.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
                       <TableCell className="font-mono text-xs whitespace-nowrap">{request.productId}</TableCell>
                       <TableCell>
-                        <Badge variant={getStatusVariant(request.status)}>
+                        <Badge variant={getStatusVariant(request.status)} size="sm">
                           {request.status}
                         </Badge>
                       </TableCell>

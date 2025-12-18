@@ -90,9 +90,9 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
             ) : (
                 <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
             )}
-             {isOutOfStock && <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>}
+             {isOutOfStock && <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>}
             {productOffer && (
-                <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
+                <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
             )}
             </div>
             <CardHeader className="flex-grow p-4">

@@ -63,7 +63,7 @@ export default function CatalogPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                   </div>
                   {category.offer && (
-                    <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">
+                    <Badge className="absolute top-3 right-3 text-[10px] md:text-xs" variant="destructive">
                       {category.offer}
                     </Badge>
                   )}

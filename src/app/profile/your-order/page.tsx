@@ -157,7 +157,7 @@ export default function UserOrdersPage() {
                       <TableCell className="whitespace-nowrap">{order.createdAt ? format(order.createdAt.toDate(), 'MMM d, yyyy') : 'N/A'}</TableCell>
                       <TableCell>₹{order.total.toFixed(2)}</TableCell>
                       <TableCell>
-                        <Badge variant={getStatusVariant(order.status)}>
+                        <Badge variant={getStatusVariant(order.status)} size="sm">
                           {order.status}
                         </Badge>
                       </TableCell>

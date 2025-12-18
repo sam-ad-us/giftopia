@@ -136,7 +136,7 @@ export default function AdminOrdersPage() {
                     <TableCell>{order.customerName}</TableCell>
                     <TableCell>₹{order.total.toFixed(2)}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(order.status)}>
+                      <Badge variant={getStatusVariant(order.status)} size="sm">
                         {order.status}
                       </Badge>
                     </TableCell>

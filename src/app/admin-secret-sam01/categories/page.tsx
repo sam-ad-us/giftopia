@@ -103,7 +103,7 @@ export default function AdminCategoriesPage() {
                                     </TableCell>
                                     <TableCell className="font-medium">{category.name}</TableCell>
                                     <TableCell>
-                                        {category.offer ? <Badge variant="secondary">{category.offer}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
+                                        {category.offer ? <Badge variant="secondary" size="sm">{category.offer}</Badge> : <span className="text-muted-foreground text-xs">N/A</span>}
                                     </TableCell>
                                     <TableCell>
                                         {category.showInSubHeader ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-muted-foreground" />}

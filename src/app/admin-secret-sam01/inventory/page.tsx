@@ -184,7 +184,7 @@ export default function AdminInventoryPage() {
                                     <TableCell className="font-mono text-xs">{product.sku}</TableCell>
                                     <TableCell className="text-right font-medium">{product.quantity}</TableCell>
                                     <TableCell>
-                                        <Badge variant={getStockStatusVariant(product.quantity)}>
+                                        <Badge variant={getStockStatusVariant(product.quantity)} size="sm">
                                             {getStockStatusText(product.quantity)}
                                         </Badge>
                                     </TableCell>

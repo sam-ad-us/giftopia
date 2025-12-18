@@ -73,7 +73,7 @@ export function UserOrderDetailsDialog({ order, isOpen, onOpenChange }: UserOrde
                 </div>
                  <div className="mt-4 text-sm space-y-2">
                     <p><strong>Order Date:</strong> {order.createdAt ? format(order.createdAt.toDate(), 'PPpp') : 'N/A'}</p>
-                    <div className="flex items-center gap-2"><strong>Status:</strong> <Badge variant={getStatusVariant(order.status)}>{order.status}</Badge></div>
+                    <div className="flex items-center gap-2"><strong>Status:</strong> <Badge variant={getStatusVariant(order.status)} size="sm">{order.status}</Badge></div>
                 </div>
             </div>
             <div>

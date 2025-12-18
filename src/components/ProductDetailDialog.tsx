@@ -105,10 +105,10 @@ export function ProductDetailDialog({ product, isOpen, onOpenChange }: ProductDe
                                 <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
                             )}
                             {productOffer && (
-                                <Badge className="absolute top-2 right-2" variant="destructive">{getOfferText(productOffer)}</Badge>
+                                <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
                             )}
                             {isOutOfStock && (
-                                <Badge className="absolute top-2 left-2" variant="destructive">Out of Stock</Badge>
+                                <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>
                             )}
                         </div>
                         <div className="grid grid-cols-5 gap-4">

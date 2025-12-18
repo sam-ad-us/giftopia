@@ -71,7 +71,7 @@ export function OrderDetailsDialog({ order, isOpen, onOpenChange, onUpdateStatus
                     <p><strong>Name:</strong> {order.shippingAddress.name}</p>
                     <p><strong>Address:</strong> {order.shippingAddress.address}, {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zip}, {order.shippingAddress.country}</p>
                     <p><strong>Order Date:</strong> {order.createdAt ? format(order.createdAt.toDate(), 'PPpp') : 'N/A'}</p>
-                    <div className="flex items-center gap-2"><strong>Status:</strong> <Badge variant={getStatusVariant(order.status)}>{order.status}</Badge></div>
+                    <div className="flex items-center gap-2"><strong>Status:</strong> <Badge variant={getStatusVariant(order.status)} size="sm">{order.status}</Badge></div>
                 </div>
             </div>
             <div>

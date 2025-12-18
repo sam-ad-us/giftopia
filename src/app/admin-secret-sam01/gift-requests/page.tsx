@@ -125,7 +125,7 @@ export default function AdminGiftRequestsPage() {
                     <TableCell className="font-mono text-xs">{request.productId}</TableCell>
                     <TableCell className="truncate max-w-xs">{request.customText || "N/A"}</TableCell>
                     <TableCell>
-                      <Badge variant={getStatusVariant(request.status)}>
+                      <Badge variant={getStatusVariant(request.status)} size="sm">
                         {request.status}
                       </Badge>
                     </TableCell>

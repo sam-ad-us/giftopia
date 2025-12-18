@@ -229,7 +229,7 @@ function CategorySection() {
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
                     </div>
                     {category.offer && (
-                      <Badge className="absolute top-3 right-3 bg-primary text-primary-foreground">{category.offer}</Badge>
+                      <Badge className="absolute top-3 right-3 text-[10px] md:text-xs" variant="destructive">{category.offer}</Badge>
                     )}
                     <div className="absolute bottom-0 p-4">
                       <h3 className="font-headline text-lg md:text-2xl font-bold text-white">{category.name}</h3>
