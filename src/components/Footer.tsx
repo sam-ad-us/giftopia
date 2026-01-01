@@ -65,7 +65,7 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Giftopia. All rights reserved.
             </p>
              <p className="text-sm text-sidebar-foreground/70">
-                Developed by <Link href="https://my-portfolio-samadus.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-sidebar-primary">Samad</Link>
+                Developed by <Link href="https://my-portfolio-samadus.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-sidebar-primary">A. Samad</Link>
             </p>
           </div>
         </div>
