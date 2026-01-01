@@ -55,14 +55,19 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-sidebar-border pt-8 flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4">
+        <div className="border-t border-sidebar-border pt-8 flex flex-col items-center text-center gap-4">
            <div className="flex items-center gap-2">
             <Gift className="h-6 w-6 text-sidebar-primary" />
             <span className="font-headline text-xl font-bold text-sidebar-primary">Giftopia</span>
           </div>
-          <p className="text-sm text-sidebar-foreground/70">
-            &copy; {new Date().getFullYear()} Giftopia. All rights reserved.
-          </p>
+          <div className='flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-4 w-full'>
+            <p className="text-sm text-sidebar-foreground/70">
+              &copy; {new Date().getFullYear()} Giftopia. All rights reserved.
+            </p>
+             <p className="text-sm text-sidebar-foreground/70">
+                Developed by <Link href="https://my-portfolio-samadus.vercel.app/" target="_blank" rel="noopener noreferrer" className="underline hover:text-sidebar-primary">Samad</Link>
+            </p>
+          </div>
         </div>
       </div>
     </footer>
