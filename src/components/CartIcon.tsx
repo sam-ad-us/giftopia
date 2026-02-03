@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from 'next/link';
@@ -12,7 +11,7 @@ export default function CartIcon() {
   return (
     <Button asChild variant="ghost" size="icon" className="hover:bg-sidebar-accent">
       <Link href="/cart" className="relative">
-        <ShoppingCart className="h-5 w-5" />
+        <ShoppingCart className="h-6 w-6" />
         {cartCount > 0 && (
           <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-sidebar-primary text-xs font-bold text-sidebar-primary-foreground">
             {cartCount}
