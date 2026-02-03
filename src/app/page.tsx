@@ -272,33 +272,37 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-[50vh] flex items-center justify-center text-center text-white">
-        {isLoading ? (
-          <Skeleton className="absolute inset-0" />
-        ) : heroImage ? (
-           <Image
-            src={heroImage}
-            alt={banners?.[0]?.title || "A beautifully wrapped gift box"}
-            fill
-            className="object-cover"
-            priority
-          />
-        ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-deeper"></div>
-        )}
-        <div className="absolute inset-0 bg-black/60" />
-        <div className="relative z-10 p-4 max-w-4xl mx-auto">
-          <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
-            The Perfect Gift for Every Occasion
-          </h1>
-          <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
-            Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
-          </p>
-          <Button asChild size="lg" className="font-bold text-lg px-8 py-6 h-auto">
-            <Link href="#categories">
-              Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+      <section className="py-6 md:py-8">
+        <div className="container mx-auto px-4">
+          <div className="relative w-full h-[50vh] flex items-center justify-center text-center text-white rounded-lg overflow-hidden">
+            {isLoading ? (
+              <Skeleton className="absolute inset-0" />
+            ) : heroImage ? (
+               <Image
+                src={heroImage}
+                alt={banners?.[0]?.title || "A beautifully wrapped gift box"}
+                fill
+                className="object-cover"
+                priority
+              />
+            ) : (
+                <div className="absolute inset-0 bg-gradient-to-br from-primary to-primary-deeper"></div>
+            )}
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="relative z-10 p-4 max-w-4xl mx-auto">
+              <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
+                The Perfect Gift for Every Occasion
+              </h1>
+              <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
+                Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
+              </p>
+              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 h-auto">
+                <Link href="#categories">
+                  Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
