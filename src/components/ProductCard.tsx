@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { type Offer, type Product } from '@/lib/types';
 import { Button } from './ui/button';
 import { ShoppingCart, ArrowRight } from 'lucide-react';
@@ -74,34 +74,35 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
 
   return (
     <Card 
-        className="h-full overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1 flex flex-col cursor-pointer"
+        className={cn(
+            "h-full overflow-hidden rounded-lg bg-card text-card-foreground shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1.5 flex flex-col cursor-pointer",
+            isOutOfStock && "opacity-60"
+        )}
         onClick={handleCardClick}
     >
-        <div className={cn("group block flex-grow", isOutOfStock && "opacity-60")}>
-            <div className="relative aspect-square w-full">
-            {imageUrl ? (
-                <Image
-                    src={imageUrl}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="(max-width: 768px) 50vw, 33vw"
-                />
-            ) : (
-                <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground">No Image</div>
-            )}
-             {isOutOfStock && <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>}
-            {productOffer && (
-                <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
-            )}
+        <div className="flex-grow flex flex-col">
+            <div className="relative aspect-square w-full p-3 group">
+                {imageUrl ? (
+                    <Image
+                        src={imageUrl}
+                        alt={product.name}
+                        fill
+                        className="object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
+                        sizes="(max-width: 768px) 50vw, 33vw"
+                    />
+                ) : (
+                    <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground rounded-md">No Image</div>
+                )}
+                {isOutOfStock && <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>}
+                {productOffer && (
+                    <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
+                )}
             </div>
-            <CardHeader className="flex-grow p-4">
-            <CardTitle className="font-body text-base leading-tight group-hover:text-primary transition-colors">
-                {product.name}
-            </CardTitle>
-            </CardHeader>
-            <CardContent className="p-4 pt-0">
-                <div className="flex items-baseline gap-2">
+            <div className="p-4 pt-0 flex flex-col flex-grow">
+                <h3 className="font-semibold text-base leading-tight text-foreground transition-colors flex-grow min-h-[40px]">
+                    {product.name}
+                </h3>
+                <div className="flex items-baseline gap-2 mt-2">
                     <p className="text-xl font-bold text-primary">
                         ₹{discountedPrice.toFixed(2)}
                     </p>
@@ -111,9 +112,9 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                         </p>
                     )}
                 </div>
-            </CardContent>
+            </div>
         </div>
-        <CardFooter className="p-2 pt-0">
+        <div className="p-4 pt-0">
             <div className="grid grid-cols-1 gap-2 w-full">
                 <Button 
                     onClick={handleAddToCart}
@@ -134,7 +135,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
             </div>
-        </CardFooter>
+        </div>
     </Card>
   );
 }
