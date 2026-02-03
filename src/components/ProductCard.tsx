@@ -81,7 +81,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         onClick={handleCardClick}
     >
         <div className="flex-grow flex flex-col">
-            <div className="relative aspect-square w-full p-3 group">
+            <div className="relative aspect-square w-full p-2 group">
                 {imageUrl ? (
                     <Image
                         src={imageUrl}
@@ -98,7 +98,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
                     <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
                 )}
             </div>
-            <div className="p-4 pt-0 flex flex-col flex-grow">
+            <div className="p-4 pt-2 flex flex-col flex-grow">
                 <h3 className="font-semibold text-base leading-tight text-foreground transition-colors flex-grow min-h-[40px]">
                     {product.name}
                 </h3>
