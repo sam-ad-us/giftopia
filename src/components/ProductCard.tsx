@@ -81,7 +81,7 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         onClick={handleCardClick}
     >
         <div className="flex-grow flex flex-col">
-            <div className="relative aspect-square w-full p-2 group">
+            <div className="relative aspect-square w-full p-2.5 group">
                 {imageUrl ? (
                     <Image
                         src={imageUrl}
