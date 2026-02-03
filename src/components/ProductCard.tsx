@@ -1,4 +1,3 @@
-
 'use client';
 
 import Link from 'next/link';
@@ -81,59 +80,61 @@ export default function ProductCard({ product, onProductClick }: ProductCardProp
         onClick={handleCardClick}
     >
         <div className="flex-grow flex flex-col">
-            <div className="relative aspect-square w-full p-2.5 group">
-                {imageUrl ? (
-                    <Image
-                        src={imageUrl}
-                        alt={product.name}
-                        fill
-                        className="object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
-                        sizes="(max-width: 768px) 50vw, 33vw"
-                    />
-                ) : (
-                    <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground rounded-md">No Image</div>
-                )}
-                {isOutOfStock && <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>}
-                {productOffer && (
-                    <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
-                )}
-            </div>
-            <div className="p-4 pt-2 flex flex-col flex-grow">
-                <h3 className="font-semibold text-base leading-tight text-foreground transition-colors flex-grow min-h-[40px]">
-                    {product.name}
-                </h3>
-                <div className="flex items-baseline gap-2 mt-2">
-                    <p className="text-xl font-bold text-primary">
-                        ₹{discountedPrice.toFixed(2)}
-                    </p>
-                    {hasDiscount && (
-                        <p className="text-sm text-muted-foreground line-through">
-                            ₹{product.price.toFixed(2)}
-                        </p>
+            <div className="p-2.5">
+                <div className="relative aspect-square w-full group">
+                    {imageUrl ? (
+                        <Image
+                            src={imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-cover rounded-md transition-transform duration-300 group-hover:scale-105"
+                            sizes="(max-width: 768px) 50vw, 33vw"
+                        />
+                    ) : (
+                        <div className="h-full w-full bg-muted flex items-center justify-center text-xs text-muted-foreground rounded-md">No Image</div>
+                    )}
+                    {isOutOfStock && <Badge className="absolute top-2 left-2 text-[10px] md:text-xs" variant="destructive">Out of Stock</Badge>}
+                    {productOffer && (
+                        <Badge className="absolute top-2 right-2 text-[10px] md:text-xs" variant="destructive">{getOfferText(productOffer)}</Badge>
                     )}
                 </div>
             </div>
-        </div>
-        <div className="p-4 pt-0">
-            <div className="grid grid-cols-1 gap-2 w-full">
-                <Button 
-                    onClick={handleAddToCart}
-                    variant={isOutOfStock ? 'secondary' : 'default'}
-                    disabled={isOutOfStock}
-                    size="sm"
-                    >
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    Add to Cart
-                </Button>
-                 <Button 
-                    onClick={handleBuyNow}
-                    variant="secondary"
-                    disabled={isOutOfStock}
-                    size="sm"
-                    >
-                    Buy Now
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
+            <div className="p-4 pt-2 flex flex-col flex-grow">
+                <div className="flex-grow">
+                    <h3 className="font-semibold text-base leading-tight text-foreground transition-colors flex-grow min-h-[40px]">
+                        {product.name}
+                    </h3>
+                    <div className="flex items-baseline gap-2 mt-2">
+                        <p className="text-xl font-bold text-primary">
+                            ₹{discountedPrice.toFixed(2)}
+                        </p>
+                        {hasDiscount && (
+                            <p className="text-sm text-muted-foreground line-through">
+                                ₹{product.price.toFixed(2)}
+                            </p>
+                        )}
+                    </div>
+                </div>
+                <div className="grid grid-cols-1 gap-2 w-full mt-4">
+                     <Button 
+                        onClick={handleAddToCart}
+                        variant={isOutOfStock ? 'secondary' : 'default'}
+                        disabled={isOutOfStock}
+                        size="sm"
+                        >
+                        <ShoppingCart className="mr-2 h-4 w-4" />
+                        Add to Cart
+                    </Button>
+                    <Button 
+                        onClick={handleBuyNow}
+                        variant="secondary"
+                        disabled={isOutOfStock}
+                        size="sm"
+                        >
+                        Buy Now
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                </div>
             </div>
         </div>
     </Card>
