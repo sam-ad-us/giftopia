@@ -272,7 +272,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative w-full h-[70vh] md:h-[80vh] flex items-center justify-center text-center text-white">
+      <section className="relative w-full h-[50vh] flex items-center justify-center text-center text-white">
         {isLoading ? (
           <Skeleton className="absolute inset-0" />
         ) : heroImage ? (
