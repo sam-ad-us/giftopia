@@ -40,10 +40,17 @@ function SpecialOfferProductsSection() {
                    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-8">
                       {Array.from({ length: 5 }).map((_, i) => (
                           <div className="flex flex-col gap-2" key={i}>
-                              <Skeleton className="aspect-square w-full" />
-                              <Skeleton className="h-6 w-3/4" />
-                              <Skeleton className="h-8 w-1/2" />
-                              <Skeleton className="h-10 w-full" />
+                              <div className="p-2.5">
+                                <Skeleton className="aspect-square w-full" />
+                              </div>
+                              <div className="p-4 pt-2 flex flex-col gap-2">
+                                <Skeleton className="h-5 w-3/4" />
+                                <Skeleton className="h-7 w-1/2" />
+                                <div className="grid grid-cols-1 gap-2 mt-2">
+                                  <Skeleton className="h-9 w-full" />
+                                  <Skeleton className="h-9 w-full" />
+                                </div>
+                              </div>
                           </div>
                       ))}
                   </div>
@@ -290,15 +297,15 @@ export default function Home() {
             )}
             <div className="absolute inset-0 bg-black/60" />
             <div className="relative z-10 p-4 max-w-4xl mx-auto">
-              <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-4 text-shadow-lg">
+              <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight mb-4 text-shadow-lg">
                 The Perfect Gift for Every Occasion
               </h1>
-              <p className="text-lg md:text-xl max-w-3xl mx-auto mb-8 text-shadow">
+              <p className="text-base md:text-lg max-w-3xl mx-auto mb-8 text-shadow">
                 Discover a curated collection of unique gifts that will make your loved ones feel special, cherished, and remembered forever.
               </p>
-              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 h-auto">
+              <Button asChild size="lg">
                 <Link href="#categories">
-                  Start Gifting <ArrowRight className="ml-2 h-5 w-5" />
+                  Start Gifting <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
             </div>
